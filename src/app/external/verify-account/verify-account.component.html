@@ -1,0 +1,27 @@
+<div class="d-flex flex-column justify-content-between reset-wrapper">
+  <form class="col-sm-6 needs-validation" [class.was-validated]="passwordForm.submitted" #passwordForm="ngForm"
+    (ngSubmit)="passwordForm.valid && onSubmit()">
+    <h3 class="mb-40 heading-1 bold">
+      <span>Verify your account</span><br>
+      <span class="small">{{email}}</span>
+    </h3>
+    <div class="form-group mb-40">
+      <label class="mb-8 heading-4 medium" for="password">Confirmation Code</label>
+      <input type="text" class="form-control form-control-lg" name="code" placeholder="Code" [(ngModel)]="confirmationCode"
+        #code="ngModel" required>
+      <p *ngIf="((code.touched || code.dirty && passwordForm.submitted) || passwordForm.submitted && code.invalid)">
+        <span class="text-danger" *ngIf="code.errors?.required">
+          <span [innerHtml]="'Confirmation code is required'"></span>
+        </span>
+      </p>
+    </div>
+    <div class="pb-4 mb-4 mt-3 text-right">
+      <button [disabled]="buttonLoader" class="btn btn-primary bold br-4 text-white btn-shadow" type="submit">
+        <span *ngIf="!buttonLoader"> Submit</span>
+        <div *ngIf="buttonLoader" class="spinner-border text-white" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
+    </div>
+  </form>
+</div>

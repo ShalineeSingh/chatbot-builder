@@ -1,0 +1,39 @@
+$dark-green: #004151;
+$green-info: #079AA2;
+$green-success: #1AA053;
+$orange: #F16A1B;
+$red: #BA3020;
+
+$body-color: #000000;
+$gray-700:#6C757D;
+$gray-500: #8A92A6;
+$white: #FFFFFF;
+
+$font-family-base: "Inter";
+
+
+$base-border-radius: 8px;
+$base-shadow:  0px 10px 13px rgba(17, 38, 146, 0.05);
+$button-shadow:0px 2px 4px rgba(58, 87, 232, 0.3);
+
+$h0: 64px;
+$h1: 40px;
+$h2: 33px;
+$h3: 28px;
+$h4: 23px;
+$h5: 19px;
+$h6: 16px;
+$small: 13px;
+$very-small: 11px;
+$tiny: 9px;
+
+$theme-colors: (
+  primary: $dark-green,
+  secondary: $gray-700,
+  success: $green-success,
+  info: $green-info,
+  warning: $orange,
+  danger: $red,
+  light: $white,
+  dark: $body-color,
+);

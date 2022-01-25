@@ -1,0 +1,113 @@
+@import "_variables";
+
+html, body { overflow-x: hidden; }
+
+.heading-0 {
+  font-size: $h1;
+}
+.heading-1 {
+  font-size: $h1;
+}
+.heading-2 {
+  font-size: $h2;
+}
+.heading-3 {
+  font-size: $h3;
+}
+.heading-4 {
+  font-size: $h4;
+}
+.heading-5 {
+  font-size: $h5;
+}
+.heading-6 {
+  font-size: $h6;
+}
+.small {
+  font-size: $small !important;
+}
+.very-small {
+  font-size: $very-small;
+}
+.tiny {
+  font-size: $tiny;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.medium {
+  font-weight: 500;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+@for $i from 0 through 5 {
+  $space: $i * 4;
+  .br-#{$space} {
+    border-radius: #{$space}px;
+  }
+}
+
+@for $i from 0 through 10 {
+  $space: $i * 4;
+  .m-#{$space} {
+    margin: #{$space}px;
+  }
+
+  .mt-#{$space} {
+    margin-top: #{$space}px;
+  }
+
+  .mb-#{$space} {
+    margin-bottom: #{$space}px;
+  }
+
+  .mr-#{$space} {
+    margin-right: #{$space}px;
+  }
+
+  .ml-#{$space} {
+    margin-left: #{$space}px;
+  }
+
+  .p-#{$space} {
+    padding: #{$space}px;
+  }
+
+  .pt-#{$space} {
+    padding-top: #{$space}px;
+  }
+
+  .pb-#{$space} {
+    padding-bottom: #{$space}px;
+  }
+
+  .pr-#{$space} {
+    padding-right: #{$space}px;
+  }
+
+  .pl-#{$space} {
+    padding-left: #{$space}px;
+  }
+
+  .px-#{$space} {
+    padding-right: #{$space}px;
+    padding-left: #{$space}px;
+  }
+  .py-#{$space} {
+    padding-top: #{$space}px;
+    padding-bottom: #{$space}px;
+  }
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.btn-shadow{
+  box-shadow: $button-shadow;
+}

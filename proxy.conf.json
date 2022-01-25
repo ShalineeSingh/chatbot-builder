@@ -1,0 +1,8 @@
+{
+  "/api/*": {
+    "target": "https://csgdev.chetnainfotech.com/",
+    "secure": true,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}

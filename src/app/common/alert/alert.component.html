@@ -1,0 +1,11 @@
+<div *ngIf="alertConfig !== undefined">
+  <div *ngIf="generic_alerts.indexOf(alertConfig.type) > -1" class="alert-toast {{alert_type}}">
+    <div class="symbol">
+      <i class="bi bi-{{alert_icon}}"></i>
+    </div>
+    <span [innerText]="alert_message"></span>
+    <span class="close-alert icon-close" aria-label="close" (click)="closeAlert()">
+      <i class="bi bi-x"></i>
+    </span>
+  </div>
+</div>

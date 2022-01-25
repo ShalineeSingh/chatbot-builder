@@ -1,0 +1,145 @@
+@import "_variables";
+
+.form-control-lg {
+  height: 70px;
+}
+.btn {
+  padding: 8px 24px !important;
+  min-width: 150px;
+}
+
+.text-right {
+  text-align: right;
+}
+
+html .form-control::-webkit-input-placeholder {
+  color: $gray-500;
+}
+html .form-control:-moz-placeholder {
+  color: $gray-500;
+}
+html .form-control::-moz-placeholder {
+  color: $gray-500;
+}
+html .form-control:-ms-input-placeholder {
+  color: $gray-500;
+}
+
+html .spinner-border {
+  height: 1.2rem;
+  width: 1.2rem;
+  border-width: 0.15rem;
+}
+
+
+/* The radio */
+.radio {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    &:checked ~ .checkround {
+      background-color: #fff;
+      &::after {
+        display: block;
+      }
+    }
+  }
+}
+
+/* Create a custom radio button */
+.checkround {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border-color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 50%;
+  &::after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+}
+
+/* Style the indicator (dot/circle) */
+.radio .checkround:after {
+  transform: translate(50%, 50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $dark-green;
+}
+
+/* The check */
+.check {
+  display: block;
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 12px;
+  padding-right: 15px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    &:checked ~ .checkmark {
+      background-color: $dark-green;
+    }
+  }
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: $white;
+  border-color: $dark-green;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 2px;
+  &::after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+}
+
+/* Show the checkmark when checked */
+.check input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.check .checkmark:after {
+  left: 4px;
+  top: -1px;
+  width: 6px;
+  height: 12px;
+  border: solid;
+  border-color: $white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}

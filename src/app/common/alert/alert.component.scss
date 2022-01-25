@@ -1,0 +1,93 @@
+@import '../../../assets/scss/variables';
+
+@mixin alert-variant($background, $border, $color) {
+  color: $color;
+  background-color: $background;
+  border-color: $border;
+
+  .alert-link {
+    color: shade-color($color, 20%);
+  }
+}
+
+.alert-toast {
+  display: none;
+  position: fixed;
+  z-index: 4;
+  min-width: 500px;
+  max-width: 90vw;
+  border: 1px solid #979797;
+  border-radius: $base-border-radius;
+  line-height: 18px;
+  color: white;
+  padding: 8px 36px 8px 36px;
+  left: 50%;
+  vertical-align: middle;
+  transform: translate(-50%, 0);
+  top: 10px;
+  .close-alert {
+    font-size: 25px;
+    line-height: 18px;
+    vertical-align: middle;
+    cursor: pointer;
+    position: absolute;
+    right: 8px;
+    top: 5px;
+    opacity: 0.6;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .alert-heading {
+    margin: 3px 0;
+    font-weight: bold;
+    width: 120px;
+  }
+  .alert-name {
+    width: 180px;
+  }
+  .symbol {
+    position: absolute;
+    color: #FFFFFF;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 3px 0 0 3px;
+    padding: 8px;
+    [class^='icon-'],
+    [class*=' icon-'] {
+      position: relative;
+      top: 1px;
+      vertical-align: middle;
+      opacity: 1;
+    }
+  }
+  /* Animations to fade the Alert in and out */
+@keyframes alertFadeIn {
+    from {
+      top: 0;
+      opacity: 0;
+    }
+    to {
+      top: 20px;
+      opacity: 1;
+    }
+  }
+
+  &.show-alert {
+    display: block;
+    animation: alertFadeIn 0.5s ease;
+  }
+  &.primary {
+    @include alert-variant($dark-green, $dark-green, white);
+  }
+  &.success {
+    @include alert-variant($green-success, $green-success, white);
+  }
+  &.danger {
+    @include alert-variant($red, $red, white);
+  }
+  &.warning {
+    @include alert-variant($orange, $orange, white);
+  }
+}

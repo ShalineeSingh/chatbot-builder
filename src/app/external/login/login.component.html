@@ -1,0 +1,55 @@
+<div class="d-flex flex-column justify-content-between login-wrapper">
+  <form class="needs-validation" [class.was-validated]="loginForm.submitted" #loginForm="ngForm"
+    (ngSubmit)="loginForm.valid && onSubmit()">
+    <div class="col-sm-6">
+      <h3 class="mb-40 heading-1 bold">Login to your account</h3>
+      <div class="form-group mb-40 pr-24">
+        <label class="mb-8 heading-4 medium" for="email">Email address</label>
+        <input type="email" class="form-control form-control-lg" name="emailAddress" placeholder="name@example.com"
+          [(ngModel)]="email" #emailAddress="ngModel" pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$">
+        <p
+          *ngIf="((emailAddress.touched || emailAddress.dirty && loginForm.submitted) || loginForm.submitted && emailAddress.invalid)">
+          <span class="text-danger" *ngIf="emailAddress.errors?.pattern">
+            <span [innerHtml]="'Please enter a valid email'"></span>
+          </span>
+          <span class="text-danger" *ngIf="emailAddress.errors?.required">
+            <span [innerHtml]="'Email is required'"></span>
+          </span>
+        </p>
+      </div>
+      <div class="form-group mb-40 pr-24">
+        <label class="mb-8 heading-4 medium" for="password">Password</label>
+        <input type="password" class="form-control form-control-lg" name="pass" placeholder="Password" [(ngModel)]="password"
+          #pass="ngModel">
+        <p *ngIf="((pass.touched || pass.dirty && loginForm.submitted) || loginForm.submitted && pass.invalid)">
+          <span class="text-danger" *ngIf="pass.errors?.required">
+            <span [innerHtml]="'Password is required'"></span>
+          </span>
+        </p>
+      </div>
+      <div class="form-group mb-3">
+        <label class="form-check-label mb-3 heading-5 medium check" for="rememberPasswordCheck">
+          <input class="form-check-input me-2" type="checkbox" id="rememberPasswordCheck" name="remember"
+            [(ngModel)]="rememberMe">
+          Remember Me
+          <span class="checkmark"></span>
+        </label>
+      </div>
+    </div>
+    <div class="pb-3 mt-3 text-right">
+      <button [disabled]="buttonLoader" class="btn btn-primary bold br-4 text-white btn-shadow" type="submit">
+        <span *ngIf="!buttonLoader"> Login</span>
+        <div *ngIf="buttonLoader" class="spinner-border text-white" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
+    </div>
+    <div class="float-end">
+      <a (click)="goToResetPassword()" class="text-black text-decoration-none pointer">Forgot Password?</a>
+    </div>
+  </form>
+  <div class="text-center">
+    <hr class="w-50 mx-auto">
+    <p>Dont have an account? <a (click)="goToSignup()" class="text-primary text-decoration-none pointer"> Signup</a></p>
+  </div>
+</div>
