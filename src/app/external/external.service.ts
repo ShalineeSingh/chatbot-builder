@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { ISignup, ISignupResponse } from './signup/signup.interface';
 import { ILogin, ILoginResponse, ILoginServerResponse } from './login/login.interface';
 import { map } from 'rxjs/operators';
@@ -23,11 +23,12 @@ export class ExternalService {
   }
 
   login(body: ILogin): Observable<ILoginResponse> {
-    return this.httpClient.post(this.url + '/public/auth/login', body)
-      .pipe(
-        map(checkServerErrors),
-        map(this.transformLoginData.bind(this)),
-      )
+    // return this.httpClient.post(this.url + '/public/auth/login', body)
+    //   .pipe(
+    //     map(checkServerErrors),
+    //     map(this.transformLoginData.bind(this)),
+    //   )
+    return of({sessionToken: 'ABCD', expiration: Date.now() + 60*60*60})
   }
 
   verify(body: IVerifyAccount): Observable<boolean> {

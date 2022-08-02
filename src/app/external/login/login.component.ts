@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
       if (this.rememberMe) this.appService.setSession(res.sessionToken, res.expiration);
       else this.appService.setTempSession(res.sessionToken, res.expiration);
 
-      this.router.navigate(['user']);
+      this.router.navigate(['admin']);
     },
       (error) => {
         const config: AlertConfigModel = {

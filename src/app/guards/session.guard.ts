@@ -9,7 +9,7 @@ export class SessionGuardService implements CanActivate {
 
   canActivate(): boolean {
     if (this.appService.isLoggedIn()) {
-      this.router.navigate(['user']);
+      this.router.navigate(['admin']);
       return false;
     }
     return true;
