@@ -7,17 +7,9 @@ import { SessionGuardService } from './guards/session.guard';
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'login', pathMatch: 'full'
-  },
-  {
     path: '',
-    loadChildren: () => import("./external/external.module").then(m => m.ExternalModule),
-    canActivate: [SessionGuardService]
-  },
-  {
-    path: 'admin',
     loadChildren: () => import("./admin/admin.module").then(m => m.AdminModule),
-    canActivate: [AuthGuardService]
+    // canActivate: [AuthGuardService]
   }
 ];
 

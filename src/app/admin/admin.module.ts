@@ -1,5 +1,6 @@
 
 import { NgModule } from '@angular/core';
+import { DrawflowDirective } from '../common/directives/app-drawflow.directive';
 
 import { AdminRoutingModule, AdminRoutingComponents } from './admin-routing.module';
 import { AdminComponent } from './admin.component';
@@ -8,6 +9,7 @@ import { AdminComponent } from './admin.component';
   declarations: [
     AdminComponent,
     AdminRoutingComponents,
+    DrawflowDirective,
   ],
   imports: [
     AdminRoutingModule,
