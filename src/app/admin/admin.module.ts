@@ -1,5 +1,6 @@
 
 import { NgModule } from '@angular/core';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { DrawflowDirective } from '../common/directives/app-drawflow.directive';
 
 import { AdminRoutingModule, AdminRoutingComponents } from './admin-routing.module';
@@ -13,6 +14,7 @@ import { AdminComponent } from './admin.component';
   ],
   imports: [
     AdminRoutingModule,
+    NgbDropdownModule,
   ],
   providers: [],
 })
