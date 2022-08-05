@@ -1,7 +1,11 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { IBaseNode } from '../../../common/directives/app-drawflow.directive';
 
-
+export interface ITextNode extends IBaseNode {
+  nextNodeId?: string;
+  content: string;
+}
 @Component({
   selector: 'text-modal',
   styleUrls: ['./text-modal.component.scss'],
@@ -11,16 +15,19 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class TextModalComponent {
   nodeName: string;
   submitAttempt: boolean;
- 
-  atValues = [
-    { id: 1, value: 'Fredrik Sundqvist', link: 'https://google.com' },
-    { id: 2, value: 'Patrik Sjölin' }
-  ];
-  hashValues = [
-    { id: 3, value: 'Fredrik Sundqvist 2' },
-    { id: 4, value: 'Patrik Sjölin 2' }
-  ]
-  htmlText = "<p>Testing</p>"
+  htmlText: string;
+  nodeDetails: ITextNode;
+  tempNextNodeId: string;
+  nextNodeValid: boolean;
+  // atValues = [
+  //   { id: 1, value: 'Fredrik Sundqvist', link: 'https://google.com' },
+  //   { id: 2, value: 'Patrik Sjölin' }
+  // ];
+  // hashValues = [
+  //   { id: 3, value: 'Fredrik Sundqvist 2' },
+  //   { id: 4, value: 'Patrik Sjölin 2' }
+  // ]
+
   quillConfig = {
     //toolbar: '.toolbar',
     toolbar: {
@@ -55,34 +62,45 @@ export class TextModalComponent {
     //     }
     //   },
     // },
- 
-  }
-  test = (event) => {
-    console.log(event.keyCode);
-  }
 
-  onSelectionChanged = (event) => {
-    if (event.oldRange == null) {
-      this.onFocus();
-    }
-    if (event.range == null) {
-      this.onBlur();
-    }
   }
+  // test = (event) => {
+  //   console.log(event.keyCode);
+  // }
 
-  onContentChanged = (event) => {
-    //console.log(event.html);
-  }
+  // onSelectionChanged = (event) => {
+  //   if (event.oldRange == null) {
+  //     this.onFocus();
+  //   }
+  //   if (event.range == null) {
+  //     this.onBlur();
+  //   }
+  // }
 
-  onFocus = () => {
-    console.log("On Focus");
-  }
-  onBlur = () => {
-    console.log("Blurred");
-  }
+  // onContentChanged = (event) => {
+  //console.log(event.html);
+  // }
 
   constructor(public activeModal: NgbActiveModal) { }
-  ngOnInit(): void {
-    
+  ngOnInit(): void { }
+
+  public onSaveNode(): void {
+    if (!this.nextNodeValid) return;
+    console.log(this.nextNodeValid);
+    this.nodeDetails = {
+      name: this.nodeName,
+      content: this.htmlText,
+      type: 'text',
+      nextNodeId: this.tempNextNodeId || null,
+    }
+    this.activeModal.close(this.nodeDetails)
+  }
+
+  public onNextNodeSelect(node){
+    this.tempNextNodeId = node.name;
+  }
+
+  public isNextNodeValid(isValid: boolean){
+    this.nextNodeValid = isValid;
   }
 }

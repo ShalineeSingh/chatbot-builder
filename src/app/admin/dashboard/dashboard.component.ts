@@ -9,8 +9,9 @@ import { VideoModalComponent } from '../node-modals/video/video-modal.component'
 import { DocumentModalComponent } from '../node-modals/document/document-modal.component';
 import { CardModalComponent } from '../node-modals/card/card-modal.component';
 import { ApiModalComponent } from '../node-modals/api/api-modal.component';
+import { NodeService } from '../node-select/node-list.service';
 
-type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'card' | 'api';
+export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'card' | 'api';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -21,7 +22,7 @@ export class DashboardComponent implements OnInit {
   public nodes: INode[];
   public connections: IConnection[];
 
-  constructor(private cdr: ChangeDetectorRef, private modalService: NgbModal) {
+  constructor(private cdr: ChangeDetectorRef, private modalService: NgbModal, private nodeService: NodeService) {
   }
 
   ngOnInit(): void {
@@ -49,36 +50,37 @@ export class DashboardComponent implements OnInit {
   }
 
   public openNodeModal(type: NodeType) {
-    let modalRef: NgbModalRef;
+    let component;
     switch (type) {
       case 'text':
-        modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size:'xl' });
-        modalRef.closed.subscribe(res => console.log(res));
+        component = TextModalComponent;
         break;
       case 'button':
-        modalRef = this.modalService.open(ButtonModalComponent, { backdrop: 'static' });
-        modalRef.closed.subscribe(res => console.log(res));
+        component = ButtonModalComponent;
         break;
       case 'image':
-        modalRef = this.modalService.open(ImageModalComponent, { backdrop: 'static' });
-        modalRef.closed.subscribe(res => console.log(res));
+        component = ImageModalComponent;
         break;
       case 'video':
-        modalRef = this.modalService.open(VideoModalComponent, { backdrop: 'static' });
-        modalRef.closed.subscribe(res => console.log(res));
+        component = VideoModalComponent;
         break;
       case 'document':
-        modalRef = this.modalService.open(DocumentModalComponent, { backdrop: 'static' });
-        modalRef.closed.subscribe(res => console.log(res));
+        component = DocumentModalComponent;
         break;
       case 'card':
-        modalRef = this.modalService.open(CardModalComponent, { backdrop: 'static' });
-        modalRef.closed.subscribe(res => console.log(res));
+        component = CardModalComponent;
         break;
       case 'api':
-        modalRef = this.modalService.open(ApiModalComponent, { backdrop: 'static' });
-        modalRef.closed.subscribe(res => console.log(res));
+        component = ApiModalComponent;
         break;
     }
+    const modalRef = this.modalService.open(component, { backdrop: 'static', size: 'lg' });
+    modalRef.closed.subscribe(res => {
+      this.addNode(res);
+    });
+  }
+
+  private addNode(node: any) {
+    this.nodeService.onAddNode(node);
   }
 }

@@ -1,12 +1,14 @@
-
-
-  <div class="input-group">
-    <input id="typeahead-focus" type="text" class="form-control br-0 border-end-0" [(ngModel)]="model" [ngbTypeahead]="search"
-      (focus)="focus$.next($any($event).target.value)" (click)="click$.next($any($event).target.value)" #instance="ngbTypeahead"
-      (selectItem)="onUpdateValue($event)" />
-    <span class="input-group-append">
-      <div class="input-group-text bg-transparent">
-        <i class="fs-6 bi-caret-down-fill"></i>
-      </div>
-    </span>
-  </div>
+<div class="input-group" [class.error]="invalidNode">
+  <input id="typeahead-focus" type="text" class="form-control br-0 border-end-0" [(ngModel)]="selectedNode"
+    [ngbTypeahead]="search" (focus)="focus$.next($any($event).target.value)" (click)="click$.next($any($event).target.value)"
+    #instance="ngbTypeahead" [resultFormatter]="formatter" [inputFormatter]="formatter" (selectItem)="onUpdateValue($event)"
+    (blur)="checkValidity($event.target.value)" />
+  <span class="input-group-append">
+    <div class="input-group-text bg-transparent">
+      <i class="fs-6 bi-caret-down-fill"></i>
+    </div>
+  </span>
+</div>
+<div *ngIf="invalidNode" class="text-danger small">
+  Next node id is invalid
+</div>

@@ -1,6 +1,11 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import Drawflow from 'drawflow';
+import { NodeType } from '../../admin/dashboard/dashboard.component';
 
+export interface IBaseNode {
+  name: string;
+  type: NodeType;
+}
 export interface INode {
   name: string, inputs: number, outputs: number, posx: number, posy: number, className: string, data: any, html: string, typenode: string | boolean
 }

@@ -10,6 +10,7 @@ import { AdminComponent } from './admin.component';
 import { TextModalComponent } from './node-modals/text/text-modal.component';
 import { QuillModule } from 'ngx-quill';
 import { NodeSelectComponent } from './node-select/node-select';
+import { NodeService } from './node-select/node-list.service';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,6 @@ import { NodeSelectComponent } from './node-select/node-select';
     FormsModule,
     QuillModule.forRoot(),
   ],
-  providers: [],
+  providers: [NodeService],
 })
 export class AdminModule { }
