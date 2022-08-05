@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'ngbd-modal-content',
+  styleUrls: ['./bot-emulator.component.scss'],
   template: `
     <div class="modal-header">
       <h4 class="modal-title">Hi there!</h4>
@@ -16,7 +17,8 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
     </div>
-  `
+  `,
+  encapsulation: ViewEncapsulation.None
 })
 export class BotEmulatorComponent {
   @Input() name;

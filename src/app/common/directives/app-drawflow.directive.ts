@@ -44,7 +44,6 @@ export class DrawflowDirective implements OnInit {
   }
 
   public ngOnChanges(changes) {
-    console.log(changes);
     if (changes && changes.nodes && changes.nodes.currentValue) {
       changes.nodes.currentValue.forEach((node: INode) => {
         this.editor.addNode(node.name, node.inputs, node.outputs, node.posx, node.posy, node.className, node.data, node.html, node.typenode);

@@ -1,3 +1,24 @@
-.container-canvas{
+.container-canvas {
   height: 100vh;
+}
+.test-btn {
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+}
+.nav-link {
+  color: black;
+  margin: 3px;
+  padding: 10px;
+  font-size: 14px;
+  margin-left: 15px;
+}
+.nav-item {
+  border-bottom: 1px solid #e9ecef;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  &:hover {
+    background-color: #e9ecef;
+  }
 }

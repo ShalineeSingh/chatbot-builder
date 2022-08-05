@@ -122,3 +122,13 @@ body {
   background-image: linear-gradient(to right, #f1f1f1 1px, transparent 1px),
     linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
 }
+
+.form-control:focus {
+    outline: 0 !important;
+    border-color: rgb(206, 212, 218) !important;
+    box-shadow: none !important;
+}
+
+.dropdown-item.active {
+  background-color: $body-color !important;
+}

@@ -1,0 +1,10 @@
+.chat-box {
+  position: absolute;
+  right: 0;
+  margin: 0;
+  width: 350px;
+  .modal-content {
+    height: 100vh;
+    border-radius: 0;
+  }
+}

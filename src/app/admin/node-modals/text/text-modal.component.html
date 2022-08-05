@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <h4 class="modal-title">Text Node</h4>
+  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span class="fs-2" aria-hidden="true">&times;</span>
+  </span>
+</div>
+<div class="modal-body">
+  <form #textForm="ngForm">
+    <nav ngbNav #nav="ngbNav" class="nav-tabs">
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Details</a>
+        <ng-template ngbNavContent>
+          <label class="form-label small">Enter node name here</label>
+          <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp"
+            [class.error]="form && !form.controls.alertName.valid && submitAttempt" [(ngModel)]="nodeName">
+          <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
+          <!-- <form-error *ngIf="submitAttempt && !form.controls.alertName.valid" [control]="form.controls.alertName">
+            <form-error-message *ngIf="form.controls.alertName.errors['blank']" type="blank" i18n>Alert name can't be blank
+            </form-error-message>
+            <form-error-message *ngIf="form.controls.alertName.errors['required']" type="required" i18n>Alert name is required
+            </form-error-message>
+          </form-error> -->
+          <div class="editor mt-4">
+            <label class="form-label small">Enter bot response here</label>
+            <quill-editor [(ngModel)]="htmlText" placeholder="Enter Text" name="quill" ngDefaultControl [modules]="quillConfig">
+            </quill-editor>
+            <div class="tiny mt-1">This will be shown to the user</div>
+          </div>
+        </ng-template>
+      </ng-container>
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Actions</a>
+        <ng-template ngbNavContent>
+          <div class="w-50">
+            <label class="form-label small">Select next node</label>
+            <node-select></node-select>
+            <div class="tiny mt-1">This node will be executed when user clicks on current node</div>
+          </div>
+        </ng-template>
+      </ng-container>
+    </nav>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+</div>

@@ -1,44 +1,44 @@
 <div class="container-fluid">
   <div class="row flex-nowrap">
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-      <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
+      <div class="d-flex flex-column align-items-center align-items-sm-start pt-2 min-vh-100">
         <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
           <span class="fs-5 d-none d-sm-inline">Bot Responses</span>
         </p>
-        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-          <li class="nav-item">
+        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu">
+          <li class="nav-item" (click)="openNodeModal('text')">
             <p class="nav-link align-middle px-0">
-              <i class="fs-4 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Text</span>
+              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Text</span>
             </p>
           </li>
-          <li>
+           <li class="nav-item" (click)="openNodeModal('button')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-4 bi-menu-button"></i> <span class="ms-1 d-none d-sm-inline">Button</span>
+              <i class="fs-6 bi-menu-button"></i> <span class="ms-1 d-none d-sm-inline">Button</span>
             </p>
           </li>
-          <li>
+           <li class="nav-item" (click)="openNodeModal('image')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-4 bi-images"></i> <span class="ms-1 d-none d-sm-inline">Image</span>
+              <i class="fs-6 bi-images"></i> <span class="ms-1 d-none d-sm-inline">Image</span>
             </p>
           </li>
-          <li>
+           <li class="nav-item" (click)="openNodeModal('video')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-4 bi-play-btn"></i> <span class="ms-1 d-none d-sm-inline">Video</span>
+              <i class="fs-6 bi-play-btn"></i> <span class="ms-1 d-none d-sm-inline">Video</span>
             </p>
           </li>
-          <li>
+           <li class="nav-item" (click)="openNodeModal('document')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-4 bi-file-earmark-text"></i> <span class="ms-1 d-none d-sm-inline">Document</span>
+              <i class="fs-6 bi-file-earmark-text"></i> <span class="ms-1 d-none d-sm-inline">Document</span>
             </p>
           </li>
-          <li>
+           <li class="nav-item" (click)="openNodeModal('card')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-4 bi-card-heading"></i> <span class="ms-1 d-none d-sm-inline">Card</span>
+              <i class="fs-6 bi-card-heading"></i> <span class="ms-1 d-none d-sm-inline">Card</span>
             </p>
           </li>
-          <li>
+           <li class="nav-item" (click)="openNodeModal('api')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-4 bi-box-arrow-up-right"></i> <span class="ms-1 d-none d-sm-inline">API Response</span>
+              <i class="fs-6 bi-box-arrow-up-right"></i> <span class="ms-1 d-none d-sm-inline">API Response</span>
             </p>
           </li>
         </ul>
@@ -69,7 +69,6 @@
 <div class="chatbox-emulator">
   <!-- add sliding emulator -->
 </div>
-<div class="btn btn-primary">
-  <!-- add emulator button -->
+<div class="test-btn">
   <button type="button" class="btn btn-primary" (click)="openEmulator()">Test</button>
 </div>

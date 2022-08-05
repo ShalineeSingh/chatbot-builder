@@ -7,5 +7,8 @@
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
 @import "~bootstrap-icons/font/bootstrap-icons.css";
-@import '~drawflow/dist/drawflow.min.css'
+@import '~drawflow/dist/drawflow.min.css';
+ @import '~quill/dist/quill.core.css';
+ @import '~quill/dist/quill.bubble.css';
+ @import '~quill/dist/quill.snow.css';
 
