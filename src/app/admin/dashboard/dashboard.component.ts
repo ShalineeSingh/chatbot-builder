@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { INode, IConnection } from '../../common/directives/app-drawflow.directive';
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { INode, IConnection, DrawflowDirective } from '../../common/directives/app-drawflow.directive';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BotEmulatorComponent } from '../bot-emulator/bot-emulator.component';
 import { TextModalComponent } from '../node-modals/text/text-modal.component';
 import { ButtonModalComponent } from '../node-modals/button/button-modal.component';
@@ -10,6 +10,8 @@ import { DocumentModalComponent } from '../node-modals/document/document-modal.c
 import { CardModalComponent } from '../node-modals/card/card-modal.component';
 import { ApiModalComponent } from '../node-modals/api/api-modal.component';
 import { NodeService } from '../node-select/node-list.service';
+import { convertToDrawflowConnection, convertToDrawflowNode } from '../node-select/node-utils';
+import { Subscription } from 'rxjs';
 
 export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'card' | 'api';
 @Component({
@@ -20,28 +22,31 @@ export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'car
 })
 export class DashboardComponent implements OnInit {
   public nodes: INode[];
-  public connections: IConnection[];
-
+  public connections: IConnection[] = [];
+  @ViewChild(DrawflowDirective, { static: true }) drawflow: DrawflowDirective;
+  nodeServiceSubscription: Subscription;
   constructor(private cdr: ChangeDetectorRef, private modalService: NgbModal, private nodeService: NodeService) {
+
   }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit() {
-    const data = {
-      name: ''
-    };
-    this.nodes = [];
-    this.connections = [];
-    this.nodes.push({ name: 'foo', inputs: 1, outputs: 2, posx: 100, posy: 200, className: 'foo', data: data, html: 'Foo', typenode: false });
-    this.nodes.push({ name: 'bar', inputs: 1, outputs: 1, posx: 400, posy: 100, className: 'bar', data: data, html: 'Bar A', typenode: false });
-    this.nodes.push({ name: 'bar', inputs: 1, outputs: 1, posx: 400, posy: 300, className: 'bar', data: data, html: 'Bar B', typenode: false });
-
-    this.connections.push({ outputNodeId: 1, inputNodeId: 2, outputName: "output_1", inputName: "input_1" });
-    this.connections.push({ outputNodeId: 1, inputNodeId: 3, outputName: "output_1", inputName: "input_1" });
-    this.cdr.detectChanges();
-    this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
+    this.nodeServiceSubscription = this.nodeService.updateInitialNodeList.subscribe((nodeList) => {
+      nodeList.forEach(node => {
+        node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+        this.nodeService.updateNode(node);
+      });
+      nodeList.forEach(node => {
+        if (this.nodeService.getPreviousNode(node)) {
+          let inputId = nodeList.find(v => v.name === node.nextNodeName).id;
+          this.drawflow.addNodeInput(this.nodeService.getPreviousNode(node).id);
+          this.drawflow.addNodeOutput(node.id);
+          this.drawflow.addConnection(convertToDrawflowConnection(node, inputId));
+        }
+      });
+    });
   }
 
   public openEmulator() {
@@ -82,5 +87,23 @@ export class DashboardComponent implements OnInit {
 
   private addNode(node: any) {
     this.nodeService.onAddNode(node);
+    node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+    this.nodeService.updateNode(node);
+    if (this.nodeService.getPreviousNode(node)) {
+      let inputId = this.nodeService.getNodes().find(v => v.name === node.nextNodeName).id;
+      this.drawflow.addNodeInput(this.nodeService.getPreviousNode(node).id);
+      this.drawflow.addNodeOutput(node.id);
+      this.drawflow.addConnection(convertToDrawflowConnection(node, inputId));
+    }
+  }
+  editNode(nodeId: number){
+   const currentNode = this.nodeService.getNodes().find(v=>v.id === Number(nodeId));
+   if(currentNode){
+     const modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
+     modalRef.componentInstance.data = currentNode.data;
+     modalRef.closed.subscribe(res => {
+      //  this.addNode(res);
+     });
+   }
   }
 }

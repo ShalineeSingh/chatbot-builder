@@ -115,18 +115,10 @@ body {
   box-shadow: $button-shadow;
 }
 
-.drawflow {
-  position: relative;
-  background: var(--background-color);
-  background-size: 25px 25px;
-  background-image: linear-gradient(to right, #f1f1f1 1px, transparent 1px),
-    linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
-}
-
 .form-control:focus {
-    outline: 0 !important;
-    border-color: rgb(206, 212, 218) !important;
-    box-shadow: none !important;
+  outline: 0 !important;
+  border-color: rgb(206, 212, 218) !important;
+  box-shadow: none !important;
 }
 
 .dropdown-item.active {
@@ -136,5 +128,59 @@ body {
 .form-group.error {
   .form-control {
     border-color: $red;
+  }
+}
+
+.drawflow {
+  background: linear-gradient(90deg, #f9f9f9 20px, transparent 1%) center,
+    linear-gradient(#f9f9f9 20px, transparent 1%) center, #dcdcdc;
+  background-size: 22px 22px;
+  font-family: Arial;
+  font-size: 13px;
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  .drawflow-node {
+    border: 1px solid $body-color;
+    width: inherit;
+    background: white;
+    min-width: 140px;
+    &.selected {
+      background: #dee2e6;
+    }
+    .input,
+    .output {
+      transform: scale(0.8);
+      border-width: 1px;
+    }
+    .input {
+      background: #6c757d;
+    }
+  }
+  .main-path {
+    stroke: $body-color;
+    stroke-width: 2px;
+  }
+  .connection .main-path {
+    stroke: $body-color;
+    stroke-width: 2px;
+  }
+  .parent-node .drawflow-delete {
+    display: none !important;
+}
+}
+.canvas-node {
+  width: 250px;
+  border-radius: 4px;
+  .node-heading {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .node-body p{
+    margin-bottom: 0;
   }
 }

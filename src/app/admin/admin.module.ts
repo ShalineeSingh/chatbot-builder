@@ -11,6 +11,7 @@ import { TextModalComponent } from './node-modals/text/text-modal.component';
 import { QuillModule } from 'ngx-quill';
 import { NodeSelectComponent } from './node-select/node-select';
 import { NodeService } from './node-select/node-list.service';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { NodeService } from './node-select/node-list.service';
     NgbModule,
     FormsModule,
     QuillModule.forRoot(),
+    NgxSliderModule,
   ],
   providers: [NodeService],
 })

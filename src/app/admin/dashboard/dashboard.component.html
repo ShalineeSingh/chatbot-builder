@@ -61,14 +61,13 @@
       </div>
     </div>
     <div class="col py-3">
-      <div class="container-canvas" appNgDrawFlow [nodes]="nodes" [connections]="connections"></div>
+      <div class="container-canvas" appNgDrawFlow [nodes]="nodes" [connections]="connections" (onEditNode)="editNode($event)"></div>
     </div>
   </div>
 </div>
 
 <div class="chatbox-emulator">
-  <!-- add sliding emulator -->
-</div>
 <div class="test-btn">
-  <button type="button" class="btn btn-primary" (click)="openEmulator()">Test</button>
+  <button type="button" class="btn btn-primary" (click)="openEmulator()">Test your bot</button>
+</div>
 </div>

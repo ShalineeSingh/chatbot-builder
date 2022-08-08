@@ -1,37 +1,3 @@
-@import "_variables";
-
-.form-control-lg {
-  height: 70px;
-}
-.btn {
-  padding: 8px 24px !important;
-  min-width: 150px;
-}
-
-.text-right {
-  text-align: right;
-}
-
-html .form-control::-webkit-input-placeholder {
-  color: $gray-500;
-}
-html .form-control:-moz-placeholder {
-  color: $gray-500;
-}
-html .form-control::-moz-placeholder {
-  color: $gray-500;
-}
-html .form-control:-ms-input-placeholder {
-  color: $gray-500;
-}
-
-html .spinner-border {
-  height: 1.2rem;
-  width: 1.2rem;
-  border-width: 0.15rem;
-}
-
-
 /* The radio */
 .radio {
   display: block;
@@ -64,7 +30,7 @@ html .spinner-border {
   height: 18px;
   width: 18px;
   background-color: #fff;
-  border-color: white;
+  border-color: black;
   border-style: solid;
   border-width: 1px;
   border-radius: 50%;
@@ -81,7 +47,7 @@ html .spinner-border {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: $dark-green;
+  background: $primary-colour;
 }
 
 /* The check */
@@ -92,6 +58,7 @@ html .spinner-border {
   margin-bottom: 12px;
   padding-right: 15px;
   cursor: pointer;
+  font-size: 12px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -101,7 +68,7 @@ html .spinner-border {
     opacity: 0;
     cursor: pointer;
     &:checked ~ .checkmark {
-      background-color: $dark-green;
+      background-color: #fff;
     }
   }
 }
@@ -109,15 +76,14 @@ html .spinner-border {
 /* Create a custom checkbox */
 .checkmark {
   position: absolute;
-  top: 5px;
+  top: 3px;
   left: 0;
-  height: 16px;
-  width: 16px;
-  background-color: $white;
-  border-color: $dark-green !important;
+  height: 12px;
+  width: 12px;
+  background-color: #fff;
+  border-color: #101a5c;
   border-style: solid;
   border-width: 1px;
-  border-radius: 2px;
   &::after {
     content: "";
     position: absolute;
@@ -132,12 +98,12 @@ html .spinner-border {
 
 /* Style the checkmark/indicator */
 .check .checkmark:after {
-  left: 4px;
+  left: 3px;
   top: -1px;
-  width: 6px;
-  height: 12px;
+  width: 5px;
+  height: 9px;
   border: solid;
-  border-color: $white;
+  border-color: #101a5c;
   border-width: 0 2px 2px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);

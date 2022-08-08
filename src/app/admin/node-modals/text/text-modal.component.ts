@@ -1,10 +1,21 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { LabelType, Options } from '@angular-slider/ngx-slider';
+import { Component, Input, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { IBaseNode } from '../../../common/directives/app-drawflow.directive';
 
 export interface ITextNode extends IBaseNode {
-  nextNodeId?: string;
+  nextNodeName?: string;
+  nextNodeId?: number;
   content: string;
+  expectsUserInput?: boolean;
+  data: {
+    nodeName: string;
+    htmlText: string;
+    tempNextNodeId: string;
+    expectsUserInput: boolean;
+    isShowTyping: boolean;
+    sliderValue: number;
+  };
 }
 @Component({
   selector: 'text-modal',
@@ -13,12 +24,24 @@ export interface ITextNode extends IBaseNode {
   encapsulation: ViewEncapsulation.None
 })
 export class TextModalComponent {
+  @Input() data;
   nodeName: string;
   submitAttempt: boolean;
   htmlText: string;
   nodeDetails: ITextNode;
   tempNextNodeId: string;
   nextNodeValid: boolean;
+  expectsUserInput: boolean = false;
+  isShowTyping: boolean = false;
+  sliderValue: number = 2;
+  sliderOptions: Options = {
+    showTicksValues: true,
+    ceil: 10,
+    floor: 1,
+    translate: (value: number, label: LabelType): string => {
+      return value + 's';
+    }
+  };
   // atValues = [
   //   { id: 1, value: 'Fredrik Sundqvist', link: 'https://google.com' },
   //   { id: 2, value: 'Patrik Sjölin' }
@@ -32,7 +55,7 @@ export class TextModalComponent {
     //toolbar: '.toolbar',
     toolbar: {
       container: [
-        ['bold', 'italic', 'underline'],        // toggled buttons
+        ['italic', 'underline'],        // toggled buttons
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
         [{ 'font': [] }],
@@ -82,25 +105,43 @@ export class TextModalComponent {
   // }
 
   constructor(public activeModal: NgbActiveModal) { }
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (this.data) {
+      this.nodeName = this.data.nodeName;
+      this.htmlText = this.data.htmlText;
+      this.tempNextNodeId = this.data.tempNextNodeId;
+      this.expectsUserInput = this.data.expectsUserInput;
+      this.isShowTyping = this.data.isShowTyping;
+      this.sliderValue = this.data.sliderValue;
+    }
+  }
 
   public onSaveNode(): void {
-    if (!this.nextNodeValid) return;
-    console.log(this.nextNodeValid);
+    if (this.tempNextNodeId && !this.nextNodeValid) return;
     this.nodeDetails = {
       name: this.nodeName,
       content: this.htmlText,
       type: 'text',
-      nextNodeId: this.tempNextNodeId || null,
+      nextNodeName: this.tempNextNodeId || null,
+      expectsUserInput: this.expectsUserInput,
+      data: {
+        nodeName: this.nodeName,
+        htmlText: this.htmlText,
+        tempNextNodeId: this.tempNextNodeId,
+        expectsUserInput: this.expectsUserInput,
+        isShowTyping: this.isShowTyping,
+        sliderValue: this.sliderValue,
+      }
     }
     this.activeModal.close(this.nodeDetails)
   }
 
-  public onNextNodeSelect(node){
+  public onNextNodeSelect(node): void {
     this.tempNextNodeId = node.name;
+    
   }
 
-  public isNextNodeValid(isValid: boolean){
+  public isNextNodeValid(isValid: boolean): void {
     this.nextNodeValid = isValid;
   }
 }
