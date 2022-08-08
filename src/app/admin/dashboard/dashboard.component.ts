@@ -47,11 +47,11 @@ export class DashboardComponent implements OnInit {
         }
       });
     });
+    // this.openEmulator();
   }
 
   public openEmulator() {
     const modalRef = this.modalService.open(BotEmulatorComponent, { modalDialogClass: 'chat-box' });
-    modalRef.componentInstance.name = 'World';
   }
 
   public openNodeModal(type: NodeType) {
@@ -81,13 +81,18 @@ export class DashboardComponent implements OnInit {
     }
     const modalRef = this.modalService.open(component, { backdrop: 'static', size: 'lg' });
     modalRef.closed.subscribe(res => {
-      this.addNode(res);
+      if (res !== 'close') this.addNode(res);
     });
   }
 
-  private addNode(node: any) {
-    this.nodeService.onAddNode(node);
-    node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+  private addNode(node: any, isUpdate: boolean = false) {
+    if (isUpdate) {
+      this.nodeService.updateNode(node);
+      node.id = this.drawflow.updateNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+    } else {
+      this.nodeService.onAddNode(node);
+      node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+    }
     this.nodeService.updateNode(node);
     if (this.nodeService.getPreviousNode(node)) {
       let inputId = this.nodeService.getNodes().find(v => v.name === node.nextNodeName).id;
@@ -96,14 +101,14 @@ export class DashboardComponent implements OnInit {
       this.drawflow.addConnection(convertToDrawflowConnection(node, inputId));
     }
   }
-  editNode(nodeId: number){
-   const currentNode = this.nodeService.getNodes().find(v=>v.id === Number(nodeId));
-   if(currentNode){
-     const modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
-     modalRef.componentInstance.data = currentNode.data;
-     modalRef.closed.subscribe(res => {
-      //  this.addNode(res);
-     });
-   }
+  editNode(nodeId: number) {
+    const currentNode = this.nodeService.getNodes().find(v => v.id === Number(nodeId));
+    if (currentNode) {
+      const modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
+      modalRef.componentInstance.data = currentNode.data;
+      modalRef.closed.subscribe(res => {
+        if (res !== 'close') this.addNode(res, true);
+      });
+    }
   }
 }

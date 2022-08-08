@@ -1,27 +1,68 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NodeService } from '../node-select/node-list.service';
+import { ITextNode } from '../node-modals/text/text-modal.component';
+
+/* ---NEEDED for bot to show
+ [nodeId]:  {
+type
+content
+nextNodName - this can be array
+isShowTyping
+sliderValue
+  }
+  */
 
 @Component({
   selector: 'ngbd-modal-content',
   styleUrls: ['./bot-emulator.component.scss'],
-  template: `
-    <div class="modal-header">
-      <h4 class="modal-title">Hi there!</h4>
-      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <p>Hello, {{name}}!</p>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-    </div>
-  `,
+  templateUrl: './bot-emulator.component.html',
   encapsulation: ViewEncapsulation.None
 })
 export class BotEmulatorComponent {
-  @Input() name;
+  nodeList: ITextNode[];
+  rootNode: ITextNode;
+  convo: any[] = [];
+  showTyping: boolean = false;
+  nodeMap = {};
+  userInput: string;
+  constructor(public activeModal: NgbActiveModal, private nodeService: NodeService) { }
+  ngOnInit() {
+    this.nodeList = this.nodeService.getNodes();
 
-  constructor(public activeModal: NgbActiveModal) { }
+    this.rootNode = this.nodeList.filter(v => v.data.rootNode)[0];
+    this.transformNode(this.rootNode);
+    this.convo.push(this.nodeMap[this.rootNode.name]);
+    if (this.rootNode.data.isShowTyping) this.addTyping(this.rootNode.data.sliderValue, this.rootNode.nextNodeName);
+  }
+
+  addTyping(delay: number, nodeName: string) {
+    this.showTyping = true;
+    setTimeout(() => {
+      this.showTyping = false;
+      if (nodeName) this.getNextNode(nodeName);
+    }, delay * 1000)
+  }
+
+  transformNode(node) {
+    this.nodeMap[node.name] = {
+      'type': node.type,
+      'content': node.content,
+      'nextNodeName': node.nextNodeName,
+      'isShowTyping': node.data.isShowTyping,
+      'sliderValue': node.data.sliderValue,
+    }
+  }
+  getNextNode(nodeName: string) {
+    // get node details from BE
+    this.showTyping = false;
+    const nextNode = this.nodeList.find(v => v.name === nodeName);
+    this.transformNode(nextNode);
+    this.convo.push(this.nodeMap[nodeName]);
+    if (this.nodeMap[nodeName].isShowTyping) {
+      setTimeout(() => {
+        this.addTyping(this.nodeMap[nodeName].sliderValue, this.nodeMap[nodeName].nextNodeName);
+      }, 1000)
+    }
+  }
 }

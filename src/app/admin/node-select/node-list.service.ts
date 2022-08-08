@@ -25,17 +25,18 @@ export class NodeService {
         expectsUserInput: true,
         isShowTyping: true,
         sliderValue: 5,
+        rootNode: true,
       }
     },
     {
-      content: "hello there",
+      content: "how are you?",
       name: 'node2',
       type: 'text',
       pos_X: 450,
       pos_Y: 100,
       data: {
         nodeName: 'node1',
-        htmlText: "hello there",
+        htmlText: "how are you?",
         tempNextNodeId: "node2",
         expectsUserInput: true,
         isShowTyping: true,
@@ -53,7 +54,6 @@ export class NodeService {
       this.disconnectedNodes.push(data);
     }
     this.updateNodeList.next(this.nodes);
-    console.log(data);
     this.updateNodes.next(data);
   }
 

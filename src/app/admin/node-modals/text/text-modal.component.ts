@@ -15,6 +15,7 @@ export interface ITextNode extends IBaseNode {
     expectsUserInput: boolean;
     isShowTyping: boolean;
     sliderValue: number;
+    rootNode?: boolean;
   };
 }
 @Component({

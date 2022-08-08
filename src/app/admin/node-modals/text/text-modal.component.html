@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">Text Node</h4>
-  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('close')">
     <span class="fs-2" aria-hidden="true">&times;</span>
   </span>
 </div>
@@ -70,7 +70,7 @@
 
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('close')">Close</button>
     <button type="button" class="btn btn-primary" (click)="submitAttempt=true; textForm.valid && onSaveNode()">Save</button>
   </div>
 </form>

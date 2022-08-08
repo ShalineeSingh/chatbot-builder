@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h4 class="modal-title">Test your bot</h4>
+  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </span>
+</div>
+<div class="modal-body" *ngIf="rootNode">
+  <div class="conversation">
+    <ul>
+      <li *ngFor="let line of convo; let i=index">
+        <ng-container *ngIf="line.type === 'text'">
+          <p class="bot-response" [innerHTML]="line.content"></p>
+        </ng-container>
+      </li>
+    </ul>
+    <ng-container *ngIf="showTyping">
+      <p class="typing"> Typing...</p>
+    </ng-container>
+  </div>
+</div>
+<div class="modal-footer justify-content-start">
+    <div class="form-group user-input d-flex">
+      <input type="text" class="form-control" name="name" aria-describedby="user-input" #user_input="ngModel"
+        [(ngModel)]="userInput">
+        <div class="send-icon">
+          <i class="fs-6 bi-send"></i>
+          </div>
+</div>

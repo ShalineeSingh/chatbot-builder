@@ -12,6 +12,7 @@ import { QuillModule } from 'ngx-quill';
 import { NodeSelectComponent } from './node-select/node-select';
 import { NodeService } from './node-select/node-list.service';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { BotEmulatorComponent } from './bot-emulator/bot-emulator.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     DrawflowDirective,
     TextModalComponent,
     NodeSelectComponent,
+    BotEmulatorComponent,
   ],
   imports: [
     CommonModule,

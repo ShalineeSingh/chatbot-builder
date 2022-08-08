@@ -26,7 +26,7 @@ export class DrawflowDirective implements OnInit {
   editor: Drawflow | undefined;
   @Input() nodes: INode[];
   @Input() connections: IConnection[];
-  @Output() onEditNode: EventEmitter<any>= new EventEmitter();
+  @Output() onEditNode: EventEmitter<any> = new EventEmitter();
   private selectedNode: number;
   private action: 'edit' | 'delete';
 
@@ -46,25 +46,26 @@ export class DrawflowDirective implements OnInit {
         this.editor.reroute = true;
         this.editor.editor_mode = 'edit';
         this.editor.start();
-        this.editor.on('contextmenu', () => {
-          console.log("contextmenu");
+        this.editor.on('nodeMoved', () => {
+          console.log("nodeMoved");
         });
         this.editor.on('nodeSelected', (nodeId) => {
-          console.log('nodeSelected', nodeId)
           this.selectedNode = nodeId;
-          console.log(this.action);
-          if (this.action === 'delete') {
-            this.deleteNode();
-          } else if (this.action === 'edit') {
-            this.editNode();
-          }
+          setTimeout(() => {
+            if (this.action === 'delete') {
+              this.deleteNode();
+            } else if (this.action === 'edit') {
+              this.editNode();
+            }
+          }, 0)
+
         });
-      
+
         this.editor.on('click', (e) => {
           let deleteElement: HTMLElement = e.target as HTMLElement;
-          if (deleteElement.className.indexOf('btn-trash') > -1 || deleteElement.className.indexOf('bi-trash')> -1) {
+          if (deleteElement.className.indexOf('btn-trash') > -1 || deleteElement.className.indexOf('bi-trash') > -1) {
             this.action = 'delete';
-          } else if (deleteElement.className.indexOf('btn-edit') >-1 || deleteElement.className.indexOf('bi-pencil')> -1) {
+          } else if (deleteElement.className.indexOf('btn-edit') > -1 || deleteElement.className.indexOf('bi-pencil') > -1) {
             this.action = 'edit';
           } else this.action = null;
         });
@@ -77,18 +78,6 @@ export class DrawflowDirective implements OnInit {
     }
   }
 
-  // public ngOnChanges(changes) {
-  //   if (changes && changes.nodes && changes.nodes.currentValue) {
-  //     changes.nodes.currentValue.forEach((node: INode) => {
-  //       this.editor.addNode(node.name, node.inputs, node.outputs, node.posx, node.posy, node.className, node.data, node.html, node.typenode);
-  //     });
-  //   }
-  //   if (changes && changes.connections && changes.connections.currentValue) {
-  //     changes.connections.currentValue.forEach((connection: IConnection) => {
-  //       this.editor.addConnection(connection.outputNodeId, connection.inputNodeId, connection.outputName, connection.inputName);
-  //     });
-  //   }
-  // }
 
   public addNode(node: INode): number {
     return this.editor.addNode(node.name, node.inputs, node.outputs, node.posx, node.posy, node.className, node.data, node.html, node.typenode);
@@ -103,8 +92,29 @@ export class DrawflowDirective implements OnInit {
   }
   public addNodeOutput(nodeId: number) {
     this.editor.addNodeOutput(nodeId);
+  }
+
+  public updateNode(node: INode) {
+    // let selectedNode = this.editor.getNodeFromId(this.selectedNode);
+    // console.log(selectedNode);
+    // selectedNode.name = node.name;
 
   }
+
+  // not working
+  unselectNode(nodeId) {
+    let el = this.hostElRef.nativeElement as HTMLElement
+    el.querySelector('#node-' + nodeId).classList.remove('selected');
+    el.querySelector('#node-' + nodeId);
+
+    let evt = new MouseEvent('nodeMoved', {
+      view: window,
+      bubbles: true,
+      cancelable: false,
+    });
+    document.querySelector(`#node-${nodeId} .drawflow_content_node`).dispatchEvent(evt);
+  }
+
   deleteNode() {
     if (this.selectedNode) {
       this.editor.removeNodeId('node-' + this.selectedNode);
