@@ -16,6 +16,7 @@ export interface ITextNode extends IBaseNode {
     isShowTyping: boolean;
     sliderValue: number;
     rootNode?: boolean;
+    id?: number;
   };
 }
 @Component({
@@ -43,6 +44,7 @@ export class TextModalComponent {
       return value + 's';
     }
   };
+  isRootNode: boolean;
   // atValues = [
   //   { id: 1, value: 'Fredrik Sundqvist', link: 'https://google.com' },
   //   { id: 2, value: 'Patrik Sjölin' }
@@ -101,9 +103,7 @@ export class TextModalComponent {
   //   }
   // }
 
-  // onContentChanged = (event) => {
-  //console.log(event.html);
-  // }
+
 
   constructor(public activeModal: NgbActiveModal) { }
   ngOnInit(): void {
@@ -114,6 +114,7 @@ export class TextModalComponent {
       this.expectsUserInput = this.data.expectsUserInput;
       this.isShowTyping = this.data.isShowTyping;
       this.sliderValue = this.data.sliderValue;
+      this.isRootNode = this.data.rootNode;
     }
   }
 
@@ -125,6 +126,7 @@ export class TextModalComponent {
       type: 'text',
       nextNodeName: this.tempNextNodeId || null,
       expectsUserInput: this.expectsUserInput,
+      id: this.data ? this.data.id : null,
       data: {
         nodeName: this.nodeName,
         htmlText: this.htmlText,
@@ -132,6 +134,8 @@ export class TextModalComponent {
         expectsUserInput: this.expectsUserInput,
         isShowTyping: this.isShowTyping,
         sliderValue: this.sliderValue,
+        id: this.data ? this.data.id : null,
+        rootNode:this.isRootNode,
       }
     }
     this.activeModal.close(this.nodeDetails)
@@ -139,10 +143,11 @@ export class TextModalComponent {
 
   public onNextNodeSelect(node): void {
     this.tempNextNodeId = node.name;
-    
   }
 
   public isNextNodeValid(isValid: boolean): void {
     this.nextNodeValid = isValid;
   }
+
+
 }

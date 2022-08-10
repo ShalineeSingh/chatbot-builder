@@ -27,7 +27,16 @@ export class NodeSelectComponent {
     this.nodeServiceSubscription = this.nodeService.updateNodeList.subscribe((value) => {
       this.nodeList = [...value];
     });
+    
+  }
 
+  ngOnInit(){
+    if (this.selectedNodeId) {
+      this.selectedNode = {
+        name: this.selectedNodeId
+      }
+      this.checkValidity(this.selectedNode.name);
+    }
   }
 
   public ngOnChanges(changes: SimpleChange) {

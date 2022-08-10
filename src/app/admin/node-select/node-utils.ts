@@ -11,7 +11,7 @@ export function convertToDrawflowNode(node: ITextNode, disconnectedNodes: ITextN
     posx: !(index === -1 || node.pos_X) ? calculatePosition(node.name, index, disconnectedNodes).x : node.pos_X,
     posy: !(index === -1 || node.pos_Y) ? calculatePosition(node.name, index, disconnectedNodes).y : node.pos_Y,
     className: 'text-node',
-    data: {},
+    data: node.data,
     html: createTextCanvasContent(node),
     typenode: false,
   }
@@ -27,14 +27,14 @@ export function convertToDrawflowConnection(node: ITextNode, previousId: number)
 
 }
 export function createTextCanvasContent(node: ITextNode): string {
-  let content = ` <div class="canvas-node" data-node="${node.name}">
+  let content = ` <div class="canvas-node" data-node="${node.data.nodeName}">
       <div class="node-heading">
-        <span>${node.name}</span>
+        <span>${node.data.nodeName}</span>
         <span class="float-end px-2 pointer btn-trash" title="delete node"> <i class="fs-6 bi-trash"></i></span>
         <span class="float-end px-2 pointer btn-edit" title="edit node"> <i class="fs-6 bi-pencil"></i></span>
       </div>
       <div class="node-body">
-        ${node.content}
+        ${node.data.htmlText}
       </div>
     </div>`;
 

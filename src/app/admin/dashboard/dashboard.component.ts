@@ -39,9 +39,9 @@ export class DashboardComponent implements OnInit {
         this.nodeService.updateNode(node);
       });
       nodeList.forEach(node => {
-        if (this.nodeService.getPreviousNode(node)) {
+        if (this.nodeService.getNextNode(node)) {
           let inputId = nodeList.find(v => v.name === node.nextNodeName).id;
-          this.drawflow.addNodeInput(this.nodeService.getPreviousNode(node).id);
+          this.drawflow.addNodeInput(this.nodeService.getNextNode(node).id);
           this.drawflow.addNodeOutput(node.id);
           this.drawflow.addConnection(convertToDrawflowConnection(node, inputId));
         }
@@ -85,30 +85,40 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  private addNode(node: any, isUpdate: boolean = false) {
-    if (isUpdate) {
-      this.nodeService.updateNode(node);
-      node.id = this.drawflow.updateNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
-    } else {
-      this.nodeService.onAddNode(node);
-      node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
-    }
-    this.nodeService.updateNode(node);
-    if (this.nodeService.getPreviousNode(node)) {
-      let inputId = this.nodeService.getNodes().find(v => v.name === node.nextNodeName).id;
-      this.drawflow.addNodeInput(this.nodeService.getPreviousNode(node).id);
-      this.drawflow.addNodeOutput(node.id);
-      this.drawflow.addConnection(convertToDrawflowConnection(node, inputId));
+  private addNode(node: any) {
+    this.nodeService.onAddNode(node);
+    node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+    if (this.nodeService.getNextNode(node)) {
+      this.createConnection(node);
     }
   }
-  editNode(nodeId: number) {
+
+  public editNode(nodeId: number) {
     const currentNode = this.nodeService.getNodes().find(v => v.id === Number(nodeId));
     if (currentNode) {
       const modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
       modalRef.componentInstance.data = currentNode.data;
-      modalRef.closed.subscribe(res => {
-        if (res !== 'close') this.addNode(res, true);
+      modalRef.closed.subscribe(node => {
+        if (node !== 'close') {
+          this.drawflow.updateNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+          this.nodeService.updateNode(node);
+          const nextNode = this.nodeService.getNextNode(node);
+          if (nextNode) {
+            this.drawflow.export();
+            let in_out = this.drawflow.getNodeInputOutput(node.id);
+            if (!in_out[1].output_1 || in_out[1].output_1.connections.findIndex(v => Number(v.node) === nextNode.id) === -1) {
+              this.createConnection(node);
+            }
+          }
+        }
       });
     }
+  }
+
+  private createConnection(node) {
+    let inputId = this.nodeService.getNodes().find(v => v.name === node.nextNodeName).id;
+    this.drawflow.addNodeInput(this.nodeService.getNextNode(node).id);
+    this.drawflow.addNodeOutput(node.id);
+    if (inputId) this.drawflow.addConnection(convertToDrawflowConnection(node, inputId));
   }
 }

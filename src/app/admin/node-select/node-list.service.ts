@@ -12,7 +12,7 @@ export class NodeService {
 
   tempNodes: ITextNode[] = [
     {
-      nextNodeName: 'node2',
+      nextNodeName: null,
       content: "hello there",
       name: 'node1',
       type: 'text',
@@ -21,11 +21,12 @@ export class NodeService {
       data:{
         nodeName: 'node1',
         htmlText: "hello there",
-        tempNextNodeId: "node2",
+        tempNextNodeId: null,
         expectsUserInput: true,
         isShowTyping: true,
         sliderValue: 5,
         rootNode: true,
+        id: 1,
       }
     },
     {
@@ -35,12 +36,13 @@ export class NodeService {
       pos_X: 450,
       pos_Y: 100,
       data: {
-        nodeName: 'node1',
+        nodeName: 'node2',
         htmlText: "how are you?",
-        tempNextNodeId: "node2",
+        tempNextNodeId: null,
         expectsUserInput: true,
         isShowTyping: true,
         sliderValue: 5,
+        id:2,
       }
     }
   ]
@@ -81,7 +83,7 @@ export class NodeService {
     this.updateNodeList.next(this.nodes);
   }
 
-  getPreviousNode(node) {
+  getNextNode(node) {
     return this.nodes.find(v => v.name === node.nextNodeName);
   }
 }

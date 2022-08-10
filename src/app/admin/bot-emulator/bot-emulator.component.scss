@@ -9,14 +9,14 @@ $footer-height: 69px;
   .modal-content {
     height: 100vh;
     border-radius: 0;
-    .modal-body{
+    .modal-body {
       height: calc(100vh - 63px - 69px);
     }
     .conversation {
       ul {
         list-style: none;
         padding: 0;
-        
+
         li {
           margin-left: auto;
           width: fit-content;
@@ -26,34 +26,37 @@ $footer-height: 69px;
             float: right;
             padding: 10px;
             border-radius: 4px;
+            p {
+              margin-bottom: 0;
+            }
           }
           .user-response {
           }
         }
       }
     }
-    .typing{
-    position: absolute;
-    bottom: 10px;
-    text-align: right;
-    background-color: #ccc;
-    padding: 5px 15px;
-    border-radius: 4px;
+    .typing {
+      position: absolute;
+      bottom: 10px;
+      text-align: right;
+      background-color: #ccc;
+      padding: 5px 15px;
+      border-radius: 4px;
     }
   }
   .modal-footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-    .user-input{
+    .user-input {
       width: 100%;
     }
-    .send-icon{
+    .send-icon {
       padding: 10px 15px;
       margin-left: 10px;
-          background-color: $body-color;
-    color: white;
-    border-radius: 4px;
+      background-color: $body-color;
+      color: white;
+      border-radius: 4px;
     }
   }
 }

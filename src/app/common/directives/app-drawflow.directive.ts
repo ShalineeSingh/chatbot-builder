@@ -95,17 +95,16 @@ export class DrawflowDirective implements OnInit {
   }
 
   public updateNode(node: INode) {
-    // let selectedNode = this.editor.getNodeFromId(this.selectedNode);
-    // console.log(selectedNode);
-    // selectedNode.name = node.name;
-
+    this.editor.updateNodeDataFromId(node.data.id, node.data);
+    let el = this.hostElRef.nativeElement as HTMLElement
+    el.querySelector(`#node-${node.data.id} .node-heading span`).innerHTML = node.name;
+    el.querySelector(`#node-${node.data.id} .node-body`).innerHTML = node.data.htmlText;
   }
 
   // not working
   unselectNode(nodeId) {
     let el = this.hostElRef.nativeElement as HTMLElement
     el.querySelector('#node-' + nodeId).classList.remove('selected');
-    el.querySelector('#node-' + nodeId);
 
     let evt = new MouseEvent('nodeMoved', {
       view: window,
@@ -123,6 +122,17 @@ export class DrawflowDirective implements OnInit {
 
   public editNode() {
     this.onEditNode.emit(this.selectedNode);
-
   }
+
+  public updateNodeConnections(nodeId) {
+    this.editor.updateConnectionNodes('node-' + nodeId);
+  }
+
+  public getNodeInputOutput(nodeId){
+    return [this.editor.getNodeFromId(nodeId).inputs, this.editor.getNodeFromId(nodeId).outputs];
+  }
+  public export() {
+   console.log(this.editor.export());
+  }
+
 }
