@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
           let inputId = nodeList.find(v => v.name === node.nextNodeName).id;
           this.drawflow.addNodeInput(this.nodeService.getNextNode(node).id);
           this.drawflow.addNodeOutput(node.id);
-          this.drawflow.addConnection(convertToDrawflowConnection(node, inputId));
+          this.drawflow.addConnection(convertToDrawflowConnection(node, inputId, 1));
         }
       });
     });
@@ -96,8 +96,19 @@ export class DashboardComponent implements OnInit {
   public editNode(nodeId: number) {
     const currentNode = this.nodeService.getNodes().find(v => v.id === Number(nodeId));
     if (currentNode) {
-      const modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
+      console.log(currentNode);
+      let modalRef;
+      switch (currentNode.type){
+        case 'text':
+      modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
       modalRef.componentInstance.data = currentNode.data;
+      break;
+      case 'button':
+          modalRef = this.modalService.open(ButtonModalComponent, { backdrop: 'static', size: 'lg' });
+          modalRef.componentInstance.data = currentNode;
+          break;
+      }
+      
       modalRef.closed.subscribe(node => {
         if (node !== 'close') {
           this.drawflow.updateNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
@@ -116,9 +127,20 @@ export class DashboardComponent implements OnInit {
   }
 
   private createConnection(node) {
-    let inputId = this.nodeService.getNodes().find(v => v.name === node.nextNodeName).id;
-    this.drawflow.addNodeInput(this.nodeService.getNextNode(node).id);
-    this.drawflow.addNodeOutput(node.id);
-    if (inputId) this.drawflow.addConnection(convertToDrawflowConnection(node, inputId));
+    if (node.type === 'text') {
+      let inputId = this.nodeService.getNextNode(node).id;
+      this.drawflow.addNodeInput(inputId);
+      this.drawflow.addNodeOutput(node.id);
+      if (inputId) this.drawflow.addConnection(convertToDrawflowConnection(node, inputId, 1));
+    } else {
+      for (let i = 0; i < node.nextNodes.length; i++) {
+        let inputId = node.nextNodes[i].nextNodeId;
+        if (inputId) {
+          this.drawflow.addNodeInput(inputId);
+          this.drawflow.addNodeOutput(node.id);
+          this.drawflow.addConnection(convertToDrawflowConnection(node, inputId, i + 1));
+        }
+      }
+    }
   }
 }

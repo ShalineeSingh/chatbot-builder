@@ -13,6 +13,7 @@ import { NodeSelectComponent } from './node-select/node-select';
 import { NodeService } from './node-select/node-list.service';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { BotEmulatorComponent } from './bot-emulator/bot-emulator.component';
+import { ButtonModalComponent } from './node-modals/button/button-modal.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { BotEmulatorComponent } from './bot-emulator/bot-emulator.component';
     TextModalComponent,
     NodeSelectComponent,
     BotEmulatorComponent,
+    ButtonModalComponent,
   ],
   imports: [
     CommonModule,

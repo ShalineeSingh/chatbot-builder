@@ -10,6 +10,9 @@ export interface IBaseNode {
   pos_X?: number;
   pos_Y?: number;
   id?: number;
+  expectsUserInput: boolean;
+  isShowTyping: boolean;
+  rootNode?: boolean;
 }
 export interface INode {
   name: string, inputs: number, outputs: number, posx: number, posy: number, className: string, data: any, html: string, typenode: string | boolean

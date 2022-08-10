@@ -18,7 +18,9 @@ export class NodeService {
       type: 'text',
       pos_X: 150,
       pos_Y: 100,
-      data:{
+      expectsUserInput: true,
+      isShowTyping: true,
+      data: {
         nodeName: 'node1',
         htmlText: "hello there",
         tempNextNodeId: null,
@@ -35,6 +37,8 @@ export class NodeService {
       type: 'text',
       pos_X: 450,
       pos_Y: 100,
+      expectsUserInput: true,
+      isShowTyping: true,
       data: {
         nodeName: 'node2',
         htmlText: "how are you?",
@@ -42,7 +46,7 @@ export class NodeService {
         expectsUserInput: true,
         isShowTyping: true,
         sliderValue: 5,
-        id:2,
+        id: 2,
       }
     }
   ]
@@ -50,7 +54,7 @@ export class NodeService {
     this.onAddNodeList(this.tempNodes);
   }
 
-  onAddNode(data: ITextNode) {
+  onAddNode(data: any) {
     this.nodes.push(data);
     if (!data.nextNodeName || data.nextNodeName === '') {
       this.disconnectedNodes.push(data);
@@ -84,6 +88,10 @@ export class NodeService {
   }
 
   getNextNode(node) {
-    return this.nodes.find(v => v.name === node.nextNodeName);
+    if (node.type === 'text') {
+      return this.nodes.find(v => v.name === node.nextNodeName);
+    } else {
+      return node.nextNodes.length;
+    }
   }
 }

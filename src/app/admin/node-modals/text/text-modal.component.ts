@@ -7,7 +7,6 @@ export interface ITextNode extends IBaseNode {
   nextNodeName?: string;
   nextNodeId?: number;
   content: string;
-  expectsUserInput?: boolean;
   data: {
     nodeName: string;
     htmlText: string;
@@ -127,6 +126,7 @@ export class TextModalComponent {
       nextNodeName: this.tempNextNodeId || null,
       expectsUserInput: this.expectsUserInput,
       id: this.data ? this.data.id : null,
+      isShowTyping: this.isShowTyping,
       data: {
         nodeName: this.nodeName,
         htmlText: this.htmlText,

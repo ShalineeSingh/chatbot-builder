@@ -48,6 +48,10 @@ body {
   cursor: pointer;
 }
 
+.cursor-auto {
+  cursor: auto !important;
+}
+
 @for $i from 0 through 5 {
   $space: $i * 4;
   .br-#{$space} {

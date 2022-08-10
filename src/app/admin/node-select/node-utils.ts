@@ -10,33 +10,41 @@ export function convertToDrawflowNode(node: ITextNode, disconnectedNodes: ITextN
     outputs: 0,
     posx: !(index === -1 || node.pos_X) ? calculatePosition(node.name, index, disconnectedNodes).x : node.pos_X,
     posy: !(index === -1 || node.pos_Y) ? calculatePosition(node.name, index, disconnectedNodes).y : node.pos_Y,
-    className: 'text-node',
-    data: node.data,
+    className: 'node',
+    data: node.data || node, // TODO: check if data can be removed completely
     html: createTextCanvasContent(node),
     typenode: false,
   }
 }
 
-export function convertToDrawflowConnection(node: ITextNode, previousId: number): IConnection {
+export function convertToDrawflowConnection(node: ITextNode, previousId: number, index: number): IConnection {
   return {
     outputNodeId: node.id,
     inputNodeId: previousId,
-    outputName: 'output_1',
+    outputName: 'output_' + index,
     inputName: 'input_1'
   }
-
 }
-export function createTextCanvasContent(node: ITextNode): string {
-  let content = ` <div class="canvas-node" data-node="${node.data.nodeName}">
+export function createTextCanvasContent(node: any): string {
+  let content = `<div class="canvas-node" data-node="${node.name}">
       <div class="node-heading">
-        <span>${node.data.nodeName}</span>
+        <span>${node.name}</span>
         <span class="float-end px-2 pointer btn-trash" title="delete node"> <i class="fs-6 bi-trash"></i></span>
         <span class="float-end px-2 pointer btn-edit" title="edit node"> <i class="fs-6 bi-pencil"></i></span>
       </div>
-      <div class="node-body">
-        ${node.data.htmlText}
-      </div>
-    </div>`;
+      <div class="node-body">`;
+  switch (node.type) {
+    case 'text':
+      content += `${node.data.htmlText}`;
+      break;
+    case 'button':
+      for (let i = 0; i < node.content.length; i++) {
+        // TODO: fix edit here
+        content += `<button type="button" class="btn btn-primary cursor-auto mb-1 d-block">${node.content[i].buttonText}</button>`;
+      }
+      break;
+  }
+  content += `</div></div>`;
 
   return content;
 }
