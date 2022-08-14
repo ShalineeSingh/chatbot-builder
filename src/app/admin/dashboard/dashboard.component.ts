@@ -4,14 +4,12 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BotEmulatorComponent } from '../bot-emulator/bot-emulator.component';
 import { TextModalComponent } from '../node-modals/text/text-modal.component';
 import { ButtonModalComponent } from '../node-modals/button/button-modal.component';
-import { ImageModalComponent } from '../node-modals/image/image-modal.component';
-import { VideoModalComponent } from '../node-modals/video/video-modal.component';
-import { DocumentModalComponent } from '../node-modals/document/document-modal.component';
 import { CardModalComponent } from '../node-modals/card/card-modal.component';
 import { ApiModalComponent } from '../node-modals/api/api-modal.component';
 import { NodeService } from '../node-select/node-list.service';
 import { convertToDrawflowConnection, convertToDrawflowNode } from '../node-select/node-utils';
 import { Subscription } from 'rxjs';
+import { MediaModalComponent } from '../node-modals/media/media-modal.component';
 
 export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'card' | 'api';
 @Component({
@@ -48,6 +46,8 @@ export class DashboardComponent implements OnInit {
       });
     });
     // this.openEmulator();
+    // const modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
+    // modalRef.componentInstance.mediaType = 'image';
   }
 
   public openEmulator() {
@@ -56,6 +56,7 @@ export class DashboardComponent implements OnInit {
 
   public openNodeModal(type: NodeType) {
     let component;
+    let mediaType;
     switch (type) {
       case 'text':
         component = TextModalComponent;
@@ -64,13 +65,16 @@ export class DashboardComponent implements OnInit {
         component = ButtonModalComponent;
         break;
       case 'image':
-        component = ImageModalComponent;
+        mediaType = 'image';
+        component = MediaModalComponent;
         break;
       case 'video':
-        component = VideoModalComponent;
+        mediaType = 'video';
+        component = MediaModalComponent;
         break;
       case 'document':
-        component = DocumentModalComponent;
+        mediaType = 'document';
+        component = MediaModalComponent;
         break;
       case 'card':
         component = CardModalComponent;
@@ -80,6 +84,7 @@ export class DashboardComponent implements OnInit {
         break;
     }
     const modalRef = this.modalService.open(component, { backdrop: 'static', size: 'lg' });
+    if (mediaType) modalRef.componentInstance.mediaType = mediaType;
     modalRef.closed.subscribe(res => {
       if (res !== 'close') this.addNode(res);
     });
@@ -98,22 +103,39 @@ export class DashboardComponent implements OnInit {
     if (currentNode) {
       console.log(currentNode);
       let modalRef;
-      switch (currentNode.type){
+      switch (currentNode.type) {
         case 'text':
-      modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
-      modalRef.componentInstance.data = currentNode.data;
-      break;
-      case 'button':
+          modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
+          modalRef.componentInstance.data = currentNode.data;
+          break;
+        case 'button':
           modalRef = this.modalService.open(ButtonModalComponent, { backdrop: 'static', size: 'lg' });
           modalRef.componentInstance.data = currentNode;
           break;
+        case 'image':
+          modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
+          modalRef.componentInstance.data = currentNode;
+          modalRef.componentInstance.mediaType = 'image';
+          break;
+        case 'video':
+          modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
+          modalRef.componentInstance.data = currentNode;
+          modalRef.componentInstance.mediaType = 'video';
+          break;
+        case 'document':
+          modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
+          modalRef.componentInstance.data = currentNode;
+          modalRef.componentInstance.mediaType = 'document';
+          break;
+
       }
-      
+
       modalRef.closed.subscribe(node => {
         if (node !== 'close') {
           this.drawflow.updateNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
           this.nodeService.updateNode(node);
           const nextNode = this.nodeService.getNextNode(node);
+          console.log(nextNode);
           if (nextNode) {
             this.drawflow.export();
             let in_out = this.drawflow.getNodeInputOutput(node.id);
@@ -127,7 +149,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private createConnection(node) {
-    if (node.type === 'text') {
+    if (node.type === 'text' || node.type === 'image' || node.type === 'document' || node.type === 'video' ) {
       let inputId = this.nodeService.getNextNode(node).id;
       this.drawflow.addNodeInput(inputId);
       this.drawflow.addNodeOutput(node.id);

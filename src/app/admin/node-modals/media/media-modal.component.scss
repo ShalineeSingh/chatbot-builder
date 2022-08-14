@@ -1,0 +1,48 @@
+.drop-zone {
+  border: dotted 2px #d3d3d3;
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+.media-preview {
+  height: 200px;
+  width: 200px;
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: inline-block;
+  margin: 10px;
+  &.node-preview{
+    height: 50px;
+  width: 50px;
+  }
+  img, video, iframe {
+    position: relative;
+    height: inherit;
+    width: inherit;
+    object-fit: contain;
+    padding: 5px;
+  }
+  .remove-media {
+    position: absolute;
+    z-index: 1;
+    right: -10px;
+    top: -15px;
+    font-size: 25px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    background-color: white;
+    .cross {
+      position: relative;
+      top: -6px;
+    }
+  }
+}
+.nv-file-over {
+  border: dotted 2px black;
+}

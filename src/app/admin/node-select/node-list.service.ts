@@ -12,7 +12,7 @@ export class NodeService {
 
   tempNodes: ITextNode[] = [
     {
-      nextNodeName: null,
+      nextNodeName: 'node2',
       content: "hello there",
       name: 'node1',
       type: 'text',
@@ -23,12 +23,13 @@ export class NodeService {
       data: {
         nodeName: 'node1',
         htmlText: "hello there",
-        tempNextNodeId: null,
+        tempNextNodeId: 'node2',
         expectsUserInput: true,
         isShowTyping: true,
         sliderValue: 5,
         rootNode: true,
         id: 1,
+        // previousNode
       }
     },
     {
@@ -88,9 +89,13 @@ export class NodeService {
   }
 
   getNextNode(node) {
+    console.log(node);
     if (node.type === 'text') {
       return this.nodes.find(v => v.name === node.nextNodeName);
-    } else {
+    } else if (node.type === 'image' || node.type === 'document' || node.type === 'video'){
+      return this.nodes.find(v => v.name === node.nextNode.nextNodeName);
+    } 
+    else {
       return node.nextNodes.length;
     }
   }

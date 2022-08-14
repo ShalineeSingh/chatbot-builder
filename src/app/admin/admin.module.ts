@@ -14,6 +14,8 @@ import { NodeService } from './node-select/node-list.service';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { BotEmulatorComponent } from './bot-emulator/bot-emulator.component';
 import { ButtonModalComponent } from './node-modals/button/button-modal.component';
+import { MediaModalComponent } from './node-modals/media/media-modal.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { ButtonModalComponent } from './node-modals/button/button-modal.componen
     NodeSelectComponent,
     BotEmulatorComponent,
     ButtonModalComponent,
+    MediaModalComponent,
   ],
   imports: [
     CommonModule,
@@ -32,6 +35,7 @@ import { ButtonModalComponent } from './node-modals/button/button-modal.componen
     FormsModule,
     QuillModule.forRoot(),
     NgxSliderModule,
+    FileUploadModule,
   ],
   providers: [NodeService],
 })

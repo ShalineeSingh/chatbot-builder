@@ -51,7 +51,6 @@ export class ButtonModalComponent {
   constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
-    console.log(this.data);
     if (this.data) {
       this.nodeName = this.data.name;
       this.nextNodes = this.data.nextNodes;
@@ -65,7 +64,6 @@ export class ButtonModalComponent {
   }
 
   public onSaveNode(): void {
-    console.log('submit');
     // TODO: add validity
     // if (this.tempNextNodeId && !this.nextNodeValid) return;
     this.data = {

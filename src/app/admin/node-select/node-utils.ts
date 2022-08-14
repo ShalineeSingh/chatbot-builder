@@ -43,6 +43,12 @@ export function createTextCanvasContent(node: any): string {
         content += `<button type="button" class="btn btn-primary cursor-auto mb-1 d-block">${node.content[i].buttonText}</button>`;
       }
       break;
+    case 'image':
+      for (let i = 0; i < node.content.length; i++) {
+        // TODO: fix edit here and add image here
+        content += `image_${i}`
+      }
+      break;
   }
   content += `</div></div>`;
 
