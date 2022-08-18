@@ -46,8 +46,7 @@ export class DashboardComponent implements OnInit {
       });
     });
     // this.openEmulator();
-    // const modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
-    // modalRef.componentInstance.mediaType = 'image';
+    // const modalRef = this.modalService.open(CardModalComponent, { backdrop: 'static', size: 'lg' });
   }
 
   public openEmulator() {

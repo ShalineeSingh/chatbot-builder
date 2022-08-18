@@ -89,7 +89,6 @@ export class NodeService {
   }
 
   getNextNode(node) {
-    console.log(node);
     if (node.type === 'text') {
       return this.nodes.find(v => v.name === node.nextNodeName);
     } else if (node.type === 'image' || node.type === 'document' || node.type === 'video'){

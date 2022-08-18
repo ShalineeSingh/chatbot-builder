@@ -83,7 +83,6 @@ export class DrawflowDirective implements OnInit {
 
 
   public addNode(node: INode): number {
-    console.log(node);
     node.data = {};
     return this.editor.addNode(node.name, node.inputs, node.outputs, node.posx, node.posy, node.className, node.data, node.html, node.typenode);
   }

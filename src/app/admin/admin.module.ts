@@ -16,6 +16,7 @@ import { BotEmulatorComponent } from './bot-emulator/bot-emulator.component';
 import { ButtonModalComponent } from './node-modals/button/button-modal.component';
 import { MediaModalComponent } from './node-modals/media/media-modal.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { CardModalComponent } from './node-modals/card/card-modal.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { FileUploadModule } from 'ng2-file-upload';
     BotEmulatorComponent,
     ButtonModalComponent,
     MediaModalComponent,
+    CardModalComponent,
   ],
   imports: [
     CommonModule,

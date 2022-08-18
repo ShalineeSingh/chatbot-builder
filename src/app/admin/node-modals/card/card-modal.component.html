@@ -1,12 +1,134 @@
 <div class="modal-header">
-  <h4 class="modal-title">Text Node</h4>
-  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <h4 class="modal-title">Card Node</h4>
+  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('close')">
     <span class="fs-2" aria-hidden="true">&times;</span>
   </span>
 </div>
-<div class="modal-body">
-  <p>Hello,!</p>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-</div>
+<form #buttonForm="ngForm">
+  <div class="modal-body">
+    <nav ngbNav #nav="ngbNav" class="nav-tabs" [destroyOnHide]="false">
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Details</a>
+        <ng-template ngbNavContent>
+          <div class="form-group" [class.error]="node_name?.invalid && submitAttempt">
+            <label class="form-label small">Enter node name here*</label>
+            <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
+              [(ngModel)]="nodeName" required>
+            <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
+            <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
+              <div *ngIf="node_name.errors.required">
+                Node Name is required
+              </div>
+            </div>
+          </div>
+          <div class="wrapper mt-4">
+            <div *ngIf="mediaEdit" class="form-group">
+              <label class="form-label small">Enter bot response here (Card)</label>
+              <div class="tiny mt-1">This will be shown to the user</div>
+              <div *ngIf="!previewPath">
+                <div ng2FileDrop accept=".jpg,.jpeg,.png" [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
+                  (fileOver)="fileOverBase($event)" (onFileDrop)="dropped($event)" [uploader]="uploader" class="drop-zone"
+                  required>
+                  <span class="small"> Drop a file here to upload<br>
+                    File types allowed are .jpg,.jpeg,.png</span>
+                </div>
+                <div class="or text-center">OR</div>
+                <input type="file" accept=".jpg,.jpeg,.png" ng2FileSelect [(ngModel)]="currentFile" name="file"
+                  [uploader]="uploader" required #file_selector="ngModel" />
+                <div *ngIf="file_selector?.invalid && submitAttempt" class="text-danger small">
+                  <div *ngIf="file_selector.errors.required">
+                    Select an image to show as card banner
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="previewPath" class="card-preview">
+                <span class="remove-media pointer" (click)="removeMedia()"><span class="cross">&times;</span></span>
+                <img [src]="previewPath" alt="bot response image">
+              </div>
+              <div class="editor my-4">
+                <div class="form-group" [class.error]="quill_editor?.invalid && submitAttempt">
+                  <label class="form-label small">Enter card content here*</label>
+                  <quill-editor [(ngModel)]="htmlText" placeholder="Enter Text" name="quill" ngDefaultControl
+                    [modules]="quillConfig" #quill_editor="ngModel" required>
+                  </quill-editor>
+                  <div *ngIf="quill_editor?.invalid && submitAttempt" class="text-danger small">
+                    <div *ngIf="quill_editor.errors.required">
+                      Enter some text to be shown
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label small">Enter card footer (action/button) here</label>
+                <input type="text" class="form-control w-50" name="btnName" #btn_name="ngModel" [(ngModel)]="buttonText">
+              </div>
+              <div class="form-group" *ngIf="buttonText" [class.error]="external_url?.invalid && submitAttempt">
+                <label class="form-label small">Enter button url (url to open on click)</label>
+                <input type="text" class="form-control w-50" name="url" #external_url="ngModel" [(ngModel)]="buttonUrl" required>
+                <div *ngIf="external_url?.invalid && submitAttempt" class="text-danger small">
+                  <div *ngIf="external_url.errors.required">
+                    Enter the url that will open on footer button click
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center" *ngIf="!mediaEdit">
+              <ng-container *ngFor="let media of mediaList; let i=index">
+                <div class="card-preview">
+                  <span class="remove-media pointer" (click)="removeMedia(media.mediaId)"><span
+                      class="cross">&times;</span></span>
+                  <img [src]="media.previewUrl" alt="bot response image">
+                  <div class="card-content" [innerHTML]="media.content"> </div>
+                  <div class="card-footer p-0 d-grid">
+                    <a class="btn btn-outline" href="{{media.footerAction}}" target="_blank">{{media.footer}}</a>
+                  </div>
+                </div>
+              </ng-container>
+              <div class="add-new ml-8 d-inline-block">
+                <button type="button" class="btn btn-outline-dark" (click)="addNewFile()"> <i class="fs-6 bi-plus"></i></button>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Actions</a>
+        <ng-template ngbNavContent>
+          <div class="w-50">
+            <label class="form-label small">Select next node for:</label>
+            <node-select [currentNodeName]="nodeName" [selectedNodeId]="nextNode.nextNodeName"
+              (onNextNodeSelect)="onNextNodeSelect($event); setNodeNext(nextNode)"
+              (isNextNodeValid)="isNextNodeValid($event); setNodeValidity(nextNode)"></node-select>
+            <div class="tiny mt-1">This node will be executed when user clicks on current button</div>
+          </div>
+          <div class="form-group mt-2">
+            <label class="check mb-1">
+              <input type="checkbox" name="user_input" #user_input="ngModel" [(ngModel)]="expectsUserInput">
+              <span class="small">Expect user input</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="form-group mt-2">
+            <label class="check mb-1">
+              <input type="checkbox" name="show_typing" #show_typing="ngModel" [(ngModel)]="isShowTyping">
+              <span class="small">Show "Typing..."</span>
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="form-group custom-slider mt-2 mx-4" *ngIf="isShowTyping">
+            <ngx-slider [(value)]="sliderValue" [options]="sliderOptions"></ngx-slider>
+          </div>
+        </ng-template>
+      </ng-container>
+    </nav>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('close')">Close</button>
+    <button *ngIf="mediaEdit" type="button" class="btn btn-primary"
+      (click)="submitAttempt=true; buttonForm.valid && onSaveMedia()">Add Card</button>
+    <button *ngIf="!mediaEdit" type="button" class="btn btn-primary"
+      (click)="submitAttempt=true; buttonForm.valid && onSaveNode()">Save</button>
+  </div>
+</form>

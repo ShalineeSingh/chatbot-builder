@@ -90,7 +90,6 @@ export class MediaModalComponent {
     this.uploader.response.subscribe(res => console.log(res));
     this.uploader.onAfterAddingFile = (fileItem) => {
       this.currentFile = fileItem;
-      console.log(this.currentFile)
       if (fileItem._file.type === 'application/pdf') this.previewPath = this.createPdfPreviewUrl(fileItem._file);
       else  this.previewPath = this.createPreviewUrl(fileItem._file);
     }
