@@ -1,73 +1,78 @@
 <div class="container-fluid">
   <div class="row flex-nowrap">
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light border-end">
       <div class="d-flex flex-column align-items-center align-items-sm-start min-vh-100">
-        <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
+        <!-- <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
           <span class="fs-5 d-none d-sm-inline">Bot Responses</span>
-        </p>
-        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu">
-          <li class="nav-item" (click)="openNodeModal('text')">
+        </p> -->
+        <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100" id="menu">
+          <li class="nav-item">
             <p class="nav-link align-middle px-0">
-              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Text</span>
-            </p>
-          </li>
-           <li class="nav-item" (click)="openNodeModal('button')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-menu-button"></i> <span class="ms-1 d-none d-sm-inline">Button</span>
-            </p>
-          </li>
-           <li class="nav-item" (click)="openNodeModal('image')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-images"></i> <span class="ms-1 d-none d-sm-inline">Image</span>
-            </p>
-          </li>
-           <li class="nav-item" (click)="openNodeModal('video')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-play-btn"></i> <span class="ms-1 d-none d-sm-inline">Video</span>
-            </p>
-          </li>
-           <li class="nav-item" (click)="openNodeModal('document')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-file-earmark-text"></i> <span class="ms-1 d-none d-sm-inline">Document</span>
-            </p>
-          </li>
-           <li class="nav-item" (click)="openNodeModal('card')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-card-heading"></i> <span class="ms-1 d-none d-sm-inline">Card</span>
-            </p>
-          </li>
-           <li class="nav-item" (click)="openNodeModal('api')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-box-arrow-up-right"></i> <span class="ms-1 d-none d-sm-inline">API Response</span>
+              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Bots</span>
             </p>
           </li>
         </ul>
         <hr>
-        <div class="dropdown pb-4" ngbDropdown>
-          <a class="d-flex align-items-center text-decoration-none" aria-expanded="false" ngbDropdownToggle>
-            <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
-            <span class="d-none d-sm-inline mx-1">User</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark text-small shadow" ngbDropdownMenu>
-            <li><a class="dropdown-item" href="#" ngbDropdownItem>New project...</a></li>
-            <li><a class="dropdown-item" href="#" ngbDropdownItem>Settings</a></li>
-            <li><a class="dropdown-item" href="#" ngbDropdownItem>Profile</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#" ngbDropdownItem>Sign out</a></li>
-          </ul>
-        </div>
+        <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
+          <span class="fs-5 d-none d-sm-inline">Integrations</span>
+        </p>
+        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu-1">
+          <li class="nav-item">
+            <p class="nav-link align-middle px-0">
+              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">API</span>
+            </p>
+          </li>
+          <li class="nav-item">
+            <p class="nav-link align-middle px-0">
+              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Channels</span>
+            </p>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="col">
-      <div class="container-canvas" appNgDrawFlow [nodes]="nodes" [connections]="connections" (onEditNode)="editNode($event)"></div>
+      <ng-container *ngIf="activeTab === 'bot'">
+        <div class="d-flex flex-wrap" *ngIf="!loading; else loadingRef">
+          <div class="card bot-card align-items-center justify-content-center">
+            <div class="add-new ml-8 d-inline-block pointer" (click)="addNewBot()">
+              <div> <i class="fs-1 bi-plus"></i></div>
+            </div>
+          </div>
+          <div class="card bot-card" *ngFor="let bot of botList">
+            <div class="bot-image">
+              <img alt={{bot.name}} [src]="bot.image ? bot.image : '../assets/images/dummy.png'" />
+            </div>
+            <p class="text-center mt-4">{{bot.name}}</p>
+            <p class="small" *ngIf="bot.description">{{bot.description | slice:0:150}}<span *ngIf="bot.description.length > 150">...</span></p>
+            <div class="footer">
+            <div class="card-actions d-flex justify-content-around">
+              <div class="action" title="Edit bot details" (click)="editBotDetails(bot)">
+                <i class="fs-6 bi-pencil"></i>
+              </div>
+              <div class="action" title="View" (click)="viewBot(bot.id)">
+                <i class="fs-6 bi-eye"></i>
+              </div>
+              <div class="action" title="Edit Bot Workflow" (click)="editBot(bot.id)">
+                <i class="fs-6 bi-diagram-3"></i>
+              </div>
+              <div class="action" title="Delete" (click)="deleteBot(bot.id)">
+                <i class="fs-6 bi-trash"></i>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="activeTab === 'api'"></ng-container>
+      <ng-container *ngIf="activeTab === 'channel'"></ng-container>
     </div>
   </div>
 </div>
 
-<div class="chatbox-emulator">
-<div class="test-btn">
-  <button type="button" class="btn btn-primary" (click)="openEmulator()">Test your bot</button>
-</div>
-</div>
+<ng-template #loadingRef>
+  <div class="h-100 d-flex align-items-center justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>

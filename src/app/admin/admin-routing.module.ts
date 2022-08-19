@@ -1,8 +1,13 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { BotEditorComponent } from "./bot-editor/bot-editor.component";
+import { DashboardComponent } from "./dashboard/dashboard.component";
 
-const routes: Routes = [{path:'', component: DashboardComponent}]
+const routes: Routes = [
+  { path: '', component: DashboardComponent },
+  { path: 'bot/:id', component: BotEditorComponent },
+  { path: 'edit/:id', component: BotEditorComponent }
+]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
@@ -10,4 +15,4 @@ const routes: Routes = [{path:'', component: DashboardComponent}]
 })
 
 export class AdminRoutingModule { }
-export const AdminRoutingComponents = [DashboardComponent];
+export const AdminRoutingComponents = [DashboardComponent, BotEditorComponent];

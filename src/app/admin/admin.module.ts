@@ -17,6 +17,7 @@ import { ButtonModalComponent } from './node-modals/button/button-modal.componen
 import { MediaModalComponent } from './node-modals/media/media-modal.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { CardModalComponent } from './node-modals/card/card-modal.component';
+import { BotModalComponent } from './dashboard/bot-modal/bot-modal.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { CardModalComponent } from './node-modals/card/card-modal.component';
     ButtonModalComponent,
     MediaModalComponent,
     CardModalComponent,
+    BotModalComponent,
   ],
   imports: [
     CommonModule,

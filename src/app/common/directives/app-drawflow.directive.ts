@@ -1,7 +1,7 @@
 import { Directive, ElementRef, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import Drawflow from 'drawflow';
-import { NodeType } from '../../admin/dashboard/dashboard.component';
 import { ITextNode } from '../../admin/node-modals/text/text-modal.component';
+import { NodeType } from '../../admin/bot-editor/bot-editor.component';
 const event = new Event('build');
 
 export interface IBaseNode {

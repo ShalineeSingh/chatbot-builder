@@ -1,0 +1,49 @@
+{
+  "bots": [
+    {
+      "id": "62ffb75336a1c2f337371565",
+      "customerId": "940ec5dc-8d64-4e26-b1af-c0cb57c75f06",
+      "name": "ZEAM",
+      "description": "Do irure eu cillum irure cillum cupidatat consectetur magna. Nulla laboris enim id amet et duis nulla magna. Minim ipsum ea adipisicing consectetur sunt culpa minim esse occaecat nulla aliquip aliqua elit. Nostrud nisi ullamco eiusmod commodo esse aliqua laboris nulla amet aliqua dolor duis aliqua ea. In sint commodo sint consequat pariatur culpa officia et laborum pariatur.\r\n",
+      "image": "https://via.placeholder.com/150",
+      "updatedAt": "2018-05-10T10:26:56 -06:-30",
+      "updatedBy": "Mari Bonner"
+    },
+    {
+      "id": "62ffb75330b781c9101aa02d",
+      "customerId": "0102711d-bdc3-4ce2-84de-29139506388c",
+      "name": "GENMY",
+      "description": "Incididunt enim ipsum esse qui et eiusmod mollit mollit nisi exercitation. Qui dolore pariatur pariatur voluptate aliquip eiusmod mollit aute reprehenderit id qui enim ipsum. Est consectetur aliquip elit ut veniam quis et ut occaecat elit non. Dolor elit dolore exercitation magna ullamco aliqua. Dolor cupidatat elit eiusmod in velit duis et non enim dolor est. Irure eu incididunt deserunt ea Lorem cupidatat voluptate aliquip nulla reprehenderit id proident. Labore tempor sunt amet minim laborum.\r\n",
+      "image": null,
+      "updatedAt": "2018-10-29T10:43:18 -06:-30",
+      "updatedBy": "Saunders Mckee"
+    },
+    {
+      "id": "62ffb753ce84cbaa76b13420",
+      "customerId": "28596c12-a08f-484e-8358-00a959560ffc",
+      "name": "SOLAREN",
+      "description": "Esse incididunt proident culpa tempor consequat. Ullamco adipisicing irure tempor Lorem pariatur ea sit nisi et fugiat anim. In amet amet magna exercitation laboris mollit ipsum. Velit esse mollit eu occaecat cillum amet. Commodo sit consectetur sint tempor deserunt mollit officia aliqua anim. Officia ullamco dolore aliquip irure tempor amet labore qui quis adipisicing reprehenderit quis. Eu irure sit laboris veniam sint fugiat aliquip nulla dolore.\r\n",
+      "image": "https://via.placeholder.com/150",
+      "updatedAt": "2017-04-03T10:34:46 -06:-30",
+      "updatedBy": "Burch Lynch"
+    },
+    {
+      "id": "62ffb753833194d5694304b2",
+      "customerId": "d6d9e310-d795-4bab-8372-aeb7262ef352",
+      "name": "UPDAT",
+      "description": "Consequat Lorem excepteur laborum aliquip tempor occaecat mollit aliquip ipsum nostrud. Commodo non commodo quis eu non duis esse qui dolor velit amet. Voluptate ut esse labore amet do. Exercitation voluptate eiusmod mollit exercitation dolor veniam. Minim aliqua commodo excepteur culpa culpa cupidatat dolor culpa culpa amet non. Deserunt eiusmod minim exercitation ipsum exercitation. Cillum id occaecat consectetur et officia eu velit eu eu incididunt fugiat deserunt.\r\n",
+      "image": "https://via.placeholder.com/150",
+      "updatedAt": "2015-11-02T09:18:25 -06:-30",
+      "updatedBy": "Blake Chapman"
+    },
+    {
+      "id": "62ffb7533b1767abb055a08e",
+      "customerId": "a3f0265b-a3ef-4c0d-9e44-9fe43470fe48",
+      "name": "FOSSIEL",
+      "description": "Non qui voluptate nostrud amet aliquip cillum velit eu cupidatat sit nulla ad exercitation magna. Duis commodo dolor mollit aute dolore nostrud. Sunt veniam eu consectetur quis nulla nulla pariatur. Aliquip duis Lorem amet qui ea quis duis nostrud qui esse adipisicing exercitation. Tempor dolore voluptate consectetur et deserunt ex non voluptate enim nisi consectetur nulla voluptate aute.\r\n",
+      "image": "https://via.placeholder.com/150",
+      "updatedAt": "2019-09-23T01:50:09 -06:-30",
+      "updatedBy": "Farmer Harmon"
+    }
+  ]
+}
