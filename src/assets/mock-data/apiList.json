@@ -1,0 +1,59 @@
+{
+  "apis": [
+    {
+      "id": "6300ce527d5377abdc4ec88e",
+      "tenantId": "837d49d1-6c63-4949-a8df-a1880658757c",
+      "name": "BIZMATIC",
+      "request_type": "POST",
+      "request_url": "api.request_url",
+      "authorisation": null,
+      "headers": null,
+      "queryParam": null,
+      "body": null
+    },
+    {
+      "id": "6300ce524473347be54630ed",
+      "tenantId": "968ddba1-beb6-4415-a10d-6e11666a9b9d",
+      "name": "PIGZART",
+      "request_type": "GET",
+      "request_url": "api.request_url",
+      "authorisation": null,
+      "headers": null,
+      "queryParam": null,
+      "body": null
+    },
+    {
+      "id": "6300ce52176b3a235a9b90b7",
+      "tenantId": "12b0800a-c72b-4b9f-b967-f1e39898bc35",
+      "name": "BILLMED",
+      "request_type": "GET",
+      "request_url": "api.request_url",
+      "authorisation": null,
+      "headers": null,
+      "queryParam": null,
+      "body": null
+    },
+    {
+      "id": "6300ce5206fa2c458ae660d0",
+      "tenantId": "d636f1e5-4d29-455b-8662-92ebd9f58523",
+      "name": "PORTALIS",
+      "request_type": "GET",
+      "request_url": "api.request_url",
+      "authorisation": null,
+      "headers": null,
+      "queryParam": null,
+      "body": null
+    },
+    {
+      "id": "6300ce527fa666155ac87b57",
+      "tenantId": "e18aaeb0-cddb-4645-8509-d3298e9f4b83",
+      "name": "CAPSCREEN",
+      "request_type": "GET",
+      "request_url": "api.request_url",
+      "authorisation": null,
+      "headers": null,
+      "queryParam": null,
+      "body": null
+    }
+  ]
+}

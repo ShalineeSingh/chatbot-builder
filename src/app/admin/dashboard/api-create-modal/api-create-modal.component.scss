@@ -1,0 +1,25 @@
+.request-type {
+  border-top-left-radius: 4px;
+  border: 1px solid #ccc;
+  border-bottom-left-radius: 4px;
+  padding: 0 20px;
+}
+.auth-type {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  width: 200px;
+}
+.tab-content {
+  min-height: 200px;
+}
+.form-control.body-text {
+  font-size: 12px;
+  font-family: monospace;
+}
+.icon-btn {
+  padding: 10px !important;
+}
+.w-85 {
+  width: 85%;
+}

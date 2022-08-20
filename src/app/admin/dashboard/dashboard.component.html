@@ -6,7 +6,7 @@
           <span class="fs-5 d-none d-sm-inline">Bot Responses</span>
         </p> -->
         <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100" id="menu">
-          <li class="nav-item">
+          <li class="nav-item" (click)="changeTab('bot')">
             <p class="nav-link align-middle px-0">
               <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Bots</span>
             </p>
@@ -17,12 +17,12 @@
           <span class="fs-5 d-none d-sm-inline">Integrations</span>
         </p>
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu-1">
-          <li class="nav-item">
+          <li class="nav-item" (click)="changeTab('api')">
             <p class="nav-link align-middle px-0">
               <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">API</span>
             </p>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" (click)="changeTab('channel')">
             <p class="nav-link align-middle px-0">
               <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Channels</span>
             </p>
@@ -43,28 +43,71 @@
               <img alt={{bot.name}} [src]="bot.image ? bot.image : '../assets/images/dummy.png'" />
             </div>
             <p class="text-center mt-4">{{bot.name}}</p>
-            <p class="small" *ngIf="bot.description">{{bot.description | slice:0:150}}<span *ngIf="bot.description.length > 150">...</span></p>
+            <p class="small" *ngIf="bot.description">{{bot.description | slice:0:150}}<span
+                *ngIf="bot.description.length > 150">...</span></p>
             <div class="footer">
-            <div class="card-actions d-flex justify-content-around">
-              <div class="action" title="Edit bot details" (click)="editBotDetails(bot)">
-                <i class="fs-6 bi-pencil"></i>
+              <div class="card-actions d-flex justify-content-around">
+                <div class="action" title="Edit bot details" (click)="editBotDetails(bot)">
+                  <i class="fs-6 bi-pencil"></i>
+                </div>
+                <div class="action" title="View" (click)="viewBot(bot.id)">
+                  <i class="fs-6 bi-eye"></i>
+                </div>
+                <div class="action" title="Edit Bot Workflow" (click)="editBot(bot.id)">
+                  <i class="fs-6 bi-diagram-3"></i>
+                </div>
+                <div class="action" title="Delete" (click)="deleteBot(bot.id)">
+                  <i class="fs-6 bi-trash"></i>
+                </div>
               </div>
-              <div class="action" title="View" (click)="viewBot(bot.id)">
-                <i class="fs-6 bi-eye"></i>
-              </div>
-              <div class="action" title="Edit Bot Workflow" (click)="editBot(bot.id)">
-                <i class="fs-6 bi-diagram-3"></i>
-              </div>
-              <div class="action" title="Delete" (click)="deleteBot(bot.id)">
-                <i class="fs-6 bi-trash"></i>
-              </div>
-            </div>
             </div>
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="activeTab === 'api'"></ng-container>
-      <ng-container *ngIf="activeTab === 'channel'"></ng-container>
+      <ng-container *ngIf="activeTab === 'api'">
+        <div class="header py-2 border-bottom d-flex">
+          <button type="button" class="ml-auto btn btn-primary" (click)="addNewApi()">
+            <div> <i class="fs-6 bi-plus"></i></div>
+          </button>
+        </div>
+        <div class="api-wrapper">
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Request Type</th>
+                  <th scope="col">Request Url</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let api of apiList; let i = index">
+                  <th scope="row">{{api.name}}</th>
+                  <td>{{api.requestType}}</td>
+                  <td>{{api.requestUrl}}</td>
+                  <td>
+                    <div class="card-actions d-flex justify-content-around">
+                      <div class="action pointer" title="Edit Api details" (click)="editApiDetails(api)">
+                        <i class="fs-6 bi-pencil"></i>
+                      </div>
+                      <div class="action pointer" title="View Api Details" (click)="viewApi(api)">
+                        <i class="fs-6 bi-eye"></i>
+                      </div>
+                      <div class="action pointer" title="Delete Api" (click)="deleteApi(api.id)">
+                        <i class="fs-6 bi-trash"></i>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="activeTab === 'channel'">
+        <div></div>
+      </ng-container>
     </div>
   </div>
 </div>

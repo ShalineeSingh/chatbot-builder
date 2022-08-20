@@ -18,6 +18,7 @@ import { MediaModalComponent } from './node-modals/media/media-modal.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { CardModalComponent } from './node-modals/card/card-modal.component';
 import { BotModalComponent } from './dashboard/bot-modal/bot-modal.component';
+import { ApiCreateModalComponent } from './dashboard/api-create-modal/api-create-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { BotModalComponent } from './dashboard/bot-modal/bot-modal.component';
     MediaModalComponent,
     CardModalComponent,
     BotModalComponent,
+    ApiCreateModalComponent,
   ],
   imports: [
     CommonModule,

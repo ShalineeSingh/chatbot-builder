@@ -1,0 +1,208 @@
+<div class="modal-header">
+  <h4 class="modal-title">New API</h4>
+  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('close')">
+    <span class="fs-2" aria-hidden="true">&times;</span>
+  </span>
+</div>
+<form #textForm="ngForm">
+  <div class="modal-body" *ngIf="apiDetails">
+    <div class="form-group" [class.error]="api_name?.invalid && submitAttempt">
+      <label class="form-label small">Enter api name here</label>
+      <input ngbAutofocus type="text" class="form-control w-50" name="name" #api_name="ngModel" [(ngModel)]="apiDetails.name"
+        required>
+      <div *ngIf="api_name?.invalid && submitAttempt" class="text-danger small">
+        <div *ngIf="api_name.errors.required">
+          Api Name is required
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" [class.error]="api_url?.invalid && submitAttempt">
+      <label class="form-label small">Request Details</label>
+      <div class="d-flex">
+        <div class="input-group w-75">
+          <div class="dropdown request-type" ngbDropdown>
+            <div class="d-flex align-items-center h-100 pointer" aria-expanded="false" ngbDropdownToggle>
+              <span class="d-none d-sm-inline mx-1">{{apiDetails.requestType}}</span>
+            </div>
+            <ul class="dropdown-menu text-small shadow" ngbDropdownMenu>
+              <li><a class="dropdown-item" (click)="changeRequestType('GET')" ngbDropdownItem>GET</a></li>
+              <li><a class="dropdown-item" (click)="changeRequestType('POST')" ngbDropdownItem>POST</a></li>
+            </ul>
+          </div>
+          <input type="text" class="form-control" name="url" #api_url="ngModel" [(ngModel)]="apiDetails.requestUrl"
+            placeholder="Request Url" required>
+        </div>
+        <button type="button" class="btn btn-outline-dark ml-auto" (click)="submitAttempt=true; textForm.valid && testApi()">
+          <span *ngIf="!apiButtonLoader">Test API</span>
+          <div *ngIf="apiButtonLoader" class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </button>
+      </div>
+      <div *ngIf="api_url?.invalid && submitAttempt" class="text-danger small">
+        <div *ngIf="api_url.errors.required">
+          Api URL is required
+        </div>
+      </div>
+    </div>
+
+    <nav ngbNav #nav="ngbNav" class="nav-tabs small mt-3" [destroyOnHide]="false">
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Params
+          <!-- <span *ngIf="apiDetails.queryParam?.length">({{apiDetails.queryParam.length}})</span> -->
+        </a>
+        <ng-template ngbNavContent>
+          <div class="form-group">
+            <div class="d-flex mb-1" *ngFor="let param of apiDetails.queryParam; let i = index; let last=last">
+              <div class="input-group input-group-sm w-75">
+                <input type="text" class="form-control" name="paramKey{{i}}" [(ngModel)]="param.key" placeholder="Key">
+                <input type="text" class="form-control" name="paramValue{{i}}" [(ngModel)]="param.value" placeholder="Value">
+                <button type="button" class="btn btn-outline-dark ml-auto" (click)="deleteParamRow('queryParam', i)">
+                  <i class="fs-6 bi-trash"></i>
+                </button>
+              </div>
+              <button *ngIf="last && param.key !== ''" type="button" class="btn btn-outline-dark ml-auto"
+                (click)="addNewParamRow('queryParam')">
+                <i class="fs-6 bi-plus"></i>
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Authorization</a>
+        <ng-template ngbNavContent>
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <div class="dropdown auth-type" ngbDropdown>
+                  <div class="text-center pointer" aria-expanded="false" ngbDropdownToggle>
+                    <span class="d-none d-sm-inline mx-1">{{authDetails?.authType ? authTypeMap[authDetails.authType] :
+                      'Type'}}</span>
+                  </div>
+                  <ul class="dropdown-menu text-small shadow" ngbDropdownMenu>
+                    <li><a class="dropdown-item" (click)="changeAuthType('NO_AUTH')" ngbDropdownItem>No auth</a></li>
+                    <li><a class="dropdown-item" (click)="changeAuthType('BASIC_AUTH')" ngbDropdownItem>Basic auth</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col" [class.border-start]="authDetails?.authType === 'BASIC_AUTH'">
+              <div class="mr-4" *ngIf="authDetails?.authType === 'BASIC_AUTH'">
+                <div class="form-group" [class.error]="user_name?.invalid && submitAttempt">
+                  <label class="form-label small">Username</label>
+                  <input ngbAutofocus type="text" class="form-control w-50" name="name" #user_name="ngModel"
+                    [(ngModel)]="authDetails.username" required>
+                  <div *ngIf="user_name?.invalid && submitAttempt" class="text-danger small">
+                    <div *ngIf="user_name.errors.required">
+                      Username is required
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group" [class.error]="pass_word?.invalid && submitAttempt">
+                  <label class="form-label small">Password</label>
+                  <input ngbAutofocus type="text" class="form-control w-50" name="name" #pass_word="ngModel"
+                    [(ngModel)]="authDetails.password" required>
+                  <div *ngIf="pass_word?.invalid && submitAttempt" class="text-danger small">
+                    <div *ngIf="pass_word.errors.required">
+                      Password is required
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Headers
+          <!-- <span *ngIf="apiDetails.headers?.length">({{apiDetails.headers.length}})</span> -->
+        </a>
+        <ng-template ngbNavContent>
+          <div class="form-group">
+            <div class="d-flex mb-1" *ngFor="let param of apiDetails.headers; let i = index; let last=last">
+              <div class="input-group input-group-sm w-75">
+                <input type="text" class="form-control" name="paramKey{{i}}" [(ngModel)]="param.key" placeholder="Key">
+                <input type="text" class="form-control" name="paramValue{{i}}" [(ngModel)]="param.value" placeholder="Value">
+                <button type="button" class="btn btn-outline-dark ml-auto" (click)="deleteParamRow('headers', i)">
+                  <i class="fs-6 bi-trash"></i>
+                </button>
+              </div>
+              <button *ngIf="last && param.key !== ''" type="button" class="btn btn-outline-dark ml-auto"
+                (click)="addNewParamRow('headers')">
+                <i class="fs-6 bi-plus"></i>
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <ng-container ngbNavItem>
+        <a ngbNavLink>Body</a>
+        <ng-template ngbNavContent>
+          <div class="d-flex">
+            <a *ngIf="apiDetails.body" class="ml-auto small pointer" (click)="prettifyJson()">Prettify JSON</a>
+          </div>
+          <div class="form-group">
+            <textarea class="form-control body-text" name="bodyText" [(ngModel)]="apiDetails.body" cols=50 rows=7></textarea>
+          </div>
+        </ng-template>
+      </ng-container>
+    </nav>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    <hr>
+    <div class="response-wrapper">
+      <div class="row">
+        <div class="col">
+
+          <div class="form-group">
+            <label class="form-label small">Response Details</label>
+            <textarea readonly class="form-control body-text" name="apiresponse" [(ngModel)]="apiResponse" cols=50
+              rows=7></textarea>
+          </div>
+        </div>
+        <div class="col border-start">
+
+          <div class="form-group">
+            <label class="form-label small">Response Variables (use 'response' to access response json)</label>
+            <div *ngFor="let param of apiDetails.response; let i = index; let last=last">
+              <div class="d-flex mb-1">
+                <div class="input-group input-group-sm w-85">
+                  <input type="text" class="form-control" name="paramKey{{i}}" [(ngModel)]="param.key" placeholder="valueFromAPI">
+                  <input type="text" class="form-control" name="paramValue{{i}}" [(ngModel)]="param.value"
+                    placeholder="response.abc.xyz">
+                  <button type="button" class="btn btn-outline-dark ml-auto icon-btn" (click)="checkResponseValue(i)">
+                    <i class="fs-6 bi-check"></i>
+                  </button>
+                  <button type="button" class="btn btn-outline-dark ml-auto icon-btn" (click)="deleteParamRow('response', i)">
+                    <i class="fs-6 bi-trash"></i>
+                  </button>
+                </div>
+                <button *ngIf="last && param.key !== ''" type="button" class="btn btn-outline-dark ml-auto icon-btn"
+                  (click)="addNewParamRow('response')">
+                  <i class="fs-6 bi-plus"></i>
+                </button>
+
+              </div>
+              <div class="tiny text-danger" *ngIf="param.error">Value from current response could not be found</div>
+              <div class="tiny" *ngIf="!param.error && param.tempValue">Value from current response: {{param.tempValue | json}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('close')">Close</button>
+    <button type="button" class="btn btn-primary" (click)="submitAttempt=true; textForm.valid && onSaveApi()">
+      <span *ngIf="!buttonLoader">Save</span>
+      <div *ngIf="buttonLoader" class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </button>
+  </div>
+</form>
