@@ -1,12 +1,59 @@
 <div class="modal-header">
-  <h4 class="modal-title">Text Node</h4>
-  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  <h4 class="modal-title">API Node</h4>
+  <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('close')">
     <span class="fs-2" aria-hidden="true">&times;</span>
   </span>
 </div>
-<div class="modal-body">
-  <p>Hello,!</p>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
-</div>
+<form #textForm="ngForm">
+  <div class="modal-body">
+    <div class="form-group" [class.error]="node_name?.invalid && submitAttempt">
+      <label class="form-label small">Enter node name here</label>
+      <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
+        [(ngModel)]="apiData.name" required>
+      <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
+      <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
+        <div *ngIf="node_name.errors.required">
+          Node Name is required
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label small">Select API to call</label>
+      <div class="input-group w-50 mb-4">
+        <input id="typeahead-focus" type="text" class="form-control br-0 border-end-0" [(ngModel)]="selectedApi"
+          [ngbTypeahead]="search" (focus)="focus$.next($any($event).target.value)" name="apiSearch"
+          (click)="click$.next($any($event).target.value)" #instance="ngbTypeahead" [resultFormatter]="formatter"
+          [inputFormatter]="formatter" placeholder="Select api" (blur)="checkValidity($event.target.value)" />
+        <span class="input-group-append">
+          <div class="input-group-text bg-transparent">
+            <i class="fs-6 bi-caret-down-fill"></i>
+          </div>
+        </span>
+      </div>
+    </div>
+    <div class="editor mt-4">
+      <div class="form-group" [class.error]="quill_editor?.invalid && submitAttempt">
+        <label class="form-label small">Enter bot response here</label>
+        <quill-editor [(ngModel)]="apiData.content" placeholder="Enter Text" name="quill" ngDefaultControl [modules]="quillConfig"
+          #quill_editor="ngModel" required>
+        </quill-editor>
+        <div class="tiny mt-1">This will be shown to the user</div>
+        <div *ngIf="quill_editor?.invalid && submitAttempt" class="text-danger small">
+          <div *ngIf="quill_editor.errors.required">
+            Enter some text to be shown
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-50">
+      <label class="form-label small">Select next node</label>
+      <node-select [currentNodeName]="apiData.name" [selectedNodeId]="tempNextNodeId" (onNextNodeSelect)="onNextNodeSelect($event)"
+        (isNextNodeValid)="isNextNodeValid($event)"></node-select>
+      <div class="tiny mt-1">This node will be executed when user clicks on current node</div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('close')">Close</button>
+    <button type="button" class="btn btn-primary" (click)="submitAttempt=true; textForm.valid && onSaveNode()">Save</button>
+  </div>
+</form>

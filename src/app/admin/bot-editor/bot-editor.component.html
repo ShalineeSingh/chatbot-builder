@@ -1,7 +1,15 @@
-<div class="container-fluid">
+<div class="container-fluid p-0">
+  <div class="header d-flex">
+    <span class="heading-3 align-self-center">Chatbot </span>
+    <div class="actions ml-auto my-2">
+    <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="openEmulator()">Save</button>
+    <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="openEmulator()">Publish</button>
+<button type="button" class="btn btn-sm btn-primary mx-2" (click)="openEmulator()">Test your bot</button>
+</div>
+  </div>
   <div class="row flex-nowrap">
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
-      <div class="d-flex flex-column align-items-center align-items-sm-start min-vh-100">
+    <div class="col-auto col-md-3 col-xl-2 p-4">
+      <div class="d-flex flex-column align-items-center align-items-sm-start">
         <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
           <span class="fs-5 d-none d-sm-inline">Bot Responses</span>
         </p>
@@ -11,11 +19,11 @@
               <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Text</span>
             </p>
           </li>
-           <li class="nav-item" (click)="openNodeModal('button')">
+           <!-- <li class="nav-item" (click)="openNodeModal('button')">
             <p class="nav-link px-0 align-middle">
               <i class="fs-6 bi-menu-button"></i> <span class="ms-1 d-none d-sm-inline">Button</span>
             </p>
-          </li>
+          </li> -->
            <li class="nav-item" (click)="openNodeModal('image')">
             <p class="nav-link px-0 align-middle">
               <i class="fs-6 bi-images"></i> <span class="ms-1 d-none d-sm-inline">Image</span>
@@ -33,7 +41,7 @@
           </li>
            <li class="nav-item" (click)="openNodeModal('card')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-card-heading"></i> <span class="ms-1 d-none d-sm-inline">Card</span>
+              <i class="fs-6 bi-card-heading"></i> <span class="ms-1 d-none d-sm-inline">Interactive</span>
             </p>
           </li>
            <li class="nav-item" (click)="openNodeModal('api')">
@@ -43,7 +51,7 @@
           </li>
         </ul>
         <hr>
-        <div class="dropdown pb-4" ngbDropdown>
+        <!-- <div class="dropdown pb-4" ngbDropdown>
           <a class="d-flex align-items-center text-decoration-none" aria-expanded="false" ngbDropdownToggle>
             <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
             <span class="d-none d-sm-inline mx-1">User</span>
@@ -57,7 +65,7 @@
             </li>
             <li><a class="dropdown-item" href="#" ngbDropdownItem>Sign out</a></li>
           </ul>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="col">
@@ -65,9 +73,6 @@
     </div>
   </div>
 </div>
-
-<div class="chatbox-emulator">
-<div class="test-btn">
-  <button type="button" class="btn btn-primary" (click)="openEmulator()">Test your bot</button>
-</div>
+<div class="unsaved-changes">
+  <span class="tiny">You have unsaved changes.</span>
 </div>

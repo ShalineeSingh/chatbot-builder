@@ -2,10 +2,10 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { map } from "rxjs/operators";
+import { Session } from '../../common/session';
 
 
 interface IBotServerResponse {
-  bots: {
     id: number;
     tenant_id: number;
     name: string;
@@ -15,7 +15,6 @@ interface IBotServerResponse {
     created_date: string;
     last_modified_date: string;
     last_modified_by: string;
-  }[];
 }
 
 interface IApiServerResponse {
@@ -60,33 +59,45 @@ export interface IApi {
 
 @Injectable()
 export class DashboardService {
-  constructor(public http: HttpClient) { }
+  apiPrefix:string;
+  tenantId: number;
+  constructor(public http: HttpClient, private session: Session) {
+    this.apiPrefix = this.session.getAPIPrefix();
+    this.tenantId = this.session.getTenantId();
+   }
 
-  public getBotList(params = null): Observable<IBot[]> {
-    return this.http.get('../assets/mock-data/botList.json')
+  public getBotList(): Observable<IBot[]> {
+    // return this.http.get('../assets/mock-data/botList.json')
+    return this.http.get(`${this.apiPrefix}bot/listBotByTenantId/${this.tenantId}`)
       .pipe(
         map(this.transformBotList.bind(this)),
       );
+  }
+
+  public saveBot(body): Observable<IBot> {
+    // return this.http.get('../assets/mock-data/botList.json')
+    return this.http.post(`${this.apiPrefix}bot/create`, body)
+      .pipe(
+        map(this.transformBot.bind(this)),
+      );
+  }
+
+  public updateBot(body, botId: number): Observable<IBot> {
+    // return this.http.get('../assets/mock-data/botList.json')
+    return this.http.put(`${this.apiPrefix}bot/update/${botId}`, body)
+      .pipe(
+        map(this.transformBot.bind(this)),
+      );
+  }
+
+  public deleteBot(botId: number): Observable<any> {
+    return this.http.put(`${this.apiPrefix}bot/delete/${botId}`, {})
   }
 
   public getApiList(params = null): Observable<IApi[]> {
     return this.http.get('../assets/mock-data/apiList.json')
       .pipe(
         map(this.transformApiList.bind(this)),
-      );
-  }
-
-  public saveBot(body, params = null): Observable<IBot[]> {
-    return this.http.get('../assets/mock-data/botList.json')
-      .pipe(
-        map(this.transformBotList.bind(this)),
-      );
-  }
-
-  public deleteBot(params = null): Observable<IBot[]> {
-    return this.http.get('../assets/mock-data/botList.json')
-      .pipe(
-        map(this.transformBotList.bind(this)),
       );
   }
 
@@ -111,8 +122,20 @@ export class DashboardService {
     return this.http.post(url, body, { headers, params });
   }
 
-  private transformBotList(data: IBotServerResponse): IBot[] {
-    return data.bots.map((bot) => {
+  private transformBot(bot: IBotServerResponse): IBot {
+    return {
+      id: bot.id,
+      tenantId: bot.tenant_id,
+      name: bot.name,
+      description: bot.description,
+      image: bot.image,
+      updatedAt: bot.last_modified_date,
+      updatedBy: bot.last_modified_by,
+    }
+  }
+
+  private transformBotList(data: IBotServerResponse[]): IBot[] {
+    return data.map((bot) => {
       return {
         id: bot.id,
         tenantId: bot.tenant_id,

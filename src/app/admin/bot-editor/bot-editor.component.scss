@@ -1,10 +1,6 @@
+$header-height: 60px;
 .container-canvas {
-  height: 100vh;
-}
-.test-btn {
-  position: absolute;
-  right: 30px;
-  bottom: 30px;
+  height: calc(100vh - #{$header-height});
 }
 .nav-link {
   color: black;
@@ -21,4 +17,17 @@
   &:hover {
     background-color: #e9ecef;
   }
+}
+.header {
+  height: $header-height;
+  border-bottom: 1px solid #ccc;
+}
+
+.unsaved-changes {
+  position: absolute;
+  top: calc(#{$header-height} + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  padding: 0 30px 5px 30px;
 }

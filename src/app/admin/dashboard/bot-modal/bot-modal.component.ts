@@ -5,6 +5,7 @@ import { FileUploader } from "ng2-file-upload";
 import { AlertConfigModel } from "src/app/common/alert/alert-config.model";
 import { DashboardService } from '../dasboard.service';
 import { AlertService } from '../../../common/alert/alert.service';
+import { Session } from "src/app/common/session";
 
 const URL = '/api';
 @Component({
@@ -24,16 +25,19 @@ export class BotModalComponent {
   public previewPath: any;
   currentFile: any;
   buttonLoader: boolean;
+  tenantId: number;
 
   constructor(
     public activeModal: NgbActiveModal,
     private sanitizer: DomSanitizer,
     private dashboardService: DashboardService,
     private alertService: AlertService,
+    private session:Session,
   ) {
+    this.tenantId = this.session.getTenantId();
     this.uploader = new FileUploader({
       url: URL,
-      disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
+      disableMultipart: true,
       formatDataFunctionIsAsync: true,
       formatDataFunction: async (item) => {
         return new Promise((resolve, reject) => {
@@ -61,17 +65,28 @@ export class BotModalComponent {
     }
   }
   public onSaveBot(): void {
+    let serviceToCall;
+    let successMsg: string = "Bot saved successfully";
     this.buttonLoader = true;
     let body = {
       name: this.botName,
+      tenant_id: this.tenantId,
       description: this.botDesc,
       image: this.currentFile,
+      status: "DRAFT",
+      deleted: false
     }
-    this.dashboardService.saveBot(body).subscribe(res => {
+    if(this.botDetails){
+      serviceToCall = this.dashboardService.updateBot(body, this.botDetails.id);
+      successMsg = "Bot updated successfully";
+    }else {
+      serviceToCall = this.dashboardService.saveBot(body);
+    }
+    serviceToCall.subscribe(res => {
       this.activeModal.close(body);
       const config: AlertConfigModel = {
         type: 'success',
-        message: "Bot saved successfully",
+        message: successMsg,
       };
       this.alertService.configSubject.next(config);
     }, (error) => {

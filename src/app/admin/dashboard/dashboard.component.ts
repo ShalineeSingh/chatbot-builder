@@ -17,7 +17,7 @@ type Tabs = 'bot' | 'api' | 'channel';
   providers: [DashboardService],
 })
 export class DashboardComponent implements OnInit {
-  public activeTab: Tabs = 'channel';
+  public activeTab: Tabs = 'bot';
   public botList: IBot[];
   public apiList: IApi[];
   public loading: boolean;
@@ -157,6 +157,7 @@ export class DashboardComponent implements OnInit {
       this.botList = res;
     },
       (error) => {
+        console.log(error);
         const config: AlertConfigModel = {
           type: 'danger',
           message: error.error,
