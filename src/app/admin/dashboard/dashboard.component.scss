@@ -47,3 +47,12 @@
 .table > :not(:first-child) {
   border-top: 1px solid currentColor;
 }
+
+.channel-card {
+  width: 300px;
+  align-items: center;
+  img {
+    height: 100px;
+    width: 100px;
+  }
+}

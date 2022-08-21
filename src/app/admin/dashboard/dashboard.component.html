@@ -106,7 +106,55 @@
         </div>
       </ng-container>
       <ng-container *ngIf="activeTab === 'channel'">
-        <div></div>
+        <div class="row">
+          <div class="col">
+            <div class="card channel-card text-center p-4">
+              <img src="../../../assets/images/whatsapp.png">
+              <span>Whatsapp</span>
+            </div>
+          </div>
+          <div class="col border-start">
+            <!-- whatsapp configuration -->
+            <div class="configuration">
+              <form #textForm="ngForm">
+                <div class="form-group" [class.error]="wa_number?.invalid && submitAttempt">
+                  <label class="form-label small">Whatsapp number</label>
+                  <input ngbAutofocus type="text" class="form-control w-50" name="waNumber" #wa_number="ngModel"
+                    [(ngModel)]="whatsappNumber" required>
+                  <div *ngIf="wa_number?.invalid && submitAttempt" class="text-danger small">
+                    <div *ngIf="wa_number.errors.required">
+                      Whatsapp number is required
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group" [class.error]="invalidNode && submitAttempt">
+                  <label class="form-label small">Select Bot</label>
+                  <div class="input-group w-50 mb-4">
+                  <input id="typeahead-focus" type="text" class="form-control br-0 border-end-0" [(ngModel)]="selectedNode"
+                    [ngbTypeahead]="search" (focus)="focus$.next($any($event).target.value)" name="botSearch"
+                    (click)="click$.next($any($event).target.value)" #instance="ngbTypeahead" [resultFormatter]="formatter"
+                    [inputFormatter]="formatter" placeholder="Select bot"
+                    (blur)="checkValidity($event.target.value)" />
+                  <span class="input-group-append">
+                    <div class="input-group-text bg-transparent">
+                      <i class="fs-6 bi-caret-down-fill"></i>
+                    </div>
+                  </span>
+</div>
+                </div>
+                <div class="footer">
+                  <button type="button" class="btn btn-primary" (click)="submitAttempt=true; textForm.valid && onSaveApi()">
+                    <span *ngIf="!buttonLoader">Save</span>
+                    <div *ngIf="buttonLoader" class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
       </ng-container>
     </div>
   </div>

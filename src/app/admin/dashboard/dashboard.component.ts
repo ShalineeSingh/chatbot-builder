@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DashboardService, IBot, IApi } from './dasboard.service';
 import { AlertService } from '../../common/alert/alert.service';
 import { AlertConfigModel } from 'src/app/common/alert/alert-config.model';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { BotModalComponent } from './bot-modal/bot-modal.component';
 import { Router } from '@angular/router';
 import { ApiCreateModalComponent } from './api-create-modal/api-create-modal.component';
+import { merge, Observable, OperatorFunction, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 
 type Tabs = 'bot' | 'api' | 'channel';
 @Component({
@@ -15,15 +17,21 @@ type Tabs = 'bot' | 'api' | 'channel';
   providers: [DashboardService],
 })
 export class DashboardComponent implements OnInit {
-  public activeTab: Tabs = 'api';
+  public activeTab: Tabs = 'channel';
   public botList: IBot[];
   public apiList: IApi[];
   public loading: boolean;
 
+  // channel
+  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
+  invalidNode: boolean;
+  whatsappNumber: string;
+
   ngOnInit(): void {
     this.getBotList();
     this.getApiList();
-    this.addNewApi();
   }
   constructor(
     private dashboardService: DashboardService,
@@ -111,6 +119,37 @@ export class DashboardComponent implements OnInit {
         });
     }
   }
+
+  // channel methods
+  search: OperatorFunction<string, readonly IBot[]> = (text$: Observable<string>) => {
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+    const inputFocus$ = this.focus$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map(term => {
+        this.invalidNode = false;
+        return (term === '' ? this.botList
+          : this.botList.filter(v => v.name.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10)
+      })
+    );
+  };
+
+  public formatter = (result: IBot) => result.name;
+
+  // public onUpdateValue(event) {
+  //   this.onNextNodeSelect.emit(event.item);
+  // }
+
+  public checkValidity(nodename: string): void {
+    if (nodename && nodename !== '') {
+      const nodeIndex = this.botList.findIndex(v => v.name === nodename);
+      if (nodeIndex === -1) this.invalidNode = true;
+      else this.invalidNode = false;
+      // this.isNextNodeValid.emit(!this.invalidNode);
+    }
+  }
+  // end channel methods
 
   private getBotList() {
     this.loading = true;
