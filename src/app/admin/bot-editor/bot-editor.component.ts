@@ -10,6 +10,9 @@ import { NodeService } from '../node-select/node-list.service';
 import { convertToDrawflowConnection, convertToDrawflowNode } from '../node-select/node-utils';
 import { Subscription } from 'rxjs';
 import { MediaModalComponent } from '../node-modals/media/media-modal.component';
+import { BotEditorService, INodeDataServerResponse } from './bot-editor.service';
+import { Session } from '../../common/session';
+import { ActivatedRoute } from '@angular/router';
 
 export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'card' | 'api';
 @Component({
@@ -17,26 +20,34 @@ export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'car
   templateUrl: './bot-editor.component.html',
   styleUrls: ['./bot-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [BotEditorService],
 })
 export class BotEditorComponent implements OnInit {
   public nodes: INode[];
   public connections: IConnection[] = [];
+  botId: number;
   @ViewChild(DrawflowDirective, { static: true }) drawflow: DrawflowDirective;
   nodeServiceSubscription: Subscription;
-  constructor(private cdr: ChangeDetectorRef, private modalService: NgbModal, private nodeService: NodeService) {
+  constructor(private cdr: ChangeDetectorRef,
+     private modalService: NgbModal,
+    private botEditorService: BotEditorService,
+    private session: Session,
+    private route:ActivatedRoute,
+      private nodeService: NodeService) {
 
   }
 
   ngOnInit(): void {
+    this.botId = this.route.snapshot.params.id;
   }
 
   ngAfterViewInit() {
     this.nodeServiceSubscription = this.nodeService.updateInitialNodeList.subscribe((nodeList) => {
-      nodeList.forEach(node => {
+      if (nodeList) nodeList.forEach(node => {
         node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
         this.nodeService.updateNode(node);
       });
-      nodeList.forEach(node => {
+      if (nodeList) nodeList.forEach(node => {
         if (this.nodeService.getNextNode(node)) {
           let inputId = nodeList.find(v => v.name === node.nextNodeName).id;
           this.drawflow.addNodeInput(this.nodeService.getNextNode(node).id);
@@ -91,10 +102,29 @@ export class BotEditorComponent implements OnInit {
 
   private addNode(node: any) {
     this.nodeService.onAddNode(node);
+
     node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+    this.saveNodeToDb(node);
     if (this.nodeService.getNextNode(node)) {
       this.createConnection(node);
     }
+  }
+
+  private saveNodeToDb(node){
+    let body: INodeDataServerResponse = {
+      tenant_id: this.session.getTenantId(),
+      bot_id: this.botId,
+      node_id: node.id,
+      type: node.type,
+      next_node_id: 2,
+      next_node_type: 'text',
+      root_node: node.data.rootNode,
+      deleted: false,
+      response: "{}",
+    }
+    this.botEditorService.saveNode(body).subscribe(res => {
+      console.log(res);
+    })
   }
 
   public editNode(nodeId: number) {

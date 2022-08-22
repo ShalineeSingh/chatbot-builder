@@ -12,18 +12,18 @@ export class NodeService {
 
   tempNodes: ITextNode[] = [
     {
-      nextNodeName: 'node2',
-      content: "hello there",
-      name: 'node1',
+      nextNodeName: 'greeting1',
+      content: "Hi Shalinee",
+      name: 'greeting',
       type: 'text',
       pos_X: 150,
       pos_Y: 100,
       expectsUserInput: true,
       isShowTyping: true,
       data: {
-        nodeName: 'node1',
-        htmlText: "hello there",
-        tempNextNodeId: 'node2',
+        nodeName: 'greeting',
+        htmlText: "Hi Shalinee",
+        tempNextNodeId: 'greeting1',
         expectsUserInput: true,
         isShowTyping: true,
         sliderValue: 5,
@@ -34,20 +34,39 @@ export class NodeService {
     },
     {
       content: "how are you?",
-      name: 'node2',
+      name: 'greeting1',
       type: 'text',
       pos_X: 450,
       pos_Y: 100,
       expectsUserInput: true,
       isShowTyping: true,
+      nextNodeName: 'welcome_node',
       data: {
-        nodeName: 'node2',
+        nodeName: 'greeting1',
         htmlText: "how are you?",
-        tempNextNodeId: null,
+        tempNextNodeId: 'welcome_node',
         expectsUserInput: true,
         isShowTyping: true,
         sliderValue: 5,
         id: 2,
+      }
+    },
+    {
+      content: "Welcome to bot builder",
+      name: 'welcome_node',
+      type: 'text',
+      pos_X: 750,
+      pos_Y: 100,
+      expectsUserInput: true,
+      isShowTyping: true,
+      data: {
+        nodeName: 'welcome_node',
+        htmlText: "Welcome to bot builder",
+        tempNextNodeId: null,
+        expectsUserInput: true,
+        isShowTyping: true,
+        sliderValue: 5,
+        id: 3,
       }
     }
   ]

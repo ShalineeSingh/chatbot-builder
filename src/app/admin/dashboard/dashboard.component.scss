@@ -1,17 +1,17 @@
+$header-height: 60px;
 .nav-link {
-  color: black;
+  color: white;
   margin: 3px;
   padding: 10px;
-  font-size: 14px;
   margin-left: 15px;
 }
 .nav-item {
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #444;
   display: block;
   width: 100%;
   cursor: pointer;
   &:hover {
-    background-color: #e9ecef;
+    background-color: #444;
   }
 }
 .bot-card {
@@ -55,4 +55,16 @@
     height: 100px;
     width: 100px;
   }
+}
+
+.header {
+  height: $header-height;
+  border-bottom: 1px solid #ccc;
+}
+
+.sidebar{
+  width: 180px;
+  padding: 0;
+  min-height: calc(100vh - #{$header-height});
+  color: white;
 }

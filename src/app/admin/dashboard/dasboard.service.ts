@@ -6,15 +6,15 @@ import { Session } from '../../common/session';
 
 
 interface IBotServerResponse {
-    id: number;
-    tenant_id: number;
-    name: string;
-    description: string;
-    image: string;
-    version: number;
-    created_date: string;
-    last_modified_date: string;
-    last_modified_by: string;
+  id: number;
+  tenant_id: number;
+  name: string;
+  description: string;
+  image: string;
+  version: number;
+  created_date: string;
+  last_modified_date: string;
+  last_modified_by: string;
 }
 
 interface IApiServerResponse {
@@ -59,12 +59,12 @@ export interface IApi {
 
 @Injectable()
 export class DashboardService {
-  apiPrefix:string;
+  apiPrefix: string;
   tenantId: number;
   constructor(public http: HttpClient, private session: Session) {
     this.apiPrefix = this.session.getAPIPrefix();
     this.tenantId = this.session.getTenantId();
-   }
+  }
 
   public getBotList(): Observable<IBot[]> {
     // return this.http.get('../assets/mock-data/botList.json')

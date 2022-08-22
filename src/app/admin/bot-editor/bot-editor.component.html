@@ -1,52 +1,52 @@
 <div class="container-fluid p-0">
   <div class="header d-flex">
-    <span class="heading-3 align-self-center">Chatbot </span>
-    <div class="actions ml-auto my-2">
-    <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="openEmulator()">Save</button>
-    <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="openEmulator()">Publish</button>
-<button type="button" class="btn btn-sm btn-primary mx-2" (click)="openEmulator()">Test your bot</button>
-</div>
+    <span class="heading-4 align-self-center ms-3 pointer" routerLink="/">LSQ Bot </span>
+    <div class="actions ml-auto my-2 align-self-center">
+      <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="openEmulator()">Save</button>
+      <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="openEmulator()">Publish</button>
+      <button type="button" class="btn btn-sm btn-primary mx-2" (click)="openEmulator()">Test your bot</button>
+    </div>
   </div>
   <div class="row flex-nowrap">
-    <div class="col-auto col-md-3 col-xl-2 p-4">
+    <div class="col-auto bg-dark sidebar">
       <div class="d-flex flex-column align-items-center align-items-sm-start">
-        <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
-          <span class="fs-5 d-none d-sm-inline">Bot Responses</span>
-        </p>
+        <!-- <p class="d-flex align-items-center px-3 mb-md-0 me-md-auto text-decoration-none">
+          <span class="d-none d-sm-inline">Bot Responses</span>
+        </p> -->
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu">
           <li class="nav-item" (click)="openNodeModal('text')">
             <p class="nav-link align-middle px-0">
-              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Text</span>
+              <i class="fs-6 bi-card-text"></i> <span class="ms-2 d-none d-sm-inline">Text</span>
             </p>
           </li>
-           <!-- <li class="nav-item" (click)="openNodeModal('button')">
+          <!-- <li class="nav-item" (click)="openNodeModal('button')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-menu-button"></i> <span class="ms-1 d-none d-sm-inline">Button</span>
+              <i class="fs-6 bi-menu-button"></i> <span class="ms-2 d-none d-sm-inline">Button</span>
             </p>
           </li> -->
-           <li class="nav-item" (click)="openNodeModal('image')">
+          <li class="nav-item" (click)="openNodeModal('image')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-images"></i> <span class="ms-1 d-none d-sm-inline">Image</span>
+              <i class="fs-6 bi-images"></i> <span class="ms-2 d-none d-sm-inline">Image</span>
             </p>
           </li>
-           <li class="nav-item" (click)="openNodeModal('video')">
+          <li class="nav-item" (click)="openNodeModal('video')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-play-btn"></i> <span class="ms-1 d-none d-sm-inline">Video</span>
+              <i class="fs-6 bi-play-btn"></i> <span class="ms-2 d-none d-sm-inline">Video</span>
             </p>
           </li>
-           <li class="nav-item" (click)="openNodeModal('document')">
+          <li class="nav-item" (click)="openNodeModal('document')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-file-earmark-text"></i> <span class="ms-1 d-none d-sm-inline">Document</span>
+              <i class="fs-6 bi-file-earmark-text"></i> <span class="ms-2 d-none d-sm-inline">Document</span>
             </p>
           </li>
-           <li class="nav-item" (click)="openNodeModal('card')">
+          <li class="nav-item" (click)="openNodeModal('card')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-card-heading"></i> <span class="ms-1 d-none d-sm-inline">Interactive</span>
+              <i class="fs-6 bi-card-heading"></i> <span class="ms-2 d-none d-sm-inline">Interactive</span>
             </p>
           </li>
-           <li class="nav-item" (click)="openNodeModal('api')">
+          <li class="nav-item" (click)="openNodeModal('api')">
             <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-box-arrow-up-right"></i> <span class="ms-1 d-none d-sm-inline">API Response</span>
+              <i class="fs-6 bi-box-arrow-up-right"></i> <span class="ms-2 d-none d-sm-inline">API Response</span>
             </p>
           </li>
         </ul>
@@ -69,7 +69,8 @@
       </div>
     </div>
     <div class="col">
-      <div class="container-canvas" appNgDrawFlow [nodes]="nodes" [connections]="connections" (onEditNode)="editNode($event)"></div>
+      <div class="container-canvas" appNgDrawFlow [nodes]="nodes" [connections]="connections" (onEditNode)="editNode($event)">
+      </div>
     </div>
   </div>
 </div>

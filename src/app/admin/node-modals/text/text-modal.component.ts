@@ -7,16 +7,18 @@ export interface ITextNode extends IBaseNode {
   nextNodeName?: string;
   nextNodeId?: number;
   content: string;
-  data: {
-    nodeName: string;
-    htmlText: string;
-    tempNextNodeId: string;
-    expectsUserInput: boolean;
-    isShowTyping: boolean;
-    sliderValue: number;
-    rootNode?: boolean;
-    id?: number;
-  };
+  data: ITextNodeDetails;
+}
+
+interface ITextNodeDetails {
+  nodeName: string;
+  htmlText: string;
+  tempNextNodeId: string;
+  expectsUserInput: boolean;
+  isShowTyping: boolean;
+  sliderValue: number;
+  rootNode?: boolean;
+  id?: number;
 }
 @Component({
   selector: 'text-modal',
@@ -25,7 +27,7 @@ export interface ITextNode extends IBaseNode {
   encapsulation: ViewEncapsulation.None
 })
 export class TextModalComponent {
-  @Input() data;
+  @Input() data: ITextNodeDetails;
   nodeName: string;
   submitAttempt: boolean;
   htmlText: string;
@@ -44,67 +46,19 @@ export class TextModalComponent {
     }
   };
   isRootNode: boolean;
-  // atValues = [
-  //   { id: 1, value: 'Fredrik Sundqvist', link: 'https://google.com' },
-  //   { id: 2, value: 'Patrik Sjölin' }
-  // ];
-  // hashValues = [
-  //   { id: 3, value: 'Fredrik Sundqvist 2' },
-  //   { id: 4, value: 'Patrik Sjölin 2' }
-  // ]
-
   quillConfig = {
-    //toolbar: '.toolbar',
     toolbar: {
       container: [
-        ['italic', 'underline'],        // toggled buttons
+        ['italic', 'underline'],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
         [{ 'font': [] }],
       ],
     },
-    // autoLink: true,
-
-    // mention: {
-    //   allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
-    //   mentionDenotationChars: ["@", "#"],
-    //   source: (searchTerm, renderList, mentionChar) => {
-    //     let values;
-
-    //     if (mentionChar === "@") {
-    //       values = this.atValues;
-    //     } else {
-    //       values = this.hashValues;
-    //     }
-
-    //     if (searchTerm.length === 0) {
-    //       renderList(values, searchTerm);
-    //     } else {
-    //       const matches = [];
-    //       for (var i = 0; i < values.length; i++)
-    //         if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase())) matches.push(values[i]);
-    //       renderList(matches, searchTerm);
-    //     }
-    //   },
-    // },
-
   }
-  // test = (event) => {
-  //   console.log(event.keyCode);
-  // }
-
-  // onSelectionChanged = (event) => {
-  //   if (event.oldRange == null) {
-  //     this.onFocus();
-  //   }
-  //   if (event.range == null) {
-  //     this.onBlur();
-  //   }
-  // }
-
-
 
   constructor(public activeModal: NgbActiveModal) { }
+
   ngOnInit(): void {
     if (this.data) {
       this.nodeName = this.data.nodeName;
@@ -138,7 +92,7 @@ export class TextModalComponent {
         rootNode:this.isRootNode,
       }
     }
-    this.activeModal.close(this.nodeDetails)
+    this.activeModal.close(this.nodeDetails);
   }
 
   public onNextNodeSelect(node): void {

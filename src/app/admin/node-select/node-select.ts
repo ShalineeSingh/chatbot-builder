@@ -25,7 +25,7 @@ export class NodeSelectComponent {
   constructor(private nodeService: NodeService) {
     this.nodeList = this.nodeService.getNodes();
     this.nodeServiceSubscription = this.nodeService.updateNodeList.subscribe((value) => {
-      this.nodeList = [...value];
+     if(value) this.nodeList = [...value];
     });
     
   }

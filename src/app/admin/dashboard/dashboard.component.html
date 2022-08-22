@@ -1,20 +1,23 @@
 <div class="container-fluid">
+    <div class="header d-flex">
+      <span class="heading-4 align-self-center">LSQ Bot </span>
+    </div>
   <div class="row flex-nowrap">
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light border-end">
-      <div class="d-flex flex-column align-items-center align-items-sm-start min-vh-100">
+    <div class="col-auto bg-dark border-end sidebar">
+      <div class="d-flex flex-column align-items-center align-items-sm-start">
         <!-- <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
           <span class="fs-5 d-none d-sm-inline">Bot Responses</span>
         </p> -->
         <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100" id="menu">
           <li class="nav-item" (click)="changeTab('bot')">
             <p class="nav-link align-middle px-0">
-              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Bots</span>
+              <i class="fs-6 bi-diagram-3"></i> <span class="ms-1 d-none d-sm-inline">Bots</span>
             </p>
           </li>
         </ul>
         <hr>
-        <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
-          <span class="fs-5 d-none d-sm-inline">Integrations</span>
+        <p class="d-flex align-items-center px-3 mb-md-0 me-md-auto text-decoration-none">
+          <span class="d-none d-sm-inline">Integrations</span>
         </p>
         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu-1">
           <li class="nav-item" (click)="changeTab('api')">
@@ -40,7 +43,7 @@
           </div>
           <div class="card bot-card" *ngFor="let bot of botList">
             <div class="bot-image">
-              <img alt={{bot.name}} [src]="bot.image ? bot.image : '../assets/images/dummy.png'" />
+              <img alt={{bot.name}} [src]="bot.image ? bot.image : '../assets/images/dummy.jpeg'" />
             </div>
             <p class="text-center mt-4">{{bot.name}}</p>
             <p class="small" *ngIf="bot.description">{{bot.description | slice:0:150}}<span
@@ -67,7 +70,7 @@
       <ng-container *ngIf="activeTab === 'api'">
         <div class="header py-2 border-bottom d-flex">
           <button type="button" class="ml-auto btn btn-primary" (click)="addNewApi()">
-            <div> <i class="fs-6 bi-plus"></i></div>
+            <div> Add API</div>
           </button>
         </div>
         <div class="api-wrapper">

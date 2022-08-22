@@ -31,9 +31,11 @@ export class BotEmulatorComponent {
     this.nodeList = this.nodeService.getNodes();
 
     this.rootNode = this.nodeList.filter(v => v.data.rootNode)[0];
-    this.transformNode(this.rootNode);
-    this.convo.push(this.nodeMap[this.rootNode.name]);
-    if (this.rootNode.data.isShowTyping) this.addTyping(this.rootNode.data.sliderValue, this.rootNode.nextNodeName);
+    if (this.rootNode) {
+      this.transformNode(this.rootNode);
+      this.convo.push(this.nodeMap[this.rootNode.name]);
+      if (this.rootNode.data.isShowTyping) this.addTyping(this.rootNode.data.sliderValue, this.rootNode.nextNodeName);
+    }
   }
 
   addTyping(delay: number, nodeName: string) {
@@ -45,7 +47,7 @@ export class BotEmulatorComponent {
   }
 
   transformNode(node) {
-    this.nodeMap[node.name] = {
+   this.nodeMap[node.name] = {
       'type': node.type,
       'content': node.content,
       'nextNodeName': node.nextNodeName,
