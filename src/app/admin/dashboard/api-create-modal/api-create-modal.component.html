@@ -7,7 +7,7 @@
 <form #textForm="ngForm">
   <div class="modal-body" *ngIf="apiDetails">
     <div class="form-group" [class.error]="api_name?.invalid && submitAttempt">
-      <label class="form-label small">Enter api name here</label>
+      <label class="form-label very-small">Enter api name here</label>
       <input ngbAutofocus type="text" class="form-control w-50" name="name" #api_name="ngModel" [(ngModel)]="apiDetails.name"
         required>
       <div *ngIf="api_name?.invalid && submitAttempt" class="text-danger small">
@@ -18,7 +18,7 @@
     </div>
 
     <div class="form-group" [class.error]="api_url?.invalid && submitAttempt">
-      <label class="form-label small">Request Details</label>
+      <label class="form-label very-small">Request Details</label>
       <div class="d-flex">
         <div class="input-group w-75">
           <div class="dropdown request-type" ngbDropdown>
@@ -92,7 +92,7 @@
             <div class="col" [class.border-start]="authDetails?.authType === 'BASIC_AUTH'">
               <div class="mr-4" *ngIf="authDetails?.authType === 'BASIC_AUTH'">
                 <div class="form-group" [class.error]="user_name?.invalid && submitAttempt">
-                  <label class="form-label small">Username</label>
+                  <label class="form-label very-small">Username</label>
                   <input ngbAutofocus type="text" class="form-control w-50" name="name" #user_name="ngModel"
                     [(ngModel)]="authDetails.username" required>
                   <div *ngIf="user_name?.invalid && submitAttempt" class="text-danger small">
@@ -102,7 +102,7 @@
                   </div>
                 </div>
                 <div class="form-group" [class.error]="pass_word?.invalid && submitAttempt">
-                  <label class="form-label small">Password</label>
+                  <label class="form-label very-small">Password</label>
                   <input ngbAutofocus type="text" class="form-control w-50" name="name" #pass_word="ngModel"
                     [(ngModel)]="authDetails.password" required>
                   <div *ngIf="pass_word?.invalid && submitAttempt" class="text-danger small">
@@ -159,7 +159,7 @@
         <div class="col">
 
           <div class="form-group">
-            <label class="form-label small">Response Details</label>
+            <label class="form-label very-small">Response Details</label>
             <textarea readonly class="form-control body-text" name="apiresponse" [(ngModel)]="apiResponse" cols=50
               rows=7></textarea>
           </div>
@@ -167,7 +167,7 @@
         <div class="col border-start">
 
           <div class="form-group">
-            <label class="form-label small">Response Variables (use 'response' to access response json)</label>
+            <label class="form-label very-small">Response Variables (use 'response' to access response json)</label>
             <div *ngFor="let param of apiDetails.response; let i = index; let last=last">
               <div class="d-flex mb-1">
                 <div class="input-group input-group-sm w-85">

@@ -7,7 +7,7 @@
 <form #textForm="ngForm">
   <div class="modal-body">
     <div class="form-group" [class.error]="node_name?.invalid && submitAttempt">
-      <label class="form-label small">Enter bot name here</label>
+      <label class="form-label very-small">Enter bot name here</label>
       <input ngbAutofocus type="text" class="form-control w-50" name="name" #node_name="ngModel" [(ngModel)]="botName" required>
       <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
         <div *ngIf="node_name.errors.required">
@@ -16,11 +16,11 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="form-label small">Enter bot description here</label>
+      <label class="form-label very-small">Enter bot description here</label>
       <textarea type="text" class="form-control" name="description" #node_desc="ngModel" [(ngModel)]="botDesc"></textarea>
     </div>
     <!-- <div class="form-group" *ngIf="!previewPath; else showImage">
-      <label class="form-label small">Add a bot image</label>
+      <label class="form-label very-small">Add a bot image</label>
       <div ng2FileDrop accept=".jpeg,.jpg,.png" [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
          [uploader]="uploader" class="drop-zone">
         <span class="small"> Drop a file here to upload<br>

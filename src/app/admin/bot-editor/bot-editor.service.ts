@@ -3,18 +3,8 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Session } from "src/app/common/session";
+import { INode } from "../node-modals/node.service";
 
-export interface INodeDataServerResponse {
-  tenant_id: number;
-  bot_id: number;
-  node_id: number;
-  type: string;
-  next_node_id: number;
-  next_node_type: string;
-  root_node: boolean;
-  deleted: boolean;
-  response: any;
-}
 
 @Injectable()
 export class BotEditorService {
@@ -26,7 +16,7 @@ export class BotEditorService {
     this.tenantId = this.session.getTenantId();
   }
 
-  public saveNode(body: INodeDataServerResponse): Observable<any> {
+  public saveNode(body: INode): Observable<any> {
     // return this.http.get('../assets/mock-data/botList.json')
     return this.http.post(`${this.apiPrefix}nodedata/createOne`, body)
       .pipe(

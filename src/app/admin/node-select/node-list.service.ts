@@ -70,7 +70,7 @@ export class NodeService {
     }
   ]
   constructor() {
-    this.onAddNodeList(this.tempNodes);
+    // this.onAddNodeList(this.tempNodes);
   }
 
   onAddNode(data: any) {

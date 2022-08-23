@@ -2,7 +2,7 @@ import { Directive, ElementRef, Input, OnInit, Output, EventEmitter } from '@ang
 import Drawflow from 'drawflow';
 import { NodeType } from '../../admin/bot-editor/bot-editor.component';
 
-export interface INode {
+export interface IDrawflowNode {
   name: string, inputs: number, outputs: number, posx: number, posy: number, className: string, data: any, html: string, typenode: string | boolean
 }
 
@@ -15,7 +15,7 @@ export interface IConnection {
 })
 export class DrawflowDirective implements OnInit {
   editor: Drawflow | undefined;
-  @Input() nodes: INode[];
+  @Input() nodes: IDrawflowNode[];
   @Input() connections: IConnection[];
   @Output() onEditNode: EventEmitter<any> = new EventEmitter();
   private selectedNode: number;
@@ -70,7 +70,7 @@ export class DrawflowDirective implements OnInit {
   }
 
 
-  public addNode(node: INode): number {
+  public addNode(node: IDrawflowNode): number {
     node.data = {};
     return this.editor.addNode(node.name, node.inputs, node.outputs, node.posx, node.posy, node.className, node.data, node.html, node.typenode);
   }
@@ -86,7 +86,7 @@ export class DrawflowDirective implements OnInit {
     this.editor.addNodeOutput(nodeId);
   }
 
-  public updateNode(node: INode) {
+  public updateNode(node: IDrawflowNode) {
     this.editor.updateNodeDataFromId(node.data.id, node.data);
     let el = this.hostElRef.nativeElement as HTMLElement
     el.querySelector(`#node-${node.data.id} .node-heading span`).innerHTML = node.name;

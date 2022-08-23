@@ -6,54 +6,48 @@
 </div>
 <form #textForm="ngForm">
   <div class="modal-body">
-          <div class="form-group" [class.error]="node_name?.invalid && submitAttempt">
-            <label class="form-label small">Enter node name here</label>
-            <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
-              [(ngModel)]="nodeName" required>
-            <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
-            <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
-              <div *ngIf="node_name.errors.required">
-                Node Name is required
-              </div>
-            </div>
+    <div class="form-group mb-3" [class.error]="node_name?.invalid && submitAttempt">
+      <label class="form-label very-small">Node name</label>
+      <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
+        [(ngModel)]="textNode.node_name" required>
+      <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
+      <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
+        <div *ngIf="node_name.errors.required">
+          Node Name is required
+        </div>
+      </div>
+    </div>
+    <div class="editor mb-3">
+      <div class="form-group" [class.error]="quill_editor?.invalid && submitAttempt">
+        <label class="form-label very-small">Bot response (max 4096 characters)</label>
+        <quill-editor [(ngModel)]="textNode.response.text.body" placeholder="Enter Text" name="quill" ngDefaultControl
+          [modules]="quillConfig" #quill_editor="ngModel" [maxLength]="4096" required>
+        </quill-editor>
+        <div class="tiny mt-1">This will be shown to the user</div>
+        <div *ngIf="quill_editor?.invalid && submitAttempt" class="text-danger small">
+          <div *ngIf="quill_editor.errors.required">
+            Enter some text to be shown
           </div>
-          <div class="editor mt-4">
-            <div class="form-group" [class.error]="quill_editor?.invalid && submitAttempt">
-              <label class="form-label small">Enter bot response here</label>
-              <quill-editor [(ngModel)]="htmlText" placeholder="Enter Text" name="quill" ngDefaultControl [modules]="quillConfig"
-                #quill_editor="ngModel" required>
-              </quill-editor>
-              <div class="tiny mt-1">This will be shown to the user</div>
-              <div *ngIf="quill_editor?.invalid && submitAttempt" class="text-danger small">
-                <div *ngIf="quill_editor.errors.required">
-                  Enter some text to be shown
-                </div>
-              </div>
-            </div>
+          <div *ngIf="quill_editor?.invalid && !quill_editor.errors.required">
+            Only 4096 characters allowed
           </div>
-          <div class="w-50">
-            <label class="form-label small">Select next node</label>
-            <node-select [currentNodeName]="nodeName" [selectedNodeId]="tempNextNodeId"
-              (onNextNodeSelect)="onNextNodeSelect($event)" (isNextNodeValid)="isNextNodeValid($event)"></node-select>
-            <div class="tiny mt-1">This node will be executed when user clicks on current node</div>
-          </div>
-          <!-- <div class="form-group mt-2">
-            <label class="check mb-1">
-              <input type="checkbox" name="user_input" #user_input="ngModel" [(ngModel)]="expectsUserInput">
-              <span class="small">Expect user input</span>
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          <div class="form-group mt-2">
-            <label class="check mb-1">
-              <input type="checkbox" name="show_typing" #show_typing="ngModel" [(ngModel)]="isShowTyping">
-              <span class="small">Show "Typing..."</span>
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          <div class="form-group custom-slider mt-2 mx-4" *ngIf="isShowTyping">
-            <ngx-slider [(value)]="sliderValue" [options]="sliderOptions"></ngx-slider>
-          </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="w-50 d-inline-block">
+        <label class="form-label very-small">Previous node</label>
+        <node-select [currentNodeName]="textNode.node_name" [nodeId]="textNode.previous_node_id"
+          [nodeName]="textNode.previous_node_name" (onNextNodeSelect)="onNextNodeSelect($event)"
+          (isNextNodeValid)="isNextNodeValid($event)"></node-select>
+      </div>
+      <div class="w-50 d-inline-block ps-3">
+        <div class="form-group mb-3">
+          <label class="form-label very-small">Intent</label>
+          <input type="text" class="form-control" name="intent" #nodeIntent="ngModel" [(ngModel)]="textNode.intent">
+        </div>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('close')">Close</button>

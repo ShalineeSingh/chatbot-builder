@@ -1,6 +1,7 @@
-import { LabelType, Options } from '@angular-slider/ngx-slider';
-import { Component, Input, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { INode } from '../node.service';
+import { QUILL_CONFIG } from '../../../common/utils';
 
 @Component({
   selector: 'text-modal',
@@ -9,78 +10,51 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   encapsulation: ViewEncapsulation.None
 })
 export class TextModalComponent {
-  @Input() data;
-  nodeName: string;
+  @Input() textNode: INode;
+  @Input() botId: number;
+  @Input() tenantId: number;
   submitAttempt: boolean;
-  htmlText: string;
-  nodeDetails;
-  tempNextNodeId: string;
-  nextNodeValid: boolean;
-  expectsUserInput: boolean = false;
-  isShowTyping: boolean = false;
-  sliderValue: number = 2;
-  sliderOptions: Options = {
-    showTicksValues: true,
-    ceil: 10,
-    floor: 1,
-    translate: (value: number, label: LabelType): string => {
-      return value + 's';
-    }
-  };
-  isRootNode: boolean;
-  quillConfig = {
-    toolbar: {
-      container: [
-        ['italic', 'underline', 'strike']
-      ],
-    },
-  }
+  quillConfig = QUILL_CONFIG;
+  previousNodeValid: boolean;
+  previousNode: INode;
 
   constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
-    if (this.data) {
-      this.nodeName = this.data.nodeName;
-      this.htmlText = this.data.htmlText;
-      this.tempNextNodeId = this.data.tempNextNodeId;
-      this.expectsUserInput = this.data.expectsUserInput;
-      this.isShowTyping = this.data.isShowTyping;
-      this.sliderValue = this.data.sliderValue;
-      this.isRootNode = this.data.rootNode;
+    if (!this.textNode) {
+      this.textNode = {
+        type: 'text',
+        bot_id: this.botId,
+        tenant_id: this.tenantId,
+        deleted: false,
+        node_name: '',
+        response: {
+          text: {
+            body: ''
+          }
+        },
+        total_response_node_count: 1,
+        sequence: 1,
+      }
     }
   }
 
   public onSaveNode(): void {
-    if (this.tempNextNodeId && !this.nextNodeValid) return;
-    this.nodeDetails = {
-      name: this.nodeName,
-      content: this.htmlText,
-      type: 'text',
-      nextNodeName: this.tempNextNodeId || null,
-      expectsUserInput: this.expectsUserInput,
-      id: this.data ? this.data.id : null,
-      isShowTyping: this.isShowTyping,
-      data: {
-        nodeName: this.nodeName,
-        htmlText: this.htmlText,
-        tempNextNodeId: this.tempNextNodeId,
-        expectsUserInput: this.expectsUserInput,
-        isShowTyping: this.isShowTyping,
-        sliderValue: this.sliderValue,
-        id: this.data ? this.data.id : null,
-        rootNode:this.isRootNode,
+    if (this.previousNode) {
+      if (!this.previousNodeValid) return;
+      else {
+        this.textNode.previous_node_id = this.previousNode.node_id;
+        this.textNode.previous_node_name = this.previousNode.node_name;
       }
     }
-    this.activeModal.close(this.nodeDetails);
+    this.activeModal.close(this.textNode);
   }
 
   public onNextNodeSelect(node): void {
-    this.tempNextNodeId = node.name;
+    this.previousNode = node;
   }
 
   public isNextNodeValid(isValid: boolean): void {
-    this.nextNodeValid = isValid;
+    this.previousNodeValid = isValid;
   }
-
-
 }

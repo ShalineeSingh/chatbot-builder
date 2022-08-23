@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { INode, IConnection, DrawflowDirective } from '../../common/directives/app-drawflow.directive';
+import { IDrawflowNode, IConnection, DrawflowDirective } from '../../common/directives/app-drawflow.directive';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BotEmulatorComponent } from '../bot-emulator/bot-emulator.component';
 import { TextModalComponent } from '../node-modals/text/text-modal.component';
@@ -9,9 +9,10 @@ import { NodeService } from '../node-select/node-list.service';
 import { convertToDrawflowConnection, convertToDrawflowNode } from '../node-select/node-utils';
 import { Subscription } from 'rxjs';
 import { MediaModalComponent } from '../node-modals/media/media-modal.component';
-import { BotEditorService, INodeDataServerResponse } from './bot-editor.service';
+import { BotEditorService } from './bot-editor.service';
 import { Session } from '../../common/session';
 import { ActivatedRoute } from '@angular/router';
+import { INode } from '../node-modals/node.service';
 
 export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'card' | 'api';
 @Component({
@@ -22,17 +23,19 @@ export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'car
   providers: [BotEditorService],
 })
 export class BotEditorComponent implements OnInit {
-  public nodes: INode[];
+  public nodes: IDrawflowNode[];
   public connections: IConnection[] = [];
   botId: number;
+  tenantId: number;
   @ViewChild(DrawflowDirective, { static: true }) drawflow: DrawflowDirective;
   nodeServiceSubscription: Subscription;
   constructor(private cdr: ChangeDetectorRef,
-     private modalService: NgbModal,
+    private modalService: NgbModal,
     private botEditorService: BotEditorService,
     private session: Session,
-    private route:ActivatedRoute,
-      private nodeService: NodeService) {
+    private route: ActivatedRoute,
+    private nodeService: NodeService) {
+    this.tenantId = this.session.getTenantId();
 
   }
 
@@ -91,34 +94,24 @@ export class BotEditorComponent implements OnInit {
     }
     const modalRef = this.modalService.open(component, { backdrop: 'static', size: 'lg' });
     if (mediaType) modalRef.componentInstance.mediaType = mediaType;
+    modalRef.componentInstance.botId = this.botId;
+    modalRef.componentInstance.tenantId = this.tenantId;
     modalRef.closed.subscribe(res => {
       if (res !== 'close') this.addNode(res);
     });
   }
 
-  private addNode(node: any) {
+  private addNode(node: INode) {
     this.nodeService.onAddNode(node);
-
-    node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+    node.node_id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
     this.saveNodeToDb(node);
     if (this.nodeService.getNextNode(node)) {
       this.createConnection(node);
     }
   }
 
-  private saveNodeToDb(node){
-    let body: INodeDataServerResponse = {
-      tenant_id: this.session.getTenantId(),
-      bot_id: this.botId,
-      node_id: node.id,
-      type: node.type,
-      next_node_id: 2,
-      next_node_type: 'text',
-      root_node: node.data.rootNode,
-      deleted: false,
-      response: "{}",
-    }
-    this.botEditorService.saveNode(body).subscribe(res => {
+  private saveNodeToDb(node: INode) {
+    this.botEditorService.saveNode(node).subscribe(res => {
       console.log(res);
     })
   }
@@ -126,30 +119,27 @@ export class BotEditorComponent implements OnInit {
   public editNode(nodeId: number) {
     const currentNode = this.nodeService.getNodes().find(v => v.id === Number(nodeId));
     if (currentNode) {
-      console.log(currentNode);
       let modalRef;
       switch (currentNode.type) {
         case 'text':
           modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
-          modalRef.componentInstance.data = currentNode.data;
           break;
         case 'image':
           modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
-          modalRef.componentInstance.data = currentNode;
           modalRef.componentInstance.mediaType = 'image';
           break;
         case 'video':
           modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
-          modalRef.componentInstance.data = currentNode;
           modalRef.componentInstance.mediaType = 'video';
           break;
         case 'document':
           modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
-          modalRef.componentInstance.data = currentNode;
           modalRef.componentInstance.mediaType = 'document';
           break;
-
+        default:
+          break;
       }
+      modalRef.componentInstance.data = currentNode;
 
       modalRef.closed.subscribe(node => {
         if (node !== 'close') {
@@ -170,7 +160,7 @@ export class BotEditorComponent implements OnInit {
   }
 
   private createConnection(node) {
-    if (node.type === 'text' || node.type === 'image' || node.type === 'document' || node.type === 'video' ) {
+    if (node.type === 'text' || node.type === 'image' || node.type === 'document' || node.type === 'video') {
       let inputId = this.nodeService.getNextNode(node).id;
       this.drawflow.addNodeInput(inputId);
       this.drawflow.addNodeOutput(node.id);

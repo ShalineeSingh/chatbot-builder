@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title">Card Node</h4>
+  <h4 class="modal-title">Interactive Node</h4>
   <span type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('close')">
     <span class="fs-2" aria-hidden="true">&times;</span>
   </span>
@@ -9,9 +9,9 @@
     <div class="form-container w-75 pr-4 ml-4">
       <!-- node name -->
       <div class="form-group mb-3" [class.error]="node_name?.invalid && submitAttempt">
-        <label class="form-label small">Node name</label>
+        <label class="form-label very-small">Node name</label>
         <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
-          [(ngModel)]="nodeName" required>
+          [(ngModel)]="interactiveNode.node_name" required>
         <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
         <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
           <div *ngIf="node_name.errors.required">
@@ -22,38 +22,40 @@
       <!-- button/list -->
       <div class="form-group d-inline">
         <label class="form-check-label mb-3 radio d-inline mr-20">
-          <input class="form-check-input me-2" type="radio" name="remember" value="button" [(ngModel)]="interactiveNode.nodeType">
+          <input class="form-check-input me-2" type="radio" name="remember" value="button"
+            [(ngModel)]="interactiveNode.response.type" (ngModelChange)="changeMsgType()">
           Buttons
           <span class="checkround"></span>
         </label>
         <label class="form-check-label mb-3 radio d-inline">
-          <input class="form-check-input me-2" type="radio" name="remember" value="list" [(ngModel)]="interactiveNode.nodeType">
+          <input class="form-check-input me-2" type="radio" name="remember" value="list"
+            [(ngModel)]="interactiveNode.response.type" (ngModelChange)="changeMsgType()">
           List
           <span class="checkround"></span>
         </label>
       </div>
       <!-- header -->
       <div class="form-group mt-3">
-        <label class="form-label small">Header (Optional)</label>
+        <label class="form-label very-small">Header (Optional)</label>
         <div class="input-group">
           <div class="dropdown header-type" ngbDropdown>
             <div class="d-flex align-items-center h-100 pointer" aria-expanded="false" ngbDropdownToggle>
-              <span class="d-none d-sm-inline mx-1">{{interactiveNode.headerMediaType}}</span>
+              <span class="d-none d-sm-inline mx-1 uppercase">{{interactiveNode.response.header.type}}</span>
             </div>
             <ul class="dropdown-menu text-small shadow" ngbDropdownMenu>
               <li *ngFor="let type of supportedHeaders">
-                <a class="dropdown-item" (click)="changeMediaType(type)" ngbDropdownItem>{{type}}</a>
+                <a class="dropdown-item uppercase" (click)="changeMediaType(type)" ngbDropdownItem>{{type}}</a>
               </li>
             </ul>
           </div>
-          <input type="text" class="form-control" name="url" #headerText="ngModel" [(ngModel)]="interactiveNode.headerContent"
-            placeholder="Add header text or media url">
+          <input type="text" class="form-control" name="url" #headerText="ngModel"
+            [(ngModel)]="interactiveNode.response.header.text" placeholder="Add header text or media url">
         </div>
       </div>
       <!-- body -->
       <div class="form-group" [class.error]="quill_editor?.invalid && submitAttempt">
-        <label class="form-label small">Body</label>
-        <quill-editor [(ngModel)]="interactiveNode.bodyContent" placeholder="Enter Text" name="quill" ngDefaultControl
+        <label class="form-label very-small">Body</label>
+        <quill-editor [(ngModel)]="interactiveNode.response.body.text" placeholder="Enter Text" name="quill" ngDefaultControl
           [modules]="quillConfig" #quill_editor="ngModel" required>
         </quill-editor>
         <div *ngIf="quill_editor?.invalid && submitAttempt" class="text-danger small">
@@ -64,15 +66,16 @@
       </div>
       <!-- footer -->
       <div class="form-group">
-        <label class="form-label small">Footer</label>
-        <input type="text" class="form-control" name="btnName" #btn_name="ngModel" [(ngModel)]="interactiveNode.footerContent">
+        <label class="form-label very-small">Footer (Optional)</label>
+        <input type="text" class="form-control" name="btnName" #btn_name="ngModel"
+          [(ngModel)]="interactiveNode.response.footer.text">
       </div>
       <!-- buttons details -->
-      <div class="form-group" *ngIf="interactiveNode.nodeType === 'button'">
-        <label class="form-label small">Button Details</label>
+      <div class="form-group" *ngIf="interactiveNode.response.type === 'button'">
+        <label class="form-label very-small">Button Details</label>
         <p>Create upto 3 buttons</p>
-        <div class="d-flex mb-2" *ngFor="let buttons of interactiveNode.buttonList; let i=index">
-          <div class="dropdown header-type action-type" ngbDropdown>
+        <div class="d-flex mb-2" *ngFor="let buttons of interactiveNode.response.action.buttons; let i=index">
+          <!-- <div class="dropdown header-type action-type" ngbDropdown>
             <div class="d-flex align-items-center h-100 pointer" aria-expanded="false" ngbDropdownToggle>
               <span class="d-none d-sm-inline mx-1">{{buttons.actionType.label}}</span>
             </div>
@@ -81,29 +84,29 @@
                 <a class="dropdown-item" (click)="changeButtonActionType(type, i)" ngbDropdownItem>{{type.label}}</a>
               </li>
             </ul>
-          </div>
-          <div class="button-text mx-2">
-            <input type="text" class="form-control" name="btn_name_{{i}}" #btnName="ngModel" [(ngModel)]="buttons.buttonText"
+          </div> -->
+          <div class="button-text">
+            <input type="text" class="form-control" name="btn_name_{{i}}" #btnName="ngModel" [(ngModel)]="buttons.title"
               placeholder="Add button text">
           </div>
-          <div class="button-action" *ngIf="buttons.actionType.type === 'url'">
+          <!-- <div class="button-action" *ngIf="buttons.actionType.type === 'url'">
             <input type="text" class="form-control" name="btn_url{{i}}" #btnUrl="ngModel" [(ngModel)]="buttons.actionValue"
               placeholder="Add website url">
           </div>
           <div class="button-action" *ngIf="buttons.actionType.type === 'call'">
             <input type="text" class="form-control" name="btn_url{{i}}" #btnUrl="ngModel" [(ngModel)]="buttons.actionValue"
               placeholder="Add phone number">
-          </div>
+          </div> -->
 
         </div>
 
       </div>
       <!-- list details -->
-      <div class="form-group" *ngIf="interactiveNode.nodeType === 'list'">
+      <div class="form-group" *ngIf="interactiveNode.response.type === 'list'">
         <p>Create upto 10 list items (max 10 sections and max 10 rows across all sections)</p>
-        <div class="section p-3 mb-2" *ngFor="let section of interactiveNode.sectionList; let sectionIndex=index">
+        <div class="section p-3 mb-2" *ngFor="let section of interactiveNode.response.action.sections; let sectionIndex=index">
           <div class="form-group" [class.error]="section_title?.invalid && submitAttempt">
-            <label class="form-label small">Section title
+            <label class="form-label very-small">Section title
               <i class="pointer" (click)="addNewRow('section')" class="fs-6 bi-plus"></i>
             </label>
             <input type="text" class="form-control w-50" name="sectionTitle{{sectionIndex}}" #section_title="ngModel"
@@ -115,36 +118,37 @@
             </div>
           </div>
           <div class="d-flex align-items-end" *ngFor="let row of section.rows; let i=index; let last=last">
-            <div class="form-group w-40" [class.error]="row_title?.invalid && submitAttempt">
-              <label class="form-label small">Row Title</label>
+            <div class="form-group w-40">
+              <label class="form-label very-small">Row Title</label>
               <input type="text" class="form-control" name="rowTitle{{sectionIndex}}{{i}}" #row_title="ngModel"
-                [(ngModel)]="row.title" required>
-              <div *ngIf="row_title?.invalid && submitAttempt" class="text-danger small">
-                <div *ngIf="row_title.errors.required">
-                  Section Title is required
-                </div>
-              </div>
+                [(ngModel)]="row.title">
             </div>
-              <div class="form-group w-40 px-3">
-                <label class="form-label small">Row Description</label>
-                <input type="text" class="form-control" name="rowDesc{{sectionIndex}}{{i}}" #row_desc="ngModel" [(ngModel)]="row.description">
-              </div>
-                <button *ngIf="last && row.title !== ''" type="button" class="btn btn-outline-dark ml-auto"
-                  (click)="addNewRow('section_row', sectionIndex)">
-                  <i class="fs-6 bi-plus"></i>
-                </button>
+            <div class="form-group w-40 px-3">
+              <label class="form-label very-small">Row Description</label>
+              <input type="text" class="form-control" name="rowDesc{{sectionIndex}}{{i}}" #row_desc="ngModel"
+                [(ngModel)]="row.description">
+            </div>
+            <button *ngIf="last && row.title !== ''" type="button" class="btn btn-outline-dark ml-auto"
+              (click)="addNewRow('section_row', sectionIndex)">
+              <i class="fs-6 bi-plus"></i>
+            </button>
           </div>
-        
-
         </div>
       </div>
 
-      <div class="w-50">
-        <label class="form-label small">Select next node for:</label>
-        <node-select [currentNodeName]="nodeName" [selectedNodeId]="nextNode.nextNodeName"
-          (onNextNodeSelect)="onNextNodeSelect($event); setNodeNext(nextNode)"
-          (isNextNodeValid)="isNextNodeValid($event); setNodeValidity(nextNode)"></node-select>
-        <div class="tiny mt-1">This node will be executed when user clicks on current button</div>
+      <div class="form-group">
+        <div class="w-50 d-inline-block">
+          <label class="form-label very-small">Previous node</label>
+          <node-select [currentNodeName]="interactiveNode.node_name" [nodeId]="interactiveNode.previous_node_id"
+            [nodeName]="interactiveNode.previous_node_name" (onNextNodeSelect)="onPreviousNodeSelect($event)"
+            (isNextNodeValid)="isPreviousNodeValid($event)"></node-select>
+        </div>
+        <div class="w-50 d-inline-block ps-3">
+          <div class="form-group mb-3">
+            <label class="form-label very-small">Intent</label>
+            <input type="text" class="form-control" name="intent" #nodeIntent="ngModel" [(ngModel)]="interactiveNode.intent">
+          </div>
+        </div>
       </div>
     </div>
     <div class="preview-container w-25 border-start min-h-100 ml-4">

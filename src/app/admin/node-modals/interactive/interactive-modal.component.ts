@@ -2,25 +2,9 @@ import { Options } from '@angular-slider/ngx-slider';
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { QUILL_CONFIG } from '../../../common/utils';
+import { INode, IInteractiveResponse } from '../node.service';
 
-export interface ICardNode {
-  nextNode?: INextNode,
-  content: ICard[],
-}
-
-interface INextNode {
-  nextNodeId: number,
-  nextNodeName: string,
-  valid: boolean,
-}
-interface ICard {
-  cardId: number,
-  fileObject: string,
-  previewUrl: SafeUrl,
-  content: string;
-  footer: string;
-  footerAction: string;
-}
 
 // headerMediaType
 // bodyContent
@@ -36,8 +20,10 @@ interface ICard {
   encapsulation: ViewEncapsulation.None
 })
 export class InterativeModalComponent {
-  @Input() interactiveNode;
-  supportedHeaders = ['TEXT', 'IMAGE', 'VIDEO', 'DOCUMENT'];
+  @Input() interactiveNode: INode;
+  @Input() botId: number;
+  @Input() tenantId: number;
+  supportedHeaders = ['text', 'image', 'video', 'document'];
   headerContent: string;
   interactiveOptions = [
     {
@@ -50,141 +36,133 @@ export class InterativeModalComponent {
       type: 'node',
       label: 'Next Node'
     },
-  ]
-
-  nodeName: string;
-  nextNode: INextNode = { nextNodeId: null, nextNodeName: null, valid: false };
-  mediaList: ICard[] = [];
-  isRootNode: boolean;
-  expectsUserInput: boolean = false;
-  isShowTyping: boolean = false;
+  ];
+  previousNodeValid: boolean;
   submitAttempt: boolean;
-  sliderValue: number = 2;
-  sliderOptions: Options = {
-    showTicksValues: true,
-    ceil: 10,
-    floor: 1,
-    translate: (value: number): string => {
-      return value + 's';
-    }
-  };
+  quillConfig = QUILL_CONFIG;
 
-  currentBtnId: number = 1;
-
-  tempNode;
-  htmlText: string;
-  quillConfig = {
-    toolbar: {
-      container: [
-        ['italic', 'underline'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        [{ 'font': [] }],
-      ],
-    },
-  }
-  buttonText: string;
-  buttonUrl: string;
-
-
-  constructor(public activeModal: NgbActiveModal, private sanitizer: DomSanitizer) {
-  }
+  constructor(public activeModal: NgbActiveModal) { }
 
   ngOnInit(): void {
-   
-   
-    if (this.interactiveNode) {
-      this.nodeName = this.interactiveNode.name;
-      this.nextNode = this.interactiveNode.nextNode;
-      this.mediaList = this.interactiveNode.content;
-      this.expectsUserInput = this.interactiveNode.expectsUserInput;
-      this.isShowTyping = this.interactiveNode.isShowTyping;
-      this.isRootNode = this.interactiveNode.rootNode;
-    } else {
+    if (!this.interactiveNode) {
+      let interactiveResponse: IInteractiveResponse = {
+        type: 'button',
+        header: {
+          type: 'text',
+        },
+        body: {
+          text: ''
+        },
+        footer: {
+          text: ''
+        },
+        action: {
+          sections: [
+            {
+              title: '',
+              rows: [{
+                title: '',
+                id: 'dummy',
+              }]
+            }
+          ],
+          buttons: [],
+        },
+
+      }
       this.interactiveNode = {
-        headerMediaType: 'TEXT',
-        nodeType: 'list',
-        buttonList: [],
-        sectionList:[{rows:[{title: null}]}],
+        tenant_id: this.tenantId,
+        bot_id: this.botId,
+        node_name: '',
+        type: 'interactive',
+        deleted: false,
+        response: interactiveResponse,
+        total_response_node_count: 1,
+        sequence: 1,
       };
     }
     for (let i = 0; i < 3; i++) {
-      this.interactiveNode.buttonList.push({
-        actionType: this.interactiveOptions[0]
+      this.interactiveNode.response.action.buttons.push({
+        // actionType: this.interactiveOptions[0]
+        title: null,
       })
     }
   }
 
   public changeMediaType(type) {
-    this.interactiveNode.headerMediaType = type;
+    this.interactiveNode.response.header.type = type;
   }
 
-  public changeButtonActionType(type, index){
-    this.interactiveNode.buttonList[index].actionType = type;
+  public changeMsgType() {
+    if (this.interactiveNode.response.type === 'button') {
+      this.supportedHeaders = ['text', 'image', 'video', 'document'];
+    } else {
+      this.supportedHeaders = ['text'];
+      this.interactiveNode.response.header.type = 'text';
+    }
+  }
+
+  public changeButtonActionType(type, index) {
+    this.interactiveNode.response.action.buttons[index].actionType = type;
   }
 
   public addNewRow(type: string, sectionIndex?: number): void {
-    if (type === 'section_row'){
-      if (this.interactiveNode.sectionList[sectionIndex].rows.findIndex(v => !v.title) === -1) {
-        this.interactiveNode.sectionList[sectionIndex].rows.push({ title: null });
+    if (type === 'section_row') {
+      if (this.interactiveNode.response.action.sections[sectionIndex].rows.findIndex(v => !v.title) === -1) {
+        this.interactiveNode.response.action.sections[sectionIndex].rows.push({ title: null });
       }
-    }else if(type === 'section'){
-      if (this.interactiveNode.sectionList.findIndex(v => !v.title) === -1) {
-        this.interactiveNode.sectionList.push({ rows: [{ title: null }] });
+    } else if (type === 'section') {
+      if (this.interactiveNode.response.action.sections.findIndex(v => !v.title) === -1) {
+        this.interactiveNode.response.action.sections.push({ rows: [{ title: null }] });
       }
     }
-   
+
   }
 
 
   public onSaveNode(): void {
-    // TODO: add validity
-    // if (this.tempNextNodeId && !this.nextNodeValid) return;
-    this.interactiveNode = {
-      name: this.nodeName,
-      content: this.mediaList,
-      // type: this.mediaType,
-      nextNode: this.nextNode,
-      expectsUserInput: this.expectsUserInput,
-      id: this.interactiveNode ? this.interactiveNode.id : null,
-      isShowTyping: this.isShowTyping,
-    }
-
+    if (this.interactiveNode.previous_node_id && !this.previousNodeValid) return;
+    console.log(this.interactiveNode);
+    this.sanitiseNodeData();
     this.activeModal.close(this.interactiveNode)
   }
 
-  public onSaveMedia() {
-    this.mediaList[this.currentBtnId - 1] = {
-      cardId: this.currentBtnId,
-      fileObject: null,
-      previewUrl: null,
-      content: this.htmlText,
-      footer: this.buttonText,
-      footerAction: this.buttonUrl,
+  public onPreviousNodeSelect(node: INode): void {
+    this.interactiveNode.previous_node_id = node.node_id;
+    this.interactiveNode.previous_node_name = node.node_name;
+  }
+
+  public isPreviousNodeValid(isValid: boolean): void {
+    this.previousNodeValid = isValid;
+  }
+
+  private sanitiseNodeData() {
+    if (!this.interactiveNode.response.footer.text) delete this.interactiveNode.response.footer;
+    if (this.interactiveNode.response.header.type === 'text' && !this.interactiveNode.response.header.text) {
+      delete this.interactiveNode.response.header;
     }
-    this.currentBtnId++;
-  }
-
-
-
-  public onNextNodeSelect(node): void {
-    this.nextNode = {
-      nextNodeName: node.name,
-      nextNodeId: node.id,
-      valid: true,
+    if (this.interactiveNode.response.header && this.interactiveNode.response.header.type !== 'text') {
+      if (this.interactiveNode.response.header.text) {
+        this.interactiveNode.response.header[this.interactiveNode.response.header.type] = {
+          link: this.interactiveNode.response.header.text
+        }
+        delete this.interactiveNode.response.header.text;
+      } else {
+        delete this.interactiveNode.response.header;
+      }
     }
-  }
-
-  public isNextNodeValid(isValid: boolean): void {
-    this.nextNode.valid = isValid;
-  }
-
-  setNodeNext(node: INextNode) {
-    node.nextNodeName = this.nextNode.nextNodeName;
-    node.nextNodeId = this.nextNode.nextNodeId;
-  }
-
-  setNodeValidity(node: INextNode) {
-    node.valid = this.nextNode.valid;
+    if (this.interactiveNode.response.type === 'button') {
+      delete this.interactiveNode.response.action.sections;
+      this.interactiveNode.response.action.buttons = this.interactiveNode.response.action.buttons.filter(v => v.title);
+    } else if (this.interactiveNode.response.type === 'list') {
+      delete this.interactiveNode.response.action.buttons;
+      this.interactiveNode.response.action.sections = this.interactiveNode.response.action.sections.filter(v => v.title);
+      this.interactiveNode.response.action.sections.forEach((element, index) => {
+        this.interactiveNode.response.action.sections[index].rows = this.interactiveNode.response.action.sections[index].rows.filter(v => v.title);
+        for (let i = 0; i < this.interactiveNode.response.action.sections[index].rows.length; i++) {
+          this.interactiveNode.response.action.sections[index].rows[i].id = i;
+        }
+      });
+    }
   }
 }

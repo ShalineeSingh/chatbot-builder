@@ -11,7 +11,7 @@
         <a ngbNavLink>Details</a>
         <ng-template ngbNavContent>
           <div class="form-group" [class.error]="node_name?.invalid && submitAttempt">
-            <label class="form-label small">Enter node name here</label>
+            <label class="form-label very-small">Enter node name here</label>
             <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
               [(ngModel)]="nodeName" required>
             <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
@@ -23,7 +23,7 @@
           </div>
           <div class="wrapper mt-4">
             <div *ngIf="mediaEdit && !previewPath" class="form-group" [class.error]="btn_name?.invalid && submitAttempt">
-              <label class="form-label small">Enter bot response here ({{mediaTypeMap[mediaType].name}})</label>
+              <label class="form-label very-small">Enter bot response here ({{mediaTypeMap[mediaType].name}})</label>
               <div ng2FileDrop [accept]="mediaTypeMap[mediaType].accept" [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
                 (fileOver)="fileOverBase($event)" (onFileDrop)="dropped($event)" [uploader]="uploader" class="drop-zone">
                 <span class="small"> Drop a file here to upload<br>
@@ -63,7 +63,7 @@
         <a ngbNavLink>Actions</a>
         <ng-template ngbNavContent>
           <div class="w-50">
-            <label class="form-label small">Select next node for:</label>
+            <label class="form-label very-small">Select next node for:</label>
             <node-select [currentNodeName]="nodeName" [selectedNodeId]="nextNode.nextNodeName"
               (onNextNodeSelect)="onNextNodeSelect($event); setNodeNext(nextNode)"
               (isNextNodeValid)="isNextNodeValid($event); setNodeValidity(nextNode)"></node-select>

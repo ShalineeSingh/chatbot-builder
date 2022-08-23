@@ -121,7 +121,7 @@
             <div class="configuration mt-4">
               <form #textForm="ngForm">
                 <div class="form-group" [class.error]="wa_number?.invalid && submitAttempt">
-                  <label class="form-label small">Whatsapp number</label>
+                  <label class="form-label very-small">Whatsapp number</label>
                   <input ngbAutofocus type="text" class="form-control w-50" name="waNumber" #wa_number="ngModel"
                     [(ngModel)]="whatsappNumber" required>
                   <div *ngIf="wa_number?.invalid && submitAttempt" class="text-danger small">
@@ -131,7 +131,7 @@
                   </div>
                 </div>
                 <div class="form-group" [class.error]="invalidNode && submitAttempt">
-                  <label class="form-label small">Select Bot</label>
+                  <label class="form-label very-small">Select Bot</label>
                   <div class="input-group w-50 mb-4">
                     <input id="typeahead-focus" type="text" class="form-control br-0 border-end-0" [(ngModel)]="selectedNode"
                       [ngbTypeahead]="search" (focus)="focus$.next($any($event).target.value)" name="botSearch"
