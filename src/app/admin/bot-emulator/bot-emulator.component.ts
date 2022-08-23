@@ -1,7 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NodeService } from '../node-select/node-list.service';
-import { ITextNode } from '../node-modals/text/text-modal.component';
 
 /* ---NEEDED for bot to show
  [nodeId]:  {
@@ -20,8 +19,8 @@ sliderValue
   encapsulation: ViewEncapsulation.None
 })
 export class BotEmulatorComponent {
-  nodeList: ITextNode[];
-  rootNode: ITextNode;
+  nodeList: any[];
+  rootNode: any;
   convo: any[] = [];
   showTyping: boolean = false;
   nodeMap = {};

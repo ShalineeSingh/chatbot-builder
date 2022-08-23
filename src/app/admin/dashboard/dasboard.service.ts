@@ -16,12 +16,7 @@ interface IBotServerResponse {
   last_modified_date: string;
   last_modified_by: string;
 }
-
-interface IApiServerResponse {
-  apis: IApiServer[];
-}
-
-export interface IApiServer {
+export interface IApiServerResponse {
   id?: number;
   tenant_id: number;
   name: string;
@@ -94,8 +89,8 @@ export class DashboardService {
     return this.http.put(`${this.apiPrefix}bot/delete/${botId}`, {})
   }
 
-  public getApiList(params = null): Observable<IApi[]> {
-    return this.http.get('../assets/mock-data/apiList.json')
+  public getApiList(): Observable<IApi[]> {
+    return this.http.get(`${this.apiPrefix}api/listAPIByTenantId/${this.tenantId}`)
       .pipe(
         map(this.transformApiList.bind(this)),
       );
@@ -147,8 +142,8 @@ export class DashboardService {
       }
     });
   }
-  private transformApiList(data: IApiServerResponse): IApi[] {
-    return data.apis.map((api) => {
+  private transformApiList(data: IApiServerResponse[]): IApi[] {
+    return data.map((api) => {
       return {
         id: api.id,
         tenantId: api.tenant_id,

@@ -1,25 +1,7 @@
 import { LabelType, Options } from '@angular-slider/ngx-slider';
 import { Component, Input, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { IBaseNode } from '../../../common/directives/app-drawflow.directive';
 
-export interface ITextNode extends IBaseNode {
-  nextNodeName?: string;
-  nextNodeId?: number;
-  content: string;
-  data: ITextNodeDetails;
-}
-
-interface ITextNodeDetails {
-  nodeName: string;
-  htmlText: string;
-  tempNextNodeId: string;
-  expectsUserInput: boolean;
-  isShowTyping: boolean;
-  sliderValue: number;
-  rootNode?: boolean;
-  id?: number;
-}
 @Component({
   selector: 'text-modal',
   styleUrls: ['./text-modal.component.scss'],
@@ -27,11 +9,11 @@ interface ITextNodeDetails {
   encapsulation: ViewEncapsulation.None
 })
 export class TextModalComponent {
-  @Input() data: ITextNodeDetails;
+  @Input() data;
   nodeName: string;
   submitAttempt: boolean;
   htmlText: string;
-  nodeDetails: ITextNode;
+  nodeDetails;
   tempNextNodeId: string;
   nextNodeValid: boolean;
   expectsUserInput: boolean = false;
@@ -49,10 +31,7 @@ export class TextModalComponent {
   quillConfig = {
     toolbar: {
       container: [
-        ['italic', 'underline'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        [{ 'font': [] }],
+        ['italic', 'underline', 'strike']
       ],
     },
   }

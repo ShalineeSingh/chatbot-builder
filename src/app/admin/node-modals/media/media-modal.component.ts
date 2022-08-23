@@ -1,15 +1,17 @@
 import { Options } from '@angular-slider/ngx-slider';
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { IBaseNode } from 'src/app/common/directives/app-drawflow.directive';
 import { FileUploader } from 'ng2-file-upload';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 const URL = '/api/';
 
-export interface IMediaNode extends IBaseNode {
+export interface IMediaNode {
   nextNode?: INextNode,
   content: IMedia[],
+  name: string;
+  type: string;
+  id: number;
 }
 
 interface INextNode {
@@ -100,9 +102,6 @@ export class MediaModalComponent {
       this.nodeName = this.data.name;
       this.nextNode = this.data.nextNode;
       this.mediaList = this.data.content;
-      this.expectsUserInput = this.data.expectsUserInput;
-      this.isShowTyping = this.data.isShowTyping;
-      this.isRootNode = this.data.rootNode;
     } else {
       this.mediaEdit = true;
     }
@@ -138,10 +137,8 @@ export class MediaModalComponent {
       name: this.nodeName,
       content: this.mediaList,
       type: this.mediaType,
-      nextNode: this.nextNode,
-      expectsUserInput: this.expectsUserInput,
+      nextNode: this.nextNode,    
       id: this.data ? this.data.id : null,
-      isShowTyping: this.isShowTyping,
     }
 
     this.activeModal.close(this.data)

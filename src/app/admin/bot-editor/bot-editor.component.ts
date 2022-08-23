@@ -3,8 +3,7 @@ import { INode, IConnection, DrawflowDirective } from '../../common/directives/a
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BotEmulatorComponent } from '../bot-emulator/bot-emulator.component';
 import { TextModalComponent } from '../node-modals/text/text-modal.component';
-import { ButtonModalComponent } from '../node-modals/button/button-modal.component';
-import { CardModalComponent } from '../node-modals/card/card-modal.component';
+import { InterativeModalComponent } from '../node-modals/interactive/interactive-modal.component';
 import { ApiModalComponent } from '../node-modals/api/api-modal.component';
 import { NodeService } from '../node-select/node-list.service';
 import { convertToDrawflowConnection, convertToDrawflowNode } from '../node-select/node-utils';
@@ -57,7 +56,7 @@ export class BotEditorComponent implements OnInit {
       });
     });
     // this.openEmulator();
-    // const modalRef = this.modalService.open(CardModalComponent, { backdrop: 'static', size: 'lg' });
+    // const modalRef = this.modalService.open(InterativeModalComponent, { backdrop: 'static', size: 'xl' });
   }
 
   public openEmulator() {
@@ -70,9 +69,6 @@ export class BotEditorComponent implements OnInit {
     switch (type) {
       case 'text':
         component = TextModalComponent;
-        break;
-      case 'button':
-        component = ButtonModalComponent;
         break;
       case 'image':
         mediaType = 'image';
@@ -87,7 +83,7 @@ export class BotEditorComponent implements OnInit {
         component = MediaModalComponent;
         break;
       case 'card':
-        component = CardModalComponent;
+        component = InterativeModalComponent;
         break;
       case 'api':
         component = ApiModalComponent;
@@ -136,10 +132,6 @@ export class BotEditorComponent implements OnInit {
         case 'text':
           modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
           modalRef.componentInstance.data = currentNode.data;
-          break;
-        case 'button':
-          modalRef = this.modalService.open(ButtonModalComponent, { backdrop: 'static', size: 'lg' });
-          modalRef.componentInstance.data = currentNode;
           break;
         case 'image':
           modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });

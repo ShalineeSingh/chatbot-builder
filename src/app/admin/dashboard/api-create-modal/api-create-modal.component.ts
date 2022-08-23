@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { AlertConfigModel } from "src/app/common/alert/alert-config.model";
-import { DashboardService, IApi, IApiServer } from '../dasboard.service';
+import { DashboardService, IApi, IApiServerResponse } from '../dasboard.service';
 import { AlertService } from '../../../common/alert/alert.service';
 import { Session } from '../../../common/session';
 
@@ -109,7 +109,7 @@ export class ApiCreateModalComponent {
   }
   public onSaveApi(): void {
     this.buttonLoader = true;
-    let body: IApiServer = { // add auth here too
+    let body: IApiServerResponse = { // add auth here too
       tenant_id: this.session.getTenantId(),
       name: this.apiDetails.name,
       request_type: this.apiDetails.requestType,

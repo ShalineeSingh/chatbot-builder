@@ -13,10 +13,9 @@ import { NodeSelectComponent } from './node-select/node-select';
 import { NodeService } from './node-select/node-list.service';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { BotEmulatorComponent } from './bot-emulator/bot-emulator.component';
-import { ButtonModalComponent } from './node-modals/button/button-modal.component';
 import { MediaModalComponent } from './node-modals/media/media-modal.component';
 import { FileUploadModule } from 'ng2-file-upload';
-import { CardModalComponent } from './node-modals/card/card-modal.component';
+import { InterativeModalComponent } from './node-modals/interactive/interactive-modal.component';
 import { BotModalComponent } from './dashboard/bot-modal/bot-modal.component';
 import { ApiCreateModalComponent } from './dashboard/api-create-modal/api-create-modal.component';
 import { ApiModalComponent } from './node-modals/api/api-modal.component';
@@ -29,9 +28,8 @@ import { ApiModalComponent } from './node-modals/api/api-modal.component';
     TextModalComponent,
     NodeSelectComponent,
     BotEmulatorComponent,
-    ButtonModalComponent,
     MediaModalComponent,
-    CardModalComponent,
+    InterativeModalComponent,
     BotModalComponent,
     ApiCreateModalComponent,
     ApiModalComponent,

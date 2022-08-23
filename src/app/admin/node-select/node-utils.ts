@@ -1,8 +1,7 @@
 import { INode } from "src/app/common/directives/app-drawflow.directive";
-import { ITextNode } from '../node-modals/text/text-modal.component';
 import { IConnection } from '../../common/directives/app-drawflow.directive';
 
-export function convertToDrawflowNode(node: ITextNode, disconnectedNodes: ITextNode[]): INode {
+export function convertToDrawflowNode(node: any, disconnectedNodes: any[]): INode {
   let index = disconnectedNodes.findIndex(v => v.name === node.name);
   return {
     name: node.name,
@@ -17,7 +16,7 @@ export function convertToDrawflowNode(node: ITextNode, disconnectedNodes: ITextN
   }
 }
 
-export function convertToDrawflowConnection(node: ITextNode, previousId: number, index: number): IConnection {
+export function convertToDrawflowConnection(node: any, previousId: number, index: number): IConnection {
   return {
     outputNodeId: node.id,
     inputNodeId: previousId,
@@ -55,7 +54,7 @@ export function createTextCanvasContent(node: any): string {
   return content;
 }
 
-function calculatePosition(name: string, nodeIndex: number, nodes: ITextNode[]): { x: number, y: number } {
+function calculatePosition(name: string, nodeIndex: number, nodes: any[]): { x: number, y: number } {
   const cardWidth = 250; //textnode
   const cardHeight = 100; // approx
   let row = Math.floor(nodeIndex / 5);

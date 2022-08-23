@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { ITextNode } from '../node-modals/text/text-modal.component';
 
 @Injectable()
 export class NodeService {
-  private nodes: ITextNode[] = [];
-  private disconnectedNodes: ITextNode[] = [];
-  updateNodes: BehaviorSubject<ITextNode> = new BehaviorSubject<ITextNode>(null);
-  updateNodeList: BehaviorSubject<ITextNode[]> = new BehaviorSubject<ITextNode[]>(null);
-  updateInitialNodeList: BehaviorSubject<ITextNode[]> = new BehaviorSubject<ITextNode[]>(null);
+  private nodes: any[] = [];
+  private disconnectedNodes: any[] = [];
+  updateNodes: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  updateNodeList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(null);
+  updateInitialNodeList: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(null);
 
-  tempNodes: ITextNode[] = [
+  tempNodes: any[] = [
     {
       nextNodeName: 'greeting1',
       content: "Hi Shalinee",
@@ -83,7 +82,7 @@ export class NodeService {
     this.updateNodes.next(data);
   }
 
-  onAddNodeList(nodes: ITextNode[]) {
+  onAddNodeList(nodes: any[]) {
     this.nodes = [...this.nodes, ...nodes];
     nodes.forEach(data => {
       if (!data.nextNodeName || data.nextNodeName === '') {
@@ -93,15 +92,15 @@ export class NodeService {
     this.updateInitialNodeList.next(this.nodes);
   }
 
-  getNodes(): ITextNode[] {
+  getNodes(): any[] {
     return this.nodes;
   }
 
-  getDisconnectedNodes(): ITextNode[] {
+  getDisconnectedNodes(): any[] {
     return this.disconnectedNodes;
   }
 
-  updateNode(data: ITextNode) {
+  updateNode(data: any) {
     let index = this.nodes.findIndex(v => v.name === data.name);
     this.nodes[index] = data;
     this.updateNodeList.next(this.nodes);

@@ -1,19 +1,7 @@
 import { Directive, ElementRef, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import Drawflow from 'drawflow';
-import { ITextNode } from '../../admin/node-modals/text/text-modal.component';
 import { NodeType } from '../../admin/bot-editor/bot-editor.component';
-const event = new Event('build');
 
-export interface IBaseNode {
-  name: string;
-  type: NodeType;
-  pos_X?: number;
-  pos_Y?: number;
-  id?: number;
-  expectsUserInput: boolean;
-  isShowTyping: boolean;
-  rootNode?: boolean;
-}
 export interface INode {
   name: string, inputs: number, outputs: number, posx: number, posy: number, className: string, data: any, html: string, typenode: string | boolean
 }

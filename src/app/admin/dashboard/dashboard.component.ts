@@ -17,7 +17,7 @@ type Tabs = 'bot' | 'api' | 'channel';
   providers: [DashboardService],
 })
 export class DashboardComponent implements OnInit {
-  public activeTab: Tabs = 'bot';
+  public activeTab: Tabs = 'api';
   public botList: IBot[];
   public apiList: IApi[];
   public loading: boolean;
@@ -31,7 +31,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBotList();
-    this.getApiList();
   }
   constructor(
     private dashboardService: DashboardService,
@@ -41,6 +40,18 @@ export class DashboardComponent implements OnInit {
   }
 
   public changeTab(tab: Tabs) {
+    switch (tab) {
+      case 'bot':
+        this.getBotList();
+        break;
+      case 'api':
+        this.getApiList();
+        break;
+      case 'channel':
+        this.getChannelDetails();
+      default:
+        break;
+    }
     this.activeTab = tab;
   }
 
@@ -178,5 +189,9 @@ export class DashboardComponent implements OnInit {
         };
         this.alertService.configSubject.next(config);
       }).add(() => this.loading = false);
+  }
+
+  private getChannelDetails() {
+
   }
 }
