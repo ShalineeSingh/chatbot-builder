@@ -83,7 +83,7 @@ export class BotModalComponent {
       serviceToCall = this.dashboardService.saveBot(body);
     }
     serviceToCall.subscribe(res => {
-      this.activeModal.close(body);
+      this.activeModal.close(res);
       const config: AlertConfigModel = {
         type: 'success',
         message: successMsg,
@@ -92,7 +92,7 @@ export class BotModalComponent {
     }, (error) => {
       const config: AlertConfigModel = {
         type: 'danger',
-        message: error.error,
+        message: error.message,
       };
       this.alertService.configSubject.next(config);
     }).add(() => this.buttonLoader = false)

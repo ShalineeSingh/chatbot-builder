@@ -144,7 +144,7 @@ body {
   background: linear-gradient(90deg, #f9f9f9 20px, transparent 1%) center,
     linear-gradient(#f9f9f9 20px, transparent 1%) center, #dcdcdc;
   background-size: 22px 22px;
-  font-family: Arial;
+  // font-family: Arial;
   font-size: 13px;
   margin: 0;
   overflow: hidden;
@@ -155,7 +155,7 @@ body {
     border: 1px solid $body-color;
     width: inherit;
     background: white;
-    min-width: 140px;
+    min-width: 100px;
     &.selected {
       background: #dee2e6;
     }
@@ -181,7 +181,7 @@ body {
 }
 }
 .canvas-node {
-  width: 250px;
+  min-width: 150px;
   border-radius: 4px;
   .node-heading {
     border-bottom: 1px solid #ccc;

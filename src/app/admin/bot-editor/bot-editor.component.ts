@@ -5,65 +5,73 @@ import { BotEmulatorComponent } from '../bot-emulator/bot-emulator.component';
 import { TextModalComponent } from '../node-modals/text/text-modal.component';
 import { InterativeModalComponent } from '../node-modals/interactive/interactive-modal.component';
 import { ApiModalComponent } from '../node-modals/api/api-modal.component';
-import { NodeService } from '../node-select/node-list.service';
+import { INode, NodeService } from '../node-select/node-list.service';
 import { convertToDrawflowConnection, convertToDrawflowNode } from '../node-select/node-utils';
 import { Subscription } from 'rxjs';
 import { MediaModalComponent } from '../node-modals/media/media-modal.component';
 import { BotEditorService } from './bot-editor.service';
 import { Session } from '../../common/session';
 import { ActivatedRoute } from '@angular/router';
-import { INode } from '../node-modals/node.service';
+import { AlertConfigModel } from 'src/app/common/alert/alert-config.model';
+import { AlertService } from '../../common/alert/alert.service';
+import { IApi } from '../dashboard/dasboard.service';
 
 export type NodeType = 'text' | 'button' | 'image' | 'video' | 'document' | 'card' | 'api';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './bot-editor.component.html',
   styleUrls: ['./bot-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [BotEditorService],
 })
 export class BotEditorComponent implements OnInit {
-  public nodes: IDrawflowNode[];
-  public connections: IConnection[] = [];
   botId: number;
   tenantId: number;
+  saveButtonLoader: boolean;
+  loading: boolean;
   @ViewChild(DrawflowDirective, { static: true }) drawflow: DrawflowDirective;
   nodeServiceSubscription: Subscription;
-  constructor(private cdr: ChangeDetectorRef,
+  workflowId: number;
+  nodeList: INode[];
+  unsavedChanges: boolean;
+  apiList: IApi[];
+  constructor(
     private modalService: NgbModal,
     private botEditorService: BotEditorService,
     private session: Session,
     private route: ActivatedRoute,
-    private nodeService: NodeService) {
+    private alertService: AlertService,
+    private nodeService: NodeService,
+  ) {
     this.tenantId = this.session.getTenantId();
 
   }
 
   ngOnInit(): void {
     this.botId = this.route.snapshot.params.id;
+    this.getNodeList();
+    this.getApiList();
+    this.getBotWorkflow();
   }
 
   ngAfterViewInit() {
-    this.nodeServiceSubscription = this.nodeService.updateInitialNodeList.subscribe((nodeList) => {
-      if (nodeList) nodeList.forEach(node => {
-        node.id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
-        this.nodeService.updateNode(node);
-      });
-      if (nodeList) nodeList.forEach(node => {
-        if (this.nodeService.getNextNode(node)) {
-          let inputId = nodeList.find(v => v.name === node.nextNodeName).id;
-          this.drawflow.addNodeInput(this.nodeService.getNextNode(node).id);
-          this.drawflow.addNodeOutput(node.id);
-          this.drawflow.addConnection(convertToDrawflowConnection(node, inputId, 1));
-        }
-      });
-    });
+
     // this.openEmulator();
     // const modalRef = this.modalService.open(InterativeModalComponent, { backdrop: 'static', size: 'xl' });
   }
 
   public openEmulator() {
     const modalRef = this.modalService.open(BotEmulatorComponent, { modalDialogClass: 'chat-box' });
+  }
+
+  public zoomIn(){
+    this.drawflow.zoomIn();
+  }
+  public zoomOut(){
+    this.drawflow.zoomOut();
+  }
+  public zoomReset(){
+    this.drawflow.zoomReset();
   }
 
   public openNodeModal(type: NodeType) {
@@ -96,33 +104,69 @@ export class BotEditorComponent implements OnInit {
     if (mediaType) modalRef.componentInstance.mediaType = mediaType;
     modalRef.componentInstance.botId = this.botId;
     modalRef.componentInstance.tenantId = this.tenantId;
+    if (type === 'api') modalRef.componentInstance.apiList = this.apiList;
     modalRef.closed.subscribe(res => {
-      if (res !== 'close') this.addNode(res);
+      if (res !== 'close') this.addNode(res.node, res.previousNode, res.previousNodeEdited);
     });
   }
 
-  private addNode(node: INode) {
-    this.nodeService.onAddNode(node);
+  private addNode(node: INode, previousNode: INode, previousNodeEdited: boolean) {
+    this.unsavedChanges = true;
+    node.state = 'CREATED';
     node.node_id = this.drawflow.addNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
-    this.saveNodeToDb(node);
-    if (this.nodeService.getNextNode(node)) {
+    this.nodeService.onAddNode(node);
+    if (previousNode) {
       this.createConnection(node);
+      if (previousNodeEdited) this.nodeService.updateNode(previousNode);
+    }
+  }
+  private updateNode(node: INode, previousNode: INode, previousNodeEdited: boolean) {
+    this.unsavedChanges = true;
+    if (!node.state) node.state = 'EDITED';
+    else node.state = 'CREATED';
+    this.drawflow.updateNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
+    this.nodeService.updateNode(node);
+    if (previousNode) {
+      if (previousNodeEdited) {
+        this.nodeService.updateNode(previousNode);
+        let inputs = this.drawflow.getNodeInputOutput(node.node_id)[0];
+        let outputId;
+        let outputNodeId;
+        if (inputs['input_1']) {
+          outputId = inputs['input_1'].connections[0].input;
+          outputNodeId = inputs['input_1'].connections[0].node;
+        } else {
+          this.drawflow.addNodeInput(node.node_id);
+        }
+        let outputs = this.drawflow.getNodeInputOutput(previousNode.node_id)[1];
+        let connectionChanged = true;
+        for (let key in outputs) {
+          for (let i = 0; i < outputs[key]['connections'].length; i++) {
+            if (Number(outputs[key]['connections'][i].node) === node.node_id) {
+              connectionChanged = false;
+              break;
+            }
+          }
+        }
+        if (connectionChanged) {
+          if (outputId) this.drawflow.removeNodeOutput(Number(outputNodeId), outputId);
+          if (previousNode.node_id) {
+            const outputKey = this.drawflow.addNodeOutput(previousNode.node_id);
+            this.drawflow.addConnection(convertToDrawflowConnection(node.node_id, previousNode.node_id, 'input_1', outputKey));
+          }
+        }
+      }
     }
   }
 
-  private saveNodeToDb(node: INode) {
-    this.botEditorService.saveNode(node).subscribe(res => {
-      console.log(res);
-    })
-  }
-
   public editNode(nodeId: number) {
-    const currentNode = this.nodeService.getNodes().find(v => v.id === Number(nodeId));
+    const currentNode = this.nodeService.getNodeById(nodeId);
     if (currentNode) {
       let modalRef;
       switch (currentNode.type) {
         case 'text':
           modalRef = this.modalService.open(TextModalComponent, { backdrop: 'static', size: 'lg' });
+          modalRef.componentInstance.textNode = currentNode;
           break;
         case 'image':
           modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
@@ -136,44 +180,108 @@ export class BotEditorComponent implements OnInit {
           modalRef = this.modalService.open(MediaModalComponent, { backdrop: 'static', size: 'lg' });
           modalRef.componentInstance.mediaType = 'document';
           break;
+        case 'interactive':
+          modalRef = this.modalService.open(InterativeModalComponent, { backdrop: 'static', size: 'lg' });
+          modalRef.componentInstance.interactiveNode = currentNode;
+          break;
+        case 'api':
+          modalRef = this.modalService.open(ApiModalComponent, { backdrop: 'static', size: 'lg' });
+          modalRef.componentInstance.apiNode = currentNode;
+          modalRef.componentInstance.apiList = this.apiList;
+          break;
         default:
           break;
       }
       modalRef.componentInstance.data = currentNode;
-
-      modalRef.closed.subscribe(node => {
-        if (node !== 'close') {
-          this.drawflow.updateNode(convertToDrawflowNode(node, this.nodeService.getDisconnectedNodes()));
-          this.nodeService.updateNode(node);
-          const nextNode = this.nodeService.getNextNode(node);
-          console.log(nextNode);
-          if (nextNode) {
-            this.drawflow.export();
-            let in_out = this.drawflow.getNodeInputOutput(node.id);
-            if (!in_out[1].output_1 || in_out[1].output_1.connections.findIndex(v => Number(v.node) === nextNode.id) === -1) {
-              this.createConnection(node);
-            }
-          }
-        }
+      modalRef.closed.subscribe(res => {
+        if (res !== 'close') this.updateNode(res.node, res.previousNode, res.previousNodeEdited);
       });
     }
   }
 
-  private createConnection(node) {
-    if (node.type === 'text' || node.type === 'image' || node.type === 'document' || node.type === 'video') {
-      let inputId = this.nodeService.getNextNode(node).id;
-      this.drawflow.addNodeInput(inputId);
-      this.drawflow.addNodeOutput(node.id);
-      if (inputId) this.drawflow.addConnection(convertToDrawflowConnection(node, inputId, 1));
-    } else {
-      for (let i = 0; i < node.nextNodes.length; i++) {
-        let inputId = node.nextNodes[i].nextNodeId;
-        if (inputId) {
-          this.drawflow.addNodeInput(inputId);
-          this.drawflow.addNodeOutput(node.id);
-          this.drawflow.addConnection(convertToDrawflowConnection(node, inputId, i + 1));
-        }
-      }
+  public deleteNode(nodeId: number){
+    const currentNode = this.nodeService.getNodeById(nodeId);
+    if (currentNode) {
+      console.log(this.drawflow.export());
+      currentNode.deleted =true;
+      currentNode.state = 'EDITED';
+      this.nodeService.deleteNode(currentNode);
     }
+  }
+
+  public saveBotWorkflow() {
+    this.nodeService.saveNodes();
+    this.saveButtonLoader = true;
+    let body = {
+      tenant_id: this.tenantId,
+      bot_id: this.botId,
+      design: this.drawflow.export(),
+      status: 'DRAFT',
+      deleted: false
+    }
+    let serviceToCall = this.workflowId ? this.botEditorService.updateBotWorkflow(body, this.workflowId) : this.botEditorService.saveBotWorkflow(body);
+    serviceToCall.subscribe(res => {
+      this.unsavedChanges = false;
+      const config: AlertConfigModel = {
+        type: 'success',
+        message: this.workflowId ? "Workflow updated successfully" : "Workflow saved successfully",
+      };
+      this.alertService.configSubject.next(config);
+    }, (error) => {
+      const config: AlertConfigModel = {
+        type: 'danger',
+        message: error.message,
+      };
+      this.alertService.configSubject.next(config);
+    }, ()=>this.saveButtonLoader = false);
+  }
+
+  private getBotWorkflow() {
+    this.loading = true;
+    this.botEditorService.getBotWorkflow(this.tenantId, this.botId).subscribe(res => {
+      this.workflowId = res.id;
+      this.drawflow.import(res.design);
+    }, (error) => {
+      const config: AlertConfigModel = {
+        type: 'danger',
+        message: error.message,
+      };
+      this.alertService.configSubject.next(config);
+    }).add(() => this.loading = false)
+  }
+
+  private getNodeList() {
+    this.nodeService.getNodeList(this.botId).subscribe(res => {
+      this.nodeList = res;
+      this.nodeService.updateInitialNodes(this.nodeList);
+    }, (error) => {
+      const config: AlertConfigModel = {
+        type: 'danger',
+        message: error.message,
+      };
+      this.alertService.configSubject.next(config);
+    });
+  }
+
+  private getApiList() {
+    this.botEditorService.getApiList(this.tenantId).subscribe(res => {
+      this.apiList = res;
+    }, (error) => {
+      const config: AlertConfigModel = {
+        type: 'danger',
+        message: error.message,
+      };
+      this.alertService.configSubject.next(config);
+    });
+  }
+  
+
+  private createConnection(node: INode) {
+    let previousNodeId = this.nodeService.getPreviousNode(node).node_id;
+    const inputKey = this.drawflow.addNodeInput(node.node_id);
+    const outputKey = this.drawflow.addNodeOutput(previousNodeId);
+    // let inputOutput = this.drawflow.getNodeInputOutput(previousNodeId);
+    if (previousNodeId)
+      this.drawflow.addConnection(convertToDrawflowConnection(node.node_id, previousNodeId, inputKey, outputKey));
   }
 }

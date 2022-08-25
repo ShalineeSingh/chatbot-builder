@@ -9,7 +9,7 @@
     <div class="form-group" [class.error]="node_name?.invalid && submitAttempt">
       <label class="form-label very-small">Enter node name here</label>
       <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
-        [(ngModel)]="apiData.name" required>
+        [(ngModel)]="apiNode.node_name" required>
       <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
       <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
         <div *ngIf="node_name.errors.required">
@@ -34,7 +34,7 @@
     <div class="editor mt-4">
       <div class="form-group" [class.error]="quill_editor?.invalid && submitAttempt">
         <label class="form-label very-small">Enter bot response here</label>
-        <quill-editor [(ngModel)]="apiData.content" placeholder="Enter Text" name="quill" ngDefaultControl [modules]="quillConfig"
+        <quill-editor [(ngModel)]="apiNode.response.text.body" placeholder="Enter Text" name="quill" ngDefaultControl [modules]="quillConfig"
           #quill_editor="ngModel" required>
         </quill-editor>
         <div class="tiny mt-1">This will be shown to the user</div>
@@ -45,12 +45,37 @@
         </div>
       </div>
     </div>
-    <div class="w-50">
-      <label class="form-label very-small">Select next node</label>
-      <node-select [currentNodeName]="apiData.name" [nodeId]="tempNextNodeId" (onNextNodeSelect)="onNextNodeSelect($event)"
-        (isNextNodeValid)="isNextNodeValid($event)"></node-select>
-      <div class="tiny mt-1">This node will be executed when user clicks on current node</div>
-    </div>
+      <div class="form-group">
+        <div class="w-50 d-inline-block">
+          <label class="form-label very-small">Previous node</label>
+          <node-select [currentNodeName]="apiNode.node_name" [nodeId]="apiNode.previous_node_id"
+            [nodeName]="apiNode.previous_node_name" (onNextNodeSelect)="onNextNodeSelect($event)"
+            (isNextNodeValid)="isNextNodeValid($event)"></node-select>
+        </div>
+        <div class="w-50 d-inline-block ps-3">
+          <div class="form-group mb-3">
+            <label class="form-label very-small">Intent</label>
+            <input *ngIf="!previousNode || previousNode.type === 'text'" type="text" class="form-control" name="intent"
+              #nodeIntent="ngModel" [(ngModel)]="apiNode.intent" [disabled]="intentDisabled">
+      
+            <div *ngIf="previousNode && previousNode.type === 'interactive'">
+              <div class="input-group intent-dropdown">
+                <div class="dropdown header-type" ngbDropdown>
+                  <div class="d-flex align-items-center h-100 pointer" aria-expanded="false" ngbDropdownToggle>
+                    <span class="d-inline mx-1">{{apiNode.intent}}</span>
+                  </div>
+                  <ul class="dropdown-menu text-small shadow" ngbDropdownMenu>
+                    <li *ngFor="let intent of availableIntents">
+                      <a class="dropdown-item" (click)="changeIntent(intent)" ngbDropdownItem>{{intent.title}}</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+      
+          </div>
+        </div>
+      </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('close')">Close</button>

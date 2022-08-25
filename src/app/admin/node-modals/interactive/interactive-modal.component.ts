@@ -1,17 +1,7 @@
-import { Options } from '@angular-slider/ngx-slider';
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { QUILL_CONFIG } from '../../../common/utils';
-import { INode, IInteractiveResponse } from '../node.service';
-
-
-// headerMediaType
-// bodyContent
-// footerContent
-// nodeType
-// buttonList
-// sectionList
+import { INode, IInteractiveResponse } from '../../node-select/node-list.service';
 
 @Component({
   selector: 'interactive-modal',
@@ -40,6 +30,10 @@ export class InterativeModalComponent {
   previousNodeValid: boolean;
   submitAttempt: boolean;
   quillConfig = QUILL_CONFIG;
+  intentDisabled: boolean;
+  previousNode: INode;
+  previousNodeEdited: boolean;
+  availableIntents;
 
   constructor(public activeModal: NgbActiveModal) { }
 
@@ -80,12 +74,42 @@ export class InterativeModalComponent {
         total_response_node_count: 1,
         sequence: 1,
       };
-    }
-    for (let i = 0; i < 3; i++) {
-      this.interactiveNode.response.action.buttons.push({
-        // actionType: this.interactiveOptions[0]
-        title: null,
-      })
+
+      for (let i = 0; i < 3; i++) {
+        this.interactiveNode.response.action.buttons.push({
+          // actionType: this.interactiveOptions[0]
+          title: null,
+        })
+      }
+    } else {
+      if (!this.interactiveNode.response.header) this.interactiveNode.response.header = { type: 'text' };
+      if (!this.interactiveNode.response.footer) this.interactiveNode.response.footer = { type: 'text' };
+      if (!this.interactiveNode.response.action.sections) {
+        this.interactiveNode.response.action.sections = [
+          {
+            title: '',
+            rows: [{
+              title: '',
+              id: 'dummy',
+            }]
+          }
+        ];
+      }
+      if (!this.interactiveNode.response.action.buttons) {
+        this.interactiveNode.response.action.buttons = [];
+        for (let i = 0; i < 3; i++) {
+          this.interactiveNode.response.action.buttons.push({
+            // actionType: this.interactiveOptions[0]
+            title: null,
+          })
+        }
+      } else if (this.interactiveNode.response.action.buttons.length < 3) {
+        while (this.interactiveNode.response.action.buttons.length < 3) {
+          this.interactiveNode.response.action.buttons.push({
+            title: null,
+          })
+        }
+      }
     }
   }
 
@@ -116,20 +140,43 @@ export class InterativeModalComponent {
         this.interactiveNode.response.action.sections.push({ rows: [{ title: null }] });
       }
     }
-
   }
 
-
   public onSaveNode(): void {
-    if (this.interactiveNode.previous_node_id && !this.previousNodeValid) return;
-    console.log(this.interactiveNode);
+    if (this.previousNode) {
+      if (!this.previousNodeValid) return;
+      this.interactiveNode.previous_node_id = this.previousNode.node_id;
+      this.interactiveNode.previous_node_name = this.previousNode.node_name;
+      if (this.previousNode.type === 'text') {
+        this.previousNode.total_response_node_count = this.previousNode.total_response_node_count + 1;
+        this.interactiveNode.sequence = this.previousNode.total_response_node_count;
+        this.previousNode.state = this.previousNode.id ? 'EDITED' : 'CREATED';
+        this.previousNodeEdited = true;
+      }
+    }
     this.sanitiseNodeData();
-    this.activeModal.close(this.interactiveNode)
+    this.activeModal.close({ node: this.interactiveNode, previousNode: this.previousNode, previousNodeEdited: this.previousNodeEdited })
   }
 
   public onPreviousNodeSelect(node: INode): void {
-    this.interactiveNode.previous_node_id = node.node_id;
-    this.interactiveNode.previous_node_name = node.node_name;
+    this.previousNode = node;
+    if (node.type === 'text') {
+      this.interactiveNode.intent = node.response.text.body;
+      this.intentDisabled = true;
+    } else if (node.type === 'interactive') {
+      this.interactiveNode.intent = null;
+      if (node.response.type === 'list') {
+        this.availableIntents = [];
+        node.response.action.sections.forEach(section => {
+          this.availableIntents.push(...section.rows);
+        });
+      } else {
+        this.availableIntents = node.response.action.buttons;
+      }
+    }
+  }
+  public changeIntent(intent) {
+    this.interactiveNode.intent = intent.title;
   }
 
   public isPreviousNodeValid(isValid: boolean): void {

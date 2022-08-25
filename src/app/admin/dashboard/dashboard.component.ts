@@ -17,7 +17,7 @@ type Tabs = 'bot' | 'api' | 'channel';
   providers: [DashboardService],
 })
 export class DashboardComponent implements OnInit {
-  public activeTab: Tabs = 'api';
+  public activeTab: Tabs = 'bot';
   public botList: IBot[];
   public apiList: IApi[];
   public loading: boolean;
@@ -85,12 +85,16 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/edit', botId]);
   }
   public editApiDetails(api: IApi) {
-
+    const modalRef = this.modalService.open(ApiCreateModalComponent, { backdrop: 'static', size: 'xl' });
+    modalRef.componentInstance.apiDetails = api;
+    modalRef.closed.subscribe(res => {
+      if (res !== 'close') {
+        api = res;
+      }
+    });
   }
-  public viewApi(api: IApi) {
 
-  }
-  public deleteApi(apiId: number) {
+   public deleteApi(apiId: number) {
     if (confirm("Are you sure you want to delete this api?")) {
       this.dashboardService.deleteApi(apiId).subscribe(res => {
         const apiIndex = this.apiList.findIndex(v => v.id === apiId);
@@ -104,7 +108,7 @@ export class DashboardComponent implements OnInit {
         (error) => {
           const config: AlertConfigModel = {
             type: 'danger',
-            message: error.error,
+            message: error.message,
           };
           this.alertService.configSubject.next(config);
         });
@@ -124,7 +128,7 @@ export class DashboardComponent implements OnInit {
         (error) => {
           const config: AlertConfigModel = {
             type: 'danger',
-            message: error.error,
+            message: error.message,
           };
           this.alertService.configSubject.next(config);
         });
@@ -171,7 +175,7 @@ export class DashboardComponent implements OnInit {
         console.log(error);
         const config: AlertConfigModel = {
           type: 'danger',
-          message: error.error,
+          message: error.message,
         };
         this.alertService.configSubject.next(config);
       }).add(() => this.loading = false);
@@ -185,7 +189,7 @@ export class DashboardComponent implements OnInit {
       (error) => {
         const config: AlertConfigModel = {
           type: 'danger',
-          message: error.error,
+          message: error.message,
         };
         this.alertService.configSubject.next(config);
       }).add(() => this.loading = false);

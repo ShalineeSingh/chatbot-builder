@@ -3,6 +3,8 @@ import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { merge, Observable, OperatorFunction, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { IBot, IApi } from '../../dashboard/dasboard.service';
+import { INode } from '../../node-select/node-list.service';
+import { QUILL_CONFIG } from '../../../common/utils';
 
 @Component({
   selector: 'api-modal',
@@ -11,48 +13,88 @@ import { IBot, IApi } from '../../dashboard/dasboard.service';
   encapsulation: ViewEncapsulation.None
 })
 export class ApiModalComponent {
-  @Input() apiData;
-  submitAttempt: boolean;
-  tempNextNodeId: string;
-  nextNodeValid: boolean;
-  quillConfig = {
-    toolbar: {
-      container: [
-        ['italic', 'underline'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        [{ 'font': [] }],
-      ],
-    },
-  }
+  @Input() apiNode: INode;
+  @Input() apiList: IApi[] = [];
+  @Input() botId: number;
+  @Input() tenantId: number;
+  previousNodeValid: boolean;
+  previousNode: INode;
+  intentDisabled: boolean;
+  previousNodeEdited: boolean;
+  availableIntents;
   @ViewChild('instance', { static: true }) instance: NgbTypeahead;
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
   invalidNode: boolean;
   selectedApi: IApi;
-  apiList: IApi[];
+  submitAttempt: boolean;
+  quillConfig = QUILL_CONFIG;
 
   constructor(public activeModal: NgbActiveModal) { }
 
-  ngOnInit(){
-    if(!this.apiData){
-      this.apiData = {
-        name: null,
-        content: null,
+  ngOnInit() {
+    if (!this.apiNode) {
+      this.apiNode = {
+        type: 'api',
+        bot_id: this.botId,
+        tenant_id: this.tenantId,
+        deleted: false,
+        node_name: '',
+        response: {
+          text: {
+            body: ''
+          }
+        },
+        total_response_node_count: 0,
+        sequence: 1,
+      }
+    } else {
+      console.log(this.apiNode.api_id);
+      this.selectedApi = this.apiList.find(v => v.id === this.apiNode.api_id);
+    }
+  }
+  public onSaveNode() {
+    this.apiNode.api_id = this.selectedApi.id;
+    if (this.previousNode) {
+      if (!this.previousNodeValid) return;
+      else {
+        this.apiNode.previous_node_id = this.previousNode.node_id;
+        this.apiNode.previous_node_name = this.previousNode.node_name;
+        if (this.previousNode.type === 'text') {
+          this.previousNode.total_response_node_count = this.previousNode.total_response_node_count + 1;
+          this.apiNode.sequence = this.previousNode.total_response_node_count;
+          this.previousNode.state = this.previousNode.id ? 'EDITED' : 'CREATED';
+        }
+      }
+    }
+    this.activeModal.close({ node: this.apiNode, previousNode: this.previousNode, previousNodeEdited: this.previousNodeEdited });
+  }
+
+  public onNextNodeSelect(node: INode): void {
+    this.previousNode = node;
+    this.previousNodeEdited = true;
+    if (node.type === 'text') {
+      this.apiNode.intent = node.response.text.body;
+      this.intentDisabled = true;
+    } else if (node.type === 'interactive') {
+      this.apiNode.intent = null;
+      if (node.response.type === 'list') {
+        this.availableIntents = [];
+        node.response.action.sections.forEach(section => {
+          this.availableIntents.push(...section.rows);
+        });
+      } else {
+        this.availableIntents = node.response.action.buttons;
       }
     }
   }
-  public onSaveNode(){
-
+  public changeIntent(intent) {
+    this.apiNode.intent = intent.title;
   }
-  public onNextNodeSelect(node): void {
-    this.tempNextNodeId = node.name;
-  }
-
   public isNextNodeValid(isValid: boolean): void {
-    this.nextNodeValid = isValid;
+    this.previousNodeValid = isValid;
   }
-  
+
   search: OperatorFunction<string, readonly IApi[]> = (text$: Observable<string>) => {
     const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
     const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
@@ -60,7 +102,7 @@ export class ApiModalComponent {
 
     return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
       map(term => {
-        this.invalidNode = false;
+        this.previousNodeValid = false;
         return (term === '' ? this.apiList
           : this.apiList.filter(v => v.name.toLowerCase().indexOf(term.toLowerCase()) > -1)).slice(0, 10)
       })
@@ -68,10 +110,6 @@ export class ApiModalComponent {
   };
 
   public formatter = (result: IBot) => result.name;
-
-  // public onUpdateValue(event) {
-  //   this.onNextNodeSelect.emit(event.item);
-  // }
 
   public checkValidity(nodename: string): void {
     if (nodename && nodename !== '') {

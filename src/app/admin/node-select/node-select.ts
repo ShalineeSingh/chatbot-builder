@@ -2,8 +2,7 @@ import { Component, EventEmitter, Input, Output, SimpleChange, ViewChild } from 
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { merge, Observable, OperatorFunction, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { NodeService } from './node-list.service';
-import { INode } from '../node-modals/node.service';
+import { INode, NodeService } from './node-list.service';
 
 @Component({
   selector: 'node-select',

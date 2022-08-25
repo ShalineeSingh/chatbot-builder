@@ -1,7 +1,7 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { INode } from '../node.service';
 import { QUILL_CONFIG } from '../../../common/utils';
+import { INode } from '../../node-select/node-list.service';
 
 @Component({
   selector: 'text-modal',
@@ -17,6 +17,9 @@ export class TextModalComponent {
   quillConfig = QUILL_CONFIG;
   previousNodeValid: boolean;
   previousNode: INode;
+  intentDisabled: boolean;
+  previousNodeEdited: boolean;
+  availableIntents;
 
   constructor(public activeModal: NgbActiveModal) { }
 
@@ -33,7 +36,7 @@ export class TextModalComponent {
             body: ''
           }
         },
-        total_response_node_count: 1,
+        total_response_node_count: 0,
         sequence: 1,
       }
     }
@@ -45,15 +48,37 @@ export class TextModalComponent {
       else {
         this.textNode.previous_node_id = this.previousNode.node_id;
         this.textNode.previous_node_name = this.previousNode.node_name;
+        if (this.previousNode.type === 'text') {
+          this.previousNode.total_response_node_count = this.previousNode.total_response_node_count + 1;
+          this.textNode.sequence = this.previousNode.total_response_node_count;
+          this.previousNode.state = this.previousNode.id ? 'EDITED' : 'CREATED';
+        }
       }
     }
-    this.activeModal.close(this.textNode);
+    this.activeModal.close({ node: this.textNode, previousNode: this.previousNode, previousNodeEdited: this.previousNodeEdited });
   }
 
-  public onNextNodeSelect(node): void {
+  public onNextNodeSelect(node: INode): void {
     this.previousNode = node;
+    this.previousNodeEdited = true;
+    if (node.type === 'text') {
+      this.textNode.intent = node.response.text.body;
+      this.intentDisabled = true;
+    } else if (node.type === 'interactive') {
+      this.textNode.intent = null;
+      if (node.response.type === 'list') {
+        this.availableIntents = [];
+        node.response.action.sections.forEach(section => {
+          this.availableIntents.push(...section.rows);
+        });
+      } else {
+        this.availableIntents = node.response.action.buttons;
+      }
+    }
   }
-
+  public changeIntent(intent) {
+    this.textNode.intent = intent.title;
+  }
   public isNextNodeValid(isValid: boolean): void {
     this.previousNodeValid = isValid;
   }

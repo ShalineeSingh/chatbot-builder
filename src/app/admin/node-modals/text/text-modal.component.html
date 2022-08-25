@@ -44,7 +44,23 @@
       <div class="w-50 d-inline-block ps-3">
         <div class="form-group mb-3">
           <label class="form-label very-small">Intent</label>
-          <input type="text" class="form-control" name="intent" #nodeIntent="ngModel" [(ngModel)]="textNode.intent">
+          <input *ngIf="!previousNode || previousNode.type === 'text'" type="text" class="form-control" name="intent" #nodeIntent="ngModel" [(ngModel)]="textNode.intent" [disabled]="intentDisabled">
+          
+          <div *ngIf="previousNode && previousNode.type === 'interactive'">
+            <div class="input-group intent-dropdown">
+              <div class="dropdown header-type" ngbDropdown>
+                <div class="d-flex align-items-center h-100 pointer" aria-expanded="false" ngbDropdownToggle>
+                  <span class="d-inline mx-1">{{textNode.intent}}</span>
+                </div>
+                <ul class="dropdown-menu text-small shadow" ngbDropdownMenu>
+                  <li *ngFor="let intent of availableIntents">
+                    <a class="dropdown-item" (click)="changeIntent(intent)" ngbDropdownItem>{{intent.title}}</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

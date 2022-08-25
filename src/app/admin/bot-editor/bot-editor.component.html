@@ -2,8 +2,10 @@
   <div class="header d-flex">
     <span class="heading-4 align-self-center ms-3 pointer" routerLink="/">LSQ Bot </span>
     <div class="actions ml-auto my-2 align-self-center">
-      <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="openEmulator()">Save</button>
-      <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="openEmulator()">Publish</button>
+      <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="saveBotWorkflow()">
+        <span *ngIf="!saveButtonLoader;else loadingRef">Save</span>
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="saveBotWorkflow()">Publish</button>
       <button type="button" class="btn btn-sm btn-primary mx-2" (click)="openEmulator()">Test your bot</button>
     </div>
   </div>
@@ -68,12 +70,36 @@
         </div> -->
       </div>
     </div>
-    <div class="col">
-      <div class="container-canvas" appNgDrawFlow [nodes]="nodes" [connections]="connections" (onEditNode)="editNode($event)">
+    <div [class.visually-hidden]="loading">
+      <div class="col">
+        <div class="container-canvas" appNgDrawFlow (onEditNode)="editNode($event)" (onDeleteNode)="deleteNode($event)">
+        </div>
       </div>
+      <div *ngIf="unsavedChanges" class="unsaved-changes">
+        <span class="tiny">You have unsaved changes.</span>
+      </div>
+      <div class="zoom-container">
+        <div class="zoom zoom-in" (click)="zoomIn()">
+          <i class="fs-6 bi-zoom-in"></i>
+        </div>
+        <div class="zoom zoom-in" (click)="zoomOut()">
+          <i class="fs-6 bi-zoom-out"></i>
+        </div>
+        <div class="zoom zoom-in" (click)="zoomReset()">
+          <i class="fs-6 bi-arrow-clockwise"></i>
+        </div>
+      </div>
+    </div>
+    {{loading}}
+    <div *ngIf="loading" class="page-loader">
+      <ng-container *ngTemplateOutlet="loadingRef"></ng-container>
     </div>
   </div>
 </div>
-<div class="unsaved-changes">
-  <span class="tiny">You have unsaved changes.</span>
-</div>
+
+
+<ng-template #loadingRef>
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</ng-template>

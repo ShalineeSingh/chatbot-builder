@@ -1,9 +1,9 @@
 import { IDrawflowNode } from "src/app/common/directives/app-drawflow.directive";
 import { IConnection } from '../../common/directives/app-drawflow.directive';
-import { INode } from '../node-modals/node.service';
+import { INode } from "./node-list.service";
 
 export function convertToDrawflowNode(node: INode, disconnectedNodes: INode[]): IDrawflowNode {
-  let index = disconnectedNodes.findIndex(v => v.node_name === node.node_name);
+  let index = disconnectedNodes.length;
   return {
     name: node.node_name,
     inputs: 0,
@@ -17,35 +17,26 @@ export function convertToDrawflowNode(node: INode, disconnectedNodes: INode[]): 
   }
 }
 
-export function convertToDrawflowConnection(node: any, previousId: number, index: number): IConnection {
+export function convertToDrawflowConnection(input: number, output: number, inputIndex: string, outputIndex: string): IConnection {
   return {
-    outputNodeId: node.id,
-    inputNodeId: previousId,
-    outputName: 'output_' + index,
-    inputName: 'input_1'
+    outputNodeId: output,
+    inputNodeId: input,
+    outputName: outputIndex,
+    inputName: inputIndex,
   }
 }
 export function createTextCanvasContent(node: INode): string {
+  const type = node.type.charAt(0).toUpperCase() + node.type.slice(1);
   let content = `<div class="canvas-node" data-node="${node.node_name}">
       <div class="node-heading">
         <span>${node.node_name}</span>
         <span class="float-end px-2 pointer btn-trash" title="delete node"> <i class="fs-6 bi-trash"></i></span>
         <span class="float-end px-2 pointer btn-edit" title="edit node"> <i class="fs-6 bi-pencil"></i></span>
       </div>
-      <div class="node-body">`;
-  switch (node.type) {
-    case 'text':
-      content += `${node.response.text.body}`;
-      break;
-    // case 'image':
-    //   for (let i = 0; i < node.content.length; i++) {
-    //     // TODO: fix edit here and add image here
-    //     content += `image_${i}`
-    //   }
-    //   break;
-  }
+      <div class="node-body very-small">`;
+  content += `<p>Type: ${type}</p>`;
+  content += `Intent: ${node.intent ? node.intent : '-'}`;
   content += `</div></div>`;
-
   return content;
 }
 

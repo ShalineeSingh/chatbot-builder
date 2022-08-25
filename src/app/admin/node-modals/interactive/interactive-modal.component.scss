@@ -78,3 +78,12 @@ width: 400px;
 .section{
   background-color: #e9ecef;
 }
+
+.intent-dropdown{
+  min-height: 34px;
+    top: -5px;
+    border-radius: 4px;
+    .header-type {
+      width: 100%;
+    }
+}

@@ -38,25 +38,6 @@ export class ApiCreateModalComponent {
   }
 
   ngOnInit() {
-    let params = {
-      'hello': 'there',
-      'new': 'param',
-    };
-    let body = { a: 'foo', 'b': 'bar', c: [false, 2, null, 'null'] };
-    let paramArray = [];
-    let headerArray = [];
-    for (let key in params) {
-      if (params.hasOwnProperty(key)) {
-        paramArray.push({
-          key,
-          value: params[key]
-        });
-        headerArray.push({
-          key,
-          value: params[key]
-        });
-      }
-    }
     if (!this.apiDetails) {
       this.apiDetails = {
         tenantId: this.session.getTenantId(),
@@ -65,9 +46,41 @@ export class ApiCreateModalComponent {
         requestUrl: null,
         queryParam: [{ key: null }],
         headers: [{ key: null }],
-        // body: JSON.stringify(body, undefined, 4),
         response: [{ key: null }],
+        deleted: false,
       }
+    }else {
+      let paramArray = [];
+      let headerArray = [];
+      let responseArray = [];
+      for (let key in this.apiDetails.queryParam) {
+        if (this.apiDetails.queryParam.hasOwnProperty(key)) {
+          paramArray.push({
+            key,
+            value: this.apiDetails.queryParam[key]
+          });
+        }
+      }
+      for (let key in this.apiDetails.headers) {
+        if (this.apiDetails.headers.hasOwnProperty(key)) {
+          headerArray.push({
+            key,
+            value: this.apiDetails.headers[key]
+          });
+        }
+      }
+      for (let key in this.apiDetails.response) {
+        if (this.apiDetails.response.hasOwnProperty(key)) {
+          responseArray.push({
+            key,
+            value: this.apiDetails.response[key]
+          });
+        }
+      }
+      this.apiDetails.headers = headerArray;
+      this.apiDetails.queryParam = paramArray;
+      this.apiDetails.response = responseArray;
+      this.apiDetails.body = JSON.stringify(this.apiDetails.body, undefined, 4);
     }
   }
 
@@ -116,12 +129,13 @@ export class ApiCreateModalComponent {
       request_url: this.apiDetails.requestUrl,
       headers: this.convertArrayToMap('headers'),
       query_param: this.convertArrayToMap('queryParam'),
-      body: this.apiDetails.body ? JSON.parse(this.apiDetails.body) : null,
+      body: this.apiDetails.body ? JSON.parse(this.apiDetails.body) : {},
       response: this.convertArrayToMap('response'),
+      deleted: false,
+      authorisation: this.authDetails,
     }
     this.dashboardService.saveApi(body).subscribe(res => {
-      body.id = 124; // todo: change this
-      this.activeModal.close(body);
+      this.activeModal.close(res);
       const config: AlertConfigModel = {
         type: 'success',
         message: "API saved successfully",
@@ -130,7 +144,7 @@ export class ApiCreateModalComponent {
     }, (error) => {
       const config: AlertConfigModel = {
         type: 'danger',
-        message: error.error,
+        message: error.message,
       };
       this.alertService.configSubject.next(config);
     }).add(() => this.buttonLoader = false)
@@ -166,7 +180,7 @@ export class ApiCreateModalComponent {
     }, (error) => {
       const config: AlertConfigModel = {
         type: 'danger',
-        message: error.error,
+        message: error.message,
       };
       this.alertService.configSubject.next(config);
     }).add(() => this.apiButtonLoader = false)

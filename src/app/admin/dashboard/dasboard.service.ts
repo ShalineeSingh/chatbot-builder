@@ -27,6 +27,7 @@ export interface IApiServerResponse {
   query_param?: any;
   body?: any;
   response: any;
+  deleted: boolean;
 }
 
 export interface IBot {
@@ -50,6 +51,7 @@ export interface IApi {
   queryParam?: any;
   body?: any;
   response: any;
+  deleted: boolean;
 }
 
 @Injectable()
@@ -63,7 +65,7 @@ export class DashboardService {
 
   public getBotList(): Observable<IBot[]> {
     // return this.http.get('../assets/mock-data/botList.json')
-    return this.http.get(`${this.apiPrefix}bot/listBotByTenantId/${this.tenantId}`)
+    return this.http.get(`${this.apiPrefix}bot/list/${this.tenantId}`)
       .pipe(
         map(this.transformBotList.bind(this)),
       );
@@ -90,24 +92,30 @@ export class DashboardService {
   }
 
   public getApiList(): Observable<IApi[]> {
-    return this.http.get(`${this.apiPrefix}api/listAPIByTenantId/${this.tenantId}`)
+    return this.http.get(`${this.apiPrefix}api/list/${this.tenantId}`)
       .pipe(
         map(this.transformApiList.bind(this)),
       );
   }
 
-  public deleteApi(params = null): Observable<IBot[]> {
-    return this.http.get('../assets/mock-data/botList.json')
+  public saveApi(body): Observable<IBot[]> {
+    return this.http.post(`${this.apiPrefix}api/create`, body)
       .pipe(
-        map(this.transformBotList.bind(this)),
+        map(this.transformAPI.bind(this)),
       );
   }
 
-  public saveApi(body, params = null): Observable<IBot[]> {
-    return this.http.get('../assets/mock-data/botList.json')
+
+  public updateApi(body, apiId: number): Observable<IBot> {
+    // return this.http.get('../assets/mock-data/botList.json')
+    return this.http.put(`${this.apiPrefix}api/update/${apiId}`, body)
       .pipe(
-        map(this.transformBotList.bind(this)),
+        map(this.transformAPI.bind(this)),
       );
+  }
+
+  public deleteApi(apiId: number): Observable<any> {
+    return this.http.put(`${this.apiPrefix}api/delete/${apiId}`, {});
   }
 
   public testGetApi(url: string, params: any = null, headers: any = null, auth: any = null): Observable<any> {
@@ -126,6 +134,21 @@ export class DashboardService {
       image: bot.image,
       updatedAt: bot.last_modified_date,
       updatedBy: bot.last_modified_by,
+    }
+  }
+  private transformAPI(api: IApiServerResponse): IApi {
+    return {
+      id: api.id,
+      tenantId: api.tenant_id,
+      name: api.name,
+      requestType: api.request_type,
+      requestUrl: api.request_url,
+      authorisation: api.authorisation,
+      headers: api.headers,
+      queryParam: api.query_param,
+      body: api.body,
+      response: api.response,
+      deleted: api.deleted,
     }
   }
 
@@ -155,6 +178,7 @@ export class DashboardService {
         queryParam: api.query_param,
         body: api.body,
         response: api.response,
+        deleted: api.deleted,
       }
     });
   }
