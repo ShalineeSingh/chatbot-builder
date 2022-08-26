@@ -34,11 +34,16 @@ export class BotEditorService {
   }
 
   public getBotWorkflow(tenantId: number, botId: number): Observable<any> {
-    return this.http.get(`${this.apiPrefix}botdesigner/list/${tenantId}/${botId}`)
+    return this.http.get('../assets/mock-data/botList.json')
+    // return this.http.get(`${this.apiPrefix}botdesigner/list/${tenantId}/${botId}`)
   }
 
   public getApiList(tenantId: number): Observable<any> {
     return this.http.get(`${this.apiPrefix}api/list/${tenantId}`)
+  }
+
+  public getResponse(tenantId:number, botId: number, params):Observable<any>{
+    return this.http.get(`${this.apiPrefix}botengine/getBotResponse/${tenantId}/${botId}`,{params});
   }
 
   // private transformNode(res) {

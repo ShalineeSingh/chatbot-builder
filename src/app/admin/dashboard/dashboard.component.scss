@@ -13,6 +13,9 @@ $header-height: 60px;
   &:hover {
     background-color: #444;
   }
+   &.active {
+    background-color: rgb(80, 79, 79);
+  }
 }
 .bot-card {
   height: 300px;
@@ -65,7 +68,7 @@ $header-height: 60px;
 .sidebar{
   width: 180px;
   padding: 0;
-  min-height: calc(100vh - #{$header-height});
+  min-height: 100vh;
   color: white;
 }
 

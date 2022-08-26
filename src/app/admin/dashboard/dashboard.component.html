@@ -1,163 +1,163 @@
 <div class="container-fluid">
-    <div class="header d-flex">
-      <span class="heading-4 align-self-center">LSQ Bot </span>
-    </div>
-  <div class="row flex-nowrap">
-    <div class="col-auto bg-dark border-end sidebar">
-      <div class="d-flex flex-column align-items-center align-items-sm-start">
-        <!-- <p class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-decoration-none">
-          <span class="fs-5 d-none d-sm-inline">Bot Responses</span>
-        </p> -->
-        <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100" id="menu">
-          <li class="nav-item" (click)="changeTab('bot')">
-            <p class="nav-link align-middle px-0">
-              <i class="fs-6 bi-diagram-3"></i> <span class="ms-1 d-none d-sm-inline">Bots</span>
+  <div class="row">
+    <div class="col-auto">
+      <div class="row flex-nowrap">
+        <div class="col-auto bg-dark border-end sidebar">
+          <div class="d-flex flex-column align-items-center align-items-sm-start">
+            <p class="text-center w-100 my-4 pointer" routerLink="/">LSQ Bot</p>
+            <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start w-100" id="menu">
+              <li class="nav-item" (click)="changeTab('bot')"  [class.active]="activeTab === 'bot'">
+                <p class="nav-link align-middle px-0">
+                  <i class="fs-6 bi-diagram-3"></i> <span class="ms-1 d-none d-sm-inline">Bots</span>
+                </p>
+              </li>
+            </ul>
+            <hr>
+            <p class="d-flex align-items-center px-3 mb-md-0 me-md-auto text-decoration-none">
+              <span class="my-2">Integrations</span>
             </p>
-          </li>
-        </ul>
-        <hr>
-        <p class="d-flex align-items-center px-3 mb-md-0 me-md-auto text-decoration-none">
-          <span class="d-none d-sm-inline">Integrations</span>
-        </p>
-        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu-1">
-          <li class="nav-item" (click)="changeTab('api')">
-            <p class="nav-link align-middle px-0">
-              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">API</span>
-            </p>
-          </li>
-          <li class="nav-item" (click)="changeTab('channel')">
-            <p class="nav-link align-middle px-0">
-              <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Channels</span>
-            </p>
-          </li>
-        </ul>
+            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu-1">
+              <li class="nav-item" (click)="changeTab('api')"  [class.active]="activeTab === 'api'">
+                <p class="nav-link align-middle px-0">
+                  <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">API</span>
+                </p>
+              </li>
+              <li class="nav-item" (click)="changeTab('channel')"  [class.active]="activeTab === 'channel'">
+                <p class="nav-link align-middle px-0">
+                  <i class="fs-6 bi-card-text"></i> <span class="ms-1 d-none d-sm-inline">Channels</span>
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
     </div>
-    <div class="col">
-      <ng-container *ngIf="activeTab === 'bot'">
-        <div class="d-flex flex-wrap" *ngIf="!loading; else loadingRef">
-          <div class="card bot-card align-items-center justify-content-center">
-            <div class="add-new ml-8 d-inline-block pointer" (click)="addNewBot()">
-              <div> <i class="fs-1 bi-plus"></i></div>
-            </div>
-          </div>
-          <div class="card bot-card" *ngFor="let bot of botList">
-            <div class="bot-image">
-              <img alt={{bot.name}} [src]="bot.image ? bot.image : '../assets/images/dummy.jpeg'" />
-            </div>
-            <p class="text-center mt-4">{{bot.name}}</p>
-            <p class="small" *ngIf="bot.description">{{bot.description | slice:0:150}}<span
-                *ngIf="bot.description.length > 150">...</span></p>
-            <div class="footer">
-              <div class="card-actions d-flex justify-content-around">
-                <div class="action" title="Edit bot details" (click)="editBotDetails(bot)">
-                  <i class="fs-6 bi-pencil"></i>
-                </div>
-                <div class="action" title="View" (click)="viewBot(bot.id)">
-                  <i class="fs-6 bi-eye"></i>
-                </div>
-                <div class="action" title="Edit Bot Workflow" (click)="editBot(bot.id)">
-                  <i class="fs-6 bi-diagram-3"></i>
-                </div>
-                <div class="action" title="Delete" (click)="deleteBot(bot.id)">
-                  <i class="fs-6 bi-trash"></i>
+    <div class="col g-0">
+      <div class="header d-flex">
+        <div class="actions ml-auto my-2 align-self-center pr-4 mr-4">
+          <button *ngIf="activeTab === 'bot'" type="button" class="btn btn-sm btn-primary mx-2" (click)="addNewBot()">Create Bot</button>
+          <button *ngIf="activeTab === 'api'"  type="button" class="ml-auto btn btn-primary" (click)="addNewApi()">
+            <div> Add API</div>
+          </button>
+        </div>
+      </div>
+      <div class="">
+        <ng-container *ngIf="activeTab === 'bot'">
+          <div class="d-flex flex-wrap" *ngIf="!loading; else loadingRef">
+            <div class="card bot-card" *ngFor="let bot of botList">
+              <div class="bot-image">
+                <img alt={{bot.name}} [src]="bot.image ? bot.image : '../assets/images/dummy.jpeg'" />
+              </div>
+              <p class="text-center mt-4">{{bot.name}}</p>
+              <p class="small" *ngIf="bot.description">{{bot.description | slice:0:150}}<span
+                  *ngIf="bot.description.length > 150">...</span></p>
+              <div class="footer">
+                <div class="card-actions d-flex justify-content-around">
+                  <div class="action" title="Edit bot details" (click)="editBotDetails(bot)">
+                    <i class="fs-6 bi-pencil"></i>
+                  </div>
+                  <div class="action" title="View" (click)="viewBot(bot.id, bot.name)">
+                    <i class="fs-6 bi-eye"></i>
+                  </div>
+                  <div class="action" title="Edit Bot Workflow" (click)="editBot(bot.id, bot.name)">
+                    <i class="fs-6 bi-diagram-3"></i>
+                  </div>
+                  <div class="action" title="Delete" (click)="deleteBot(bot.id)">
+                    <i class="fs-6 bi-trash"></i>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="activeTab === 'api'">
-        <div class="header py-2 border-bottom d-flex">
-          <button type="button" class="ml-auto btn btn-primary" (click)="addNewApi()">
-            <div> Add API</div>
-          </button>
-        </div>
-        <div class="api-wrapper"  *ngIf="!loading; else loadingRef">
-          <div class="table-responsive">
-            <table class="table table-hover table-bordered">
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Request Type</th>
-                  <th scope="col">Request Url</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let api of apiList; let i = index">
-                  <th scope="row">{{api.name}}</th>
-                  <td>{{api.requestType}}</td>
-                  <td>{{api.requestUrl}}</td>
-                  <td>
-                    <div class="card-actions d-flex justify-content-around">
-                      <div class="action pointer" title="Edit Api details" (click)="editApiDetails(api)">
-                        <i class="fs-6 bi-pencil"></i>
+        </ng-container>
+        <ng-container *ngIf="activeTab === 'api'">
+          <div class="api-wrapper" *ngIf="!loading; else loadingRef">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Request Type</th>
+                    <th scope="col">Request Url</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let api of apiList; let i = index">
+                    <th scope="row">{{api.name}}</th>
+                    <td>{{api.requestType}}</td>
+                    <td>{{api.requestUrl}}</td>
+                    <td>
+                      <div class="card-actions d-flex justify-content-around">
+                        <div class="action pointer" title="Edit Api details" (click)="editApiDetails(api)">
+                          <i class="fs-6 bi-pencil"></i>
+                        </div>
+                        <!-- <div class="action pointer" title="View Api Details" (click)="viewApi(api)">
+                                <i class="fs-6 bi-eye"></i>
+                              </div> -->
+                        <div class="action pointer" title="Delete Api" (click)="deleteApi(api.id)">
+                          <i class="fs-6 bi-trash"></i>
+                        </div>
                       </div>
-                      <!-- <div class="action pointer" title="View Api Details" (click)="viewApi(api)">
-                        <i class="fs-6 bi-eye"></i>
-                      </div> -->
-                      <div class="action pointer" title="Delete Api" (click)="deleteApi(api.id)">
-                        <i class="fs-6 bi-trash"></i>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="activeTab === 'channel'">
-        <div class="row"  *ngIf="!loading; else loadingRef">
-          <div class="col mt-4">
-            <div class="card channel-card text-center p-4">
-              <img src="../../../assets/images/whatsapp.png">
-              <span>Whatsapp</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="col border-start">
-            <!-- whatsapp configuration -->
-            <div class="configuration mt-4">
-              <form #textForm="ngForm">
-                <div class="form-group" [class.error]="wa_number?.invalid && submitAttempt">
-                  <label class="form-label very-small">Whatsapp number</label>
-                  <input ngbAutofocus type="text" class="form-control w-50" name="waNumber" #wa_number="ngModel"
-                    [(ngModel)]="whatsappNumber" required>
-                  <div *ngIf="wa_number?.invalid && submitAttempt" class="text-danger small">
-                    <div *ngIf="wa_number.errors.required">
-                      Whatsapp number is required
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group" [class.error]="invalidNode && submitAttempt">
-                  <label class="form-label very-small">Select Bot</label>
-                  <div class="input-group w-50 mb-4">
-                    <input id="typeahead-focus" type="text" class="form-control br-0 border-end-0" [(ngModel)]="selectedNode"
-                      [ngbTypeahead]="search" (focus)="focus$.next($any($event).target.value)" name="botSearch"
-                      (click)="click$.next($any($event).target.value)" #instance="ngbTypeahead" [resultFormatter]="formatter"
-                      [inputFormatter]="formatter" placeholder="Select bot" (blur)="checkValidity($event.target.value)" />
-                    <span class="input-group-append">
-                      <div class="input-group-text bg-transparent">
-                        <i class="fs-6 bi-caret-down-fill"></i>
-                      </div>
-                    </span>
-                  </div>
-                </div>
-                <div class="footer">
-                  <button type="button" class="btn btn-primary" (click)="submitAttempt=true; textForm.valid && onSaveApi()">
-                    <span *ngIf="!buttonLoader">Save</span>
-                    <div *ngIf="buttonLoader" class="spinner-border" role="status">
-                      <span class="visually-hidden">Loading...</span>
-                    </div>
-                  </button>
-                </div>
-              </form>
+        </ng-container>
+        <ng-container *ngIf="activeTab === 'channel'">
+          <div class="row" *ngIf="!loading; else loadingRef">
+            <div class="col mt-4">
+              <div class="card channel-card text-center p-4">
+                <img src="../../../assets/images/whatsapp.png">
+                <span>Whatsapp</span>
+              </div>
             </div>
+            <div class="col border-start">
+              <!-- whatsapp configuration -->
+              <div class="configuration mt-4">
+                <form #textForm="ngForm">
+                  <div class="form-group" [class.error]="wa_number?.invalid && submitAttempt">
+                    <label class="form-label very-small">Whatsapp number</label>
+                    <input ngbAutofocus type="text" class="form-control w-50" name="waNumber" #wa_number="ngModel"
+                      [(ngModel)]="whatsappNumber" required>
+                    <div *ngIf="wa_number?.invalid && submitAttempt" class="text-danger small">
+                      <div *ngIf="wa_number.errors.required">
+                        Whatsapp number is required
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group" [class.error]="invalidNode && submitAttempt">
+                    <label class="form-label very-small">Select Bot</label>
+                    <div class="input-group w-50 mb-4">
+                      <input id="typeahead-focus" type="text" class="form-control br-0 border-end-0" [(ngModel)]="selectedNode"
+                        [ngbTypeahead]="search" (focus)="focus$.next($any($event).target.value)" name="botSearch"
+                        (click)="click$.next($any($event).target.value)" #instance="ngbTypeahead" [resultFormatter]="formatter"
+                        [inputFormatter]="formatter" placeholder="Select bot" (blur)="checkValidity($event.target.value)" />
+                      <span class="input-group-append">
+                        <div class="input-group-text bg-transparent">
+                          <i class="fs-6 bi-caret-down-fill"></i>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="footer">
+                    <button type="button" class="btn btn-primary" (click)="submitAttempt=true; textForm.valid && onSaveApi()">
+                      <span *ngIf="!buttonLoader">Save</span>
+                      <div *ngIf="buttonLoader" class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </button>
+                  </div>
+                </form>
+              </div>
 
+            </div>
           </div>
-        </div>
-      </ng-container>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>

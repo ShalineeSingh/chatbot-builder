@@ -1,98 +1,99 @@
 <div class="container-fluid p-0">
-  <div class="header d-flex">
-    <span class="heading-4 align-self-center ms-3 pointer" routerLink="/">LSQ Bot </span>
-    <div class="actions ml-auto my-2 align-self-center">
-      <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="saveBotWorkflow()">
-        <span *ngIf="!saveButtonLoader;else loadingRef">Save</span>
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="saveBotWorkflow()">Publish</button>
-      <button type="button" class="btn btn-sm btn-primary mx-2" (click)="openEmulator()">Test your bot</button>
-    </div>
-  </div>
-  <div class="row flex-nowrap">
-    <div class="col-auto bg-dark sidebar">
-      <div class="d-flex flex-column align-items-center align-items-sm-start">
-        <!-- <p class="d-flex align-items-center px-3 mb-md-0 me-md-auto text-decoration-none">
-          <span class="d-none d-sm-inline">Bot Responses</span>
-        </p> -->
-        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu">
-          <li class="nav-item" (click)="openNodeModal('text')">
-            <p class="nav-link align-middle px-0">
-              <i class="fs-6 bi-card-text"></i> <span class="ms-2 d-none d-sm-inline">Text</span>
-            </p>
-          </li>
-          <!-- <li class="nav-item" (click)="openNodeModal('button')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-menu-button"></i> <span class="ms-2 d-none d-sm-inline">Button</span>
-            </p>
-          </li> -->
-          <li class="nav-item" (click)="openNodeModal('image')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-images"></i> <span class="ms-2 d-none d-sm-inline">Image</span>
-            </p>
-          </li>
-          <li class="nav-item" (click)="openNodeModal('video')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-play-btn"></i> <span class="ms-2 d-none d-sm-inline">Video</span>
-            </p>
-          </li>
-          <li class="nav-item" (click)="openNodeModal('document')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-file-earmark-text"></i> <span class="ms-2 d-none d-sm-inline">Document</span>
-            </p>
-          </li>
-          <li class="nav-item" (click)="openNodeModal('card')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-card-heading"></i> <span class="ms-2 d-none d-sm-inline">Interactive</span>
-            </p>
-          </li>
-          <li class="nav-item" (click)="openNodeModal('api')">
-            <p class="nav-link px-0 align-middle">
-              <i class="fs-6 bi-box-arrow-up-right"></i> <span class="ms-2 d-none d-sm-inline">API Response</span>
-            </p>
-          </li>
-        </ul>
-        <hr>
-        <!-- <div class="dropdown pb-4" ngbDropdown>
-          <a class="d-flex align-items-center text-decoration-none" aria-expanded="false" ngbDropdownToggle>
-            <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
-            <span class="d-none d-sm-inline mx-1">User</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark text-small shadow" ngbDropdownMenu>
-            <li><a class="dropdown-item" href="#" ngbDropdownItem>New project...</a></li>
-            <li><a class="dropdown-item" href="#" ngbDropdownItem>Settings</a></li>
-            <li><a class="dropdown-item" href="#" ngbDropdownItem>Profile</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#" ngbDropdownItem>Sign out</a></li>
-          </ul>
-        </div> -->
+  <div class="row">
+    <div class="col-auto">
+      <div class="row flex-nowrap">
+        <div class="col-auto bg-dark sidebar" *ngIf="!viewMode">
+          <div class="d-flex flex-column align-items-center align-items-sm-start">
+            <p class="text-center w-100 my-4 pointer" routerLink="/">LSQ Bot</p>
+            <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100" id="menu">
+              <li class="nav-item" (click)="changeTab('botEditor')" [class.active]="activeTab === 'botEditor'">
+                <p class="nav-link px-0 align-middle">
+                  <i class="fs-6 bi-diagram-3"></i> <span class="ms-2 d-none d-sm-inline">Bot Editor</span>
+                </p>
+              </li>
+              <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100 secondary-menu"
+                id="menu">
+                <li class="nav-item" (click)="openNodeModal('text')">
+                  <p class="nav-link align-middle px-0">
+                    <i class="fs-6 bi-card-text"></i> <span class="ms-2 d-none d-sm-inline">Text</span>
+                  </p>
+                </li>
+                <li class="nav-item" (click)="openNodeModal('image')">
+                  <p class="nav-link px-0 align-middle">
+                    <i class="fs-6 bi-images"></i> <span class="ms-2 d-none d-sm-inline">Image</span>
+                  </p>
+                </li>
+                <li class="nav-item" (click)="openNodeModal('video')">
+                  <p class="nav-link px-0 align-middle">
+                    <i class="fs-6 bi-play-btn"></i> <span class="ms-2 d-none d-sm-inline">Video</span>
+                  </p>
+                </li>
+                <li class="nav-item" (click)="openNodeModal('document')">
+                  <p class="nav-link px-0 align-middle">
+                    <i class="fs-6 bi-file-earmark-text"></i> <span class="ms-2 d-none d-sm-inline">Document</span>
+                  </p>
+                </li>
+                <li class="nav-item" (click)="openNodeModal('card')">
+                  <p class="nav-link px-0 align-middle">
+                    <i class="fs-6 bi-card-heading"></i> <span class="ms-2 d-none d-sm-inline">Interactive</span>
+                  </p>
+                </li>
+                <li class="nav-item" (click)="openNodeModal('api')">
+                  <p class="nav-link px-0 align-middle">
+                    <i class="fs-6 bi-box-arrow-up-right"></i> <span class="ms-2 d-none d-sm-inline">API Response</span>
+                  </p>
+                </li>
+
+              </ul>
+              <li class="nav-item" (click)="changeTab('config')" [class.active]="activeTab === 'config'">
+                <p class="nav-link px-0 align-middle">
+                  <i class="fs-6 bi-gear"></i> <span class="ms-2 d-none d-sm-inline">Configurations</span>
+                </p>
+              </li>
+            </ul>
+            <hr>
+          </div>
+        </div>
+
       </div>
     </div>
-    <div [class.visually-hidden]="loading">
-      <div class="col">
-        <div class="container-canvas" appNgDrawFlow (onEditNode)="editNode($event)" (onDeleteNode)="deleteNode($event)">
+    <div class="col g-0">
+      <div class="header d-flex">
+        <span class="align-self-center ms-3">{{botName}} </span>
+        <div class="actions ml-auto my-2 align-self-center pr-4 mr-4">
+          <button *ngIf="viewMode" type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="editBot()">Edit</button>
+          <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="saveBotWorkflow()">
+            <span *ngIf="!saveButtonLoader;else loadingRef">Save</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="saveBotWorkflow()">Publish</button>
+          <button type="button" class="btn btn-sm btn-primary mx-2" (click)="openEmulator()">Test your bot</button>
         </div>
       </div>
-      <div *ngIf="unsavedChanges" class="unsaved-changes">
-        <span class="tiny">You have unsaved changes.</span>
+      <div [class.visually-hidden]="loading">
+        <div class="col" [class.visually-hidden]="activeTab === 'config'">
+          <div class="container-canvas" appNgDrawFlow (onEditNode)="editNode($event)" (onDeleteNode)="deleteNode($event)"
+            [viewMode]="viewMode">
+          </div>
+          <div *ngIf="unsavedChanges" class="unsaved-changes">
+            <span class="tiny">You have unsaved changes.</span>
+          </div>
+          <div class="zoom-container">
+            <div class="zoom zoom-in" (click)="zoomIn()">
+              <i class="fs-6 bi-zoom-in"></i>
+            </div>
+            <div class="zoom zoom-in" (click)="zoomOut()">
+              <i class="fs-6 bi-zoom-out"></i>
+            </div>
+            <div class="zoom zoom-in" (click)="zoomReset()">
+              <i class="fs-6 bi-arrow-clockwise"></i>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="zoom-container">
-        <div class="zoom zoom-in" (click)="zoomIn()">
-          <i class="fs-6 bi-zoom-in"></i>
-        </div>
-        <div class="zoom zoom-in" (click)="zoomOut()">
-          <i class="fs-6 bi-zoom-out"></i>
-        </div>
-        <div class="zoom zoom-in" (click)="zoomReset()">
-          <i class="fs-6 bi-arrow-clockwise"></i>
-        </div>
+
+      <div *ngIf="loading" class="page-loader">
+        <ng-container *ngTemplateOutlet="loadingRef"></ng-container>
       </div>
-    </div>
-    {{loading}}
-    <div *ngIf="loading" class="page-loader">
-      <ng-container *ngTemplateOutlet="loadingRef"></ng-container>
     </div>
   </div>
 </div>

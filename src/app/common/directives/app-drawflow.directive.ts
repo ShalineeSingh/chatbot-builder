@@ -14,6 +14,7 @@ export interface IConnection {
 })
 export class DrawflowDirective implements OnInit {
   editor: Drawflow | undefined;
+  @Input() viewMode: boolean = false;
   @Output() onEditNode: EventEmitter<any> = new EventEmitter();
   @Output() onDeleteNode: EventEmitter<any> = new EventEmitter();
   private selectedNode: number;
@@ -33,7 +34,7 @@ export class DrawflowDirective implements OnInit {
       if (!!el) {
         this.editor = new Drawflow(el);
         this.editor.reroute = true;
-        this.editor.editor_mode = 'edit';
+        this.editor.editor_mode = this.viewMode ? 'view' : 'edit';
         this.editor.start();
         this.editor.on('nodeMoved', () => {
           console.log("nodeMoved");
@@ -94,12 +95,15 @@ export class DrawflowDirective implements OnInit {
     this.editor.removeNodeOutput(nodeId, outputName);
   }
 
-  public updateNode(node: IDrawflowNode) {
-    this.editor.updateNodeDataFromId(node.data.node_id, node.data);
+  public updateNode(node: IDrawflowNode) { 
     let el = this.hostElRef.nativeElement as HTMLElement
     const type = node.data.type.charAt(0).toUpperCase() + node.data.type.slice(1);
     el.querySelector(`#node-${node.data.node_id} .node-heading span`).innerHTML = node.name;
     el.querySelector(`#node-${node.data.node_id} .node-body`).innerHTML = `<p>Type: ${type}</p>Intent: ${node.data.intent ? node.data.intent : '-'}`;
+    let currentNode = this.editor.getNodeFromId(node.data.node_id);
+    currentNode.html = el.querySelector(`#node-${node.data.node_id}`).innerHTML;
+    console.log(currentNode.html);
+    this.editor.updateNodeDataFromId(node.data.node_id, node.data);
   }
 
   // not working

@@ -129,11 +129,11 @@ export class NodeService {
     this.updateNodeList.next(this.nodes);
   }
 
-  deleteNode(node:INode){
+  deleteNode(node: INode) {
     this.deletedNodes.push(node);
     let index = this.nodes.findIndex(v => v.node_id === node.node_id);
-    if(index > -1){
-      this.nodes.splice(index,1);
+    if (index > -1) {
+      this.nodes.splice(index, 1);
     }
   }
 
@@ -149,9 +149,23 @@ export class NodeService {
   public saveNodes() {
     const newNodes = this.nodes.filter(v => v.state === 'CREATED');
     let editedNodes = this.nodes.filter(v => v.state === 'EDITED');
-    if(this.deletedNodes.length) editedNodes = [...editedNodes, ...this.deletedNodes];
-    if (newNodes.length) this.saveNodeListToDb(newNodes).subscribe(res => console.log(res));
-    if (editedNodes.length) this.updateNodeListToDb(editedNodes).subscribe(res => console.log(res));
+    console.log(newNodes);
+    console.log(editedNodes);
+    if (this.deletedNodes.length) editedNodes = [...editedNodes, ...this.deletedNodes];
+    if (newNodes.length) this.saveNodeListToDb(newNodes).subscribe(res => {
+      for (let i = 0; i < res.length; i++) {
+        let nodeIndex = this.nodes.findIndex(v => v.node_id === res[i].node_id);
+        if (nodeIndex > -1) this.nodes[nodeIndex] = res[i];
+      }
+      this.updateNodeList.next(this.nodes);
+    });
+    if (editedNodes.length) this.updateNodeListToDb(editedNodes).subscribe(res => {
+      for (let i = 0; i < res.length; i++) {
+        let nodeIndex = this.nodes.findIndex(v => v.node_id === res[i].node_id);
+        if (nodeIndex > -1) this.nodes[nodeIndex] = res[i];
+      }
+      this.updateNodeList.next(this.nodes);
+    });
   }
 
   public getNodeList(botId: number): Observable<INode[]> {
@@ -161,11 +175,11 @@ export class NodeService {
       );
   }
 
-  private saveNodeListToDb(nodes: INode[]) {
+  private saveNodeListToDb(nodes: INode[]): Observable<any> {
     return this.http.post(`${this.apiPrefix}nodedata/create`, { nodeDataCreateDTO: nodes });
   }
 
-  private updateNodeListToDb(nodes: INode[]) {
+  private updateNodeListToDb(nodes: INode[]): Observable<any> {
     return this.http.put(`${this.apiPrefix}nodedata/update`, { nodeDataCreateDTO: nodes });
   }
   private transformNodeList(nodes: INode[]): INode[] {

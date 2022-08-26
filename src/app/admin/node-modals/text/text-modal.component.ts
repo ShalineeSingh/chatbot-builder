@@ -36,7 +36,7 @@ export class TextModalComponent {
             body: ''
           }
         },
-        total_response_node_count: 0,
+        total_response_node_count: 1,
         sequence: 1,
       }
     }
@@ -52,6 +52,7 @@ export class TextModalComponent {
           this.previousNode.total_response_node_count = this.previousNode.total_response_node_count + 1;
           this.textNode.sequence = this.previousNode.total_response_node_count;
           this.previousNode.state = this.previousNode.id ? 'EDITED' : 'CREATED';
+          console.log(this.previousNode);
         }
       }
     }
@@ -62,8 +63,8 @@ export class TextModalComponent {
     this.previousNode = node;
     this.previousNodeEdited = true;
     if (node.type === 'text') {
-      this.textNode.intent = node.response.text.body;
-      this.intentDisabled = true;
+      // this.textNode.intent = node.response.text.body;
+      // this.intentDisabled = true;
     } else if (node.type === 'interactive') {
       this.textNode.intent = null;
       if (node.response.type === 'list') {

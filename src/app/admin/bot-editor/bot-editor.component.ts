@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { MediaModalComponent } from '../node-modals/media/media-modal.component';
 import { BotEditorService } from './bot-editor.service';
 import { Session } from '../../common/session';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertConfigModel } from 'src/app/common/alert/alert-config.model';
 import { AlertService } from '../../common/alert/alert.service';
 import { IApi } from '../dashboard/dasboard.service';
@@ -35,6 +35,9 @@ export class BotEditorComponent implements OnInit {
   nodeList: INode[];
   unsavedChanges: boolean;
   apiList: IApi[];
+  viewMode: boolean;
+  activeTab: string = 'botEditor';
+  botName: string;
   constructor(
     private modalService: NgbModal,
     private botEditorService: BotEditorService,
@@ -42,26 +45,36 @@ export class BotEditorComponent implements OnInit {
     private route: ActivatedRoute,
     private alertService: AlertService,
     private nodeService: NodeService,
+    private router: Router,
   ) {
     this.tenantId = this.session.getTenantId();
-
   }
 
   ngOnInit(): void {
     this.botId = this.route.snapshot.params.id;
+    this.route.queryParamMap.subscribe(params => {
+      this.viewMode = params.get('view') ? true : false;
+      this.botName = params.get('name');
+    })
     this.getNodeList();
     this.getApiList();
     this.getBotWorkflow();
   }
 
   ngAfterViewInit() {
-
     // this.openEmulator();
     // const modalRef = this.modalService.open(InterativeModalComponent, { backdrop: 'static', size: 'xl' });
   }
 
   public openEmulator() {
     const modalRef = this.modalService.open(BotEmulatorComponent, { modalDialogClass: 'chat-box' });
+    modalRef.componentInstance.botId = this.botId;
+    modalRef.componentInstance.tenantId = this.tenantId;
+  }
+
+  public editBot(){
+    this.viewMode = false;
+    this.router.navigate([`./bot/${this.botId}`]);
   }
 
   public zoomIn(){
@@ -74,7 +87,12 @@ export class BotEditorComponent implements OnInit {
     this.drawflow.zoomReset();
   }
 
+  public changeTab(type:string){
+    this.activeTab = type;
+  }
+
   public openNodeModal(type: NodeType) {
+    this.activeTab = null;
     let component;
     let mediaType;
     switch (type) {

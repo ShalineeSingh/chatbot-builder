@@ -45,7 +45,7 @@ export class ApiModalComponent {
             body: ''
           }
         },
-        total_response_node_count: 0,
+        total_response_node_count: 1,
         sequence: 1,
       }
     } else {

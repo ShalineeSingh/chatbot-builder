@@ -78,11 +78,11 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
-  public viewBot(botId: number) {
-    this.router.navigate(['/bot', botId]);
+  public viewBot(botId: number, botName: string) {
+    this.router.navigate(['/bot', botId], { queryParams: { name: botName, view: true } });
   }
-  public editBot(botId: number) {
-    this.router.navigate(['/edit', botId]);
+  public editBot(botId: number, botName: string) {
+    this.router.navigate(['/edit', botId], { queryParams: { name: botName } });
   }
   public editApiDetails(api: IApi) {
     const modalRef = this.modalService.open(ApiCreateModalComponent, { backdrop: 'static', size: 'xl' });
@@ -94,7 +94,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-   public deleteApi(apiId: number) {
+  public deleteApi(apiId: number) {
     if (confirm("Are you sure you want to delete this api?")) {
       this.dashboardService.deleteApi(apiId).subscribe(res => {
         const apiIndex = this.apiList.findIndex(v => v.id === apiId);

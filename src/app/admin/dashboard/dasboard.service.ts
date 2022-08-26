@@ -64,8 +64,8 @@ export class DashboardService {
   }
 
   public getBotList(): Observable<IBot[]> {
-    // return this.http.get('../assets/mock-data/botList.json')
-    return this.http.get(`${this.apiPrefix}bot/list/${this.tenantId}`)
+    return this.http.get('../assets/mock-data/botList.json')
+    // return this.http.get(`${this.apiPrefix}bot/list/${this.tenantId}`)
       .pipe(
         map(this.transformBotList.bind(this)),
       );
