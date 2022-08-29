@@ -36,7 +36,7 @@ export class BotEditorComponent implements OnInit {
   unsavedChanges: boolean;
   apiList: IApi[];
   viewMode: boolean;
-  activeTab: string = 'config';
+  activeTab: 'botEditor' | 'config' = 'botEditor';
   botName: string;
   constructor(
     private modalService: NgbModal,
@@ -87,7 +87,7 @@ export class BotEditorComponent implements OnInit {
     this.drawflow.zoomReset();
   }
 
-  public changeTab(type:string){
+  public changeTab(type: 'botEditor' | 'config'){
     this.activeTab = type;
   }
 
@@ -217,10 +217,26 @@ export class BotEditorComponent implements OnInit {
     }
   }
 
+  public copyNode(nodeId: number){
+    const currentNode = this.nodeService.getNodeById(nodeId);
+    if (currentNode) {
+      let newNode = {...currentNode};
+      newNode.intent = null;
+      newNode.previous_node_id = null;
+      newNode.previous_node_name = null;
+      const match = newNode.node_name.match(/\d+$/);
+      if (match && match.index > -1) newNode.node_name = newNode.node_name.replace(/\d+$/, s => (+s + 1).toString());
+      else newNode.node_name += '_1';
+      this.unsavedChanges = true;
+      newNode.state = 'CREATED';
+      newNode.node_id = this.drawflow.addNode(convertToDrawflowNode(newNode, this.nodeService.getDisconnectedNodes()));
+      this.nodeService.onAddNode(newNode);
+    }
+  }
+
   public deleteNode(nodeId: number){
     const currentNode = this.nodeService.getNodeById(nodeId);
     if (currentNode) {
-      console.log(this.drawflow.export());
       currentNode.deleted =true;
       currentNode.state = 'EDITED';
       this.nodeService.deleteNode(currentNode);

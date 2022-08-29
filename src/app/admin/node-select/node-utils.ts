@@ -32,6 +32,7 @@ export function createTextCanvasContent(node: INode): string {
         <span>${node.node_name}</span>
         <span class="float-end px-2 pointer btn-trash" title="delete node"> <i class="fs-6 bi-trash"></i></span>
         <span class="float-end px-2 pointer btn-edit" title="edit node"> <i class="fs-6 bi-pencil"></i></span>
+        <span class="float-end px-2 pointer btn-clipboard" title="Copy node"> <i class="fs-6 bi-clipboard"></i></span>
       </div>
       <div class="node-body very-small">`;
   content += `<p>Type: ${type}</p>`;
