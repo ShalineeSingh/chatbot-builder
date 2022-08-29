@@ -3,7 +3,7 @@ import { RES_STATUS } from './server-response.interface';
 export const QUILL_CONFIG = {
   toolbar: {
     container: [
-      ['italic', 'underline', 'strike']
+      ['italic', 'bold', 'strike']
     ],
   },
 }

@@ -2,6 +2,7 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { QUILL_CONFIG } from '../../../common/utils';
 import { INode, IInteractiveResponse } from '../../node-select/node-list.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'interactive-modal',
@@ -35,7 +36,7 @@ export class InterativeModalComponent {
   previousNodeEdited: boolean;
   availableIntents;
 
-  constructor(public activeModal: NgbActiveModal) { }
+  constructor(public activeModal: NgbActiveModal, public sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
     if (!this.interactiveNode) {
@@ -112,7 +113,9 @@ export class InterativeModalComponent {
       }
     }
   }
-
+  createPdfPreviewUrl(url) {
+   if(url) return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
   public changeMediaType(type) {
     this.interactiveNode.response.header.type = type;
   }
@@ -203,7 +206,8 @@ export class InterativeModalComponent {
       this.interactiveNode.response.action.buttons = this.interactiveNode.response.action.buttons.filter(v => v.title);
     } else if (this.interactiveNode.response.type === 'list') {
       delete this.interactiveNode.response.action.buttons;
-      this.interactiveNode.response.action.sections = this.interactiveNode.response.action.sections.filter(v => v.title);
+      this.interactiveNode.response.action.sections = this.interactiveNode.response.action.sections.filter(v => v.rows.length > 0);
+      console.log(this.interactiveNode.response.action.sections);
       this.interactiveNode.response.action.sections.forEach((element, index) => {
         this.interactiveNode.response.action.sections[index].rows = this.interactiveNode.response.action.sections[index].rows.filter(v => v.title);
         for (let i = 0; i < this.interactiveNode.response.action.sections[index].rows.length; i++) {

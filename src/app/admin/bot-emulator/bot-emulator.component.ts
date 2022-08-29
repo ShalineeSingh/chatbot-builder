@@ -32,7 +32,7 @@ export class BotEmulatorComponent {
     this.getBotResponse(this.userInput);
     this.userInput = null;
   }
-  public getBotResponse(intent:string = 'root'){
+  public getBotResponse(intent:string = 'hi'){
    let params = {  leadId: 1, intent};
     this.botResponseError = false;
     this.botEditorService.getResponse(this.tenantId, this.botId,params).subscribe(res => {
@@ -48,7 +48,7 @@ export class BotEmulatorComponent {
    nodes.forEach(element => {
      res.push({
        type: 'text',
-       content: JSON.parse(element).text.body
+       content: element,
      })
    }); 
    return res;

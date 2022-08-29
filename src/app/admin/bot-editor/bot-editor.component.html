@@ -60,7 +60,7 @@
     <div class="col g-0">
       <div class="header d-flex">
         <span class="align-self-center ms-3">{{botName}} </span>
-        <div class="actions ml-auto my-2 align-self-center pr-4 mr-4">
+        <div *ngIf="activeTab === 'botEditor'" class="actions ml-auto my-2 align-self-center pr-4 mr-4">
           <button *ngIf="viewMode" type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="editBot()">Edit</button>
           <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="saveBotWorkflow()">
             <span *ngIf="!saveButtonLoader;else loadingRef">Save</span>
@@ -68,6 +68,9 @@
           <button type="button" class="btn btn-sm btn-outline-dark mx-2" (click)="saveBotWorkflow()">Publish</button>
           <button type="button" class="btn btn-sm btn-primary mx-2" (click)="openEmulator()">Test your bot</button>
         </div>
+        <div *ngIf="activeTab === 'config'" class="actions ml-auto my-2 align-self-center pr-4 mr-4">
+          <button type="button" class="btn btn-sm btn-primary mx-2" (click)="saveConfigurations()">Save Configurations</button>
+          </div>
       </div>
       <div [class.visually-hidden]="loading">
         <div class="col" [class.visually-hidden]="activeTab === 'config'">
@@ -89,7 +92,42 @@
             </div>
           </div>
         </div>
-      </div>
+        <!-- configurations -->
+        <div *ngIf="!loading && activeTab === 'config'">
+          <form #textForm="ngForm">
+            <div class="form-group m-4 w-75">
+              <label class="form-label very-small">Session Timeout</label>
+              <div class="d-flex">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="timeout" placeholder="Session Timeout" value="Session Timeout" disabled>
+                  <input type="text" class="form-control w-75" name="timeoutMsg" #timeout_msg="ngModel" [(ngModel)]="timeout"
+                    placeholder="Your session has timed out">
+                </div>
+              </div>
+            </div>
+              <div class="form-group m-4 w-75">
+                <label class="form-label very-small">API Errors</label>
+                <div class="d-flex">
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="timeout" placeholder="API Errors" value="API Errors" disabled>
+                    <input type="text" class="form-control w-75" name="timeoutMsg" #timeout_msg="ngModel" [(ngModel)]="timeout"
+                      placeholder="There was an error processing your request.">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group m-4 w-75">
+                <label class="form-label very-small">Default Message</label>
+                <div class="d-flex">
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="timeout" placeholder="Default Message" value="Default Message" disabled>
+                    <input type="text" class="form-control w-75" name="timeoutMsg" #timeout_msg="ngModel" [(ngModel)]="timeout"
+                      placeholder="Sorry, I could not understand.">
+                  </div>
+                </div>
+              </div>
+          </form>
+        </div>
+        </div>
 
       <div *ngIf="loading" class="page-loader">
         <ng-container *ngTemplateOutlet="loadingRef"></ng-container>

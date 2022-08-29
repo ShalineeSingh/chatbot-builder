@@ -5,98 +5,82 @@
   </span>
 </div>
 <form #buttonForm="ngForm">
-  <div class="modal-body">
-    <nav ngbNav #nav="ngbNav" class="nav-tabs" [destroyOnHide]="false">
-      <ng-container ngbNavItem>
-        <a ngbNavLink>Details</a>
-        <ng-template ngbNavContent>
-          <div class="form-group" [class.error]="node_name?.invalid && submitAttempt">
-            <label class="form-label very-small">Enter node name here</label>
-            <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
-              [(ngModel)]="nodeName" required>
-            <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
-            <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
-              <div *ngIf="node_name.errors.required">
-                Node Name is required
-              </div>
-            </div>
+  <div class="modal-body d-flex">
+    <div class="form-container w-75 pr-4 ml-4">
+      <div class="form-group" [class.error]="node_name?.invalid && submitAttempt">
+        <label class="form-label very-small">Node Name</label>
+        <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
+          [(ngModel)]="mediaNode.node_name" required>
+        <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
+        <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
+          <div *ngIf="node_name.errors.required">
+            Node Name is required
           </div>
-          <div class="wrapper mt-4">
-            <div *ngIf="mediaEdit && !previewPath" class="form-group" [class.error]="btn_name?.invalid && submitAttempt">
-              <label class="form-label very-small">Enter bot response here ({{mediaTypeMap[mediaType].name}})</label>
-              <div ng2FileDrop [accept]="mediaTypeMap[mediaType].accept" [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
-                (fileOver)="fileOverBase($event)" (onFileDrop)="dropped($event)" [uploader]="uploader" class="drop-zone">
-                <span class="small"> Drop a file here to upload<br>
-                  File types allowed are {{mediaTypeMap[mediaType].accept}}</span>
-              </div>
-              <div class="or text-center">OR</div>
-              <input type="file" [accept]="mediaTypeMap[mediaType].accept" ng2FileSelect [uploader]="uploader" />
-              <div *ngIf="btn_name?.invalid && submitAttempt" class="text-danger small">
-                <div id="btnHelp" *ngIf="btn_name.errors.required">
-                  {{mediaTypeMap[mediaType].name}} Name is required
-                </div>
-              </div>
-              <div class="tiny mt-1">This will be shown to the user</div>
-            </div>
-            <div *ngIf="mediaEdit && previewPath" class="media-preview">
-              <span class="remove-media pointer" (click)="removeMedia()"><span class="cross">&times;</span></span>
-              <img *ngIf="mediaType === 'image'" [src]="previewPath" alt="bot response image">
-              <video *ngIf="mediaType === 'video'" [src]="previewPath" alt="bot response image"></video>
-              <iframe *ngIf="mediaType === 'document'" [src]="previewPath" alt="bot response image"></iframe>
-            </div>
-            <div *ngIf="!mediaEdit">
-              <ng-container *ngFor="let media of mediaList; let i=index">
-                <div class="media-preview">
-                  <span class="remove-media pointer" (click)="removeMedia(media.mediaId)"><span
-                      class="cross">&times;</span></span>
-                  <img [src]="media.previewUrl" alt="bot response image">
-                </div>
-              </ng-container>
-              <div class="add-new ml-8 d-inline-block">
-                <button type="button" class="btn btn-outline-dark" (click)="addNewFile()"> <i class="fs-6 bi-plus"></i></button>
-              </div>
-            </div>
-          </div>
-        </ng-template>
-      </ng-container>
-      <ng-container ngbNavItem>
-        <a ngbNavLink>Actions</a>
-        <ng-template ngbNavContent>
-          <div class="w-50">
-            <label class="form-label very-small">Select next node for:</label>
-            <node-select [currentNodeName]="nodeName" [selectedNodeId]="nextNode.nextNodeName"
-              (onNextNodeSelect)="onNextNodeSelect($event); setNodeNext(nextNode)"
-              (isNextNodeValid)="isNextNodeValid($event); setNodeValidity(nextNode)"></node-select>
-            <div class="tiny mt-1">This node will be executed when user clicks on current button</div>
-          </div>
-          <div class="form-group mt-2">
-            <label class="check mb-1">
-              <input type="checkbox" name="user_input" #user_input="ngModel" [(ngModel)]="expectsUserInput">
-              <span class="small">Expect user input</span>
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          <div class="form-group mt-2">
-            <label class="check mb-1">
-              <input type="checkbox" name="show_typing" #show_typing="ngModel" [(ngModel)]="isShowTyping">
-              <span class="small">Show "Typing..."</span>
-              <span class="checkmark"></span>
-            </label>
-          </div>
-          <div class="form-group custom-slider mt-2 mx-4" *ngIf="isShowTyping">
-            <ngx-slider [(value)]="sliderValue" [options]="sliderOptions"></ngx-slider>
-          </div>
-        </ng-template>
-      </ng-container>
-    </nav>
-    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+        </div>
+      </div>
 
+      <div class="form-group">
+        <div class="d-flex align-items-end" *ngFor="let media of mediaNode.response[mediaType]; let i=index; let last=last">
+          <div class="form-group w-40">
+            <label class="form-label very-small">Url</label>
+            <input type="text" class="form-control" name="mediaurl{{i}}" #media_url="ngModel" [(ngModel)]="media.link">
+          </div>
+          <div class="form-group w-40 px-3">
+            <label class="form-label very-small">Caption (Optional)</label>
+            <input type="text" class="form-control" name="caption{{i}}" #media_caption="ngModel" [(ngModel)]="media.caption">
+          </div>
+          <button *ngIf="last && media.link !== ''" type="button" class="btn btn-outline-dark ml-auto" (click)="addNewRow()">
+            <i class="fs-6 bi-plus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="w-50 d-inline-block">
+          <label class="form-label very-small">Previous node</label>
+          <node-select [currentNodeName]="mediaNode.node_name" [nodeId]="mediaNode.previous_node_id"
+            [nodeName]="mediaNode.previous_node_name" (onNextNodeSelect)="onNextNodeSelect($event)"
+            (isNextNodeValid)="isNextNodeValid($event)"></node-select>
+        </div>
+        <div class="w-50 d-inline-block ps-3">
+          <div class="form-group mb-3">
+            <label class="form-label very-small">Intent</label>
+            <input *ngIf="!previousNode || previousNode.type === 'text'" type="text" class="form-control" name="intent"
+              #nodeIntent="ngModel" [(ngModel)]="mediaNode.intent" [disabled]="intentDisabled">
+
+            <div *ngIf="previousNode && previousNode.type === 'interactive'">
+              <div class="input-group intent-dropdown">
+                <div class="dropdown header-type" ngbDropdown>
+                  <div class="d-flex align-items-center h-100 pointer" aria-expanded="false" ngbDropdownToggle>
+                    <span class="d-inline mx-1">{{mediaNode.intent}}</span>
+                  </div>
+                  <ul class="dropdown-menu text-small shadow" ngbDropdownMenu>
+                    <li *ngFor="let intent of availableIntents">
+                      <a class="dropdown-item" (click)="changeIntent(intent)" ngbDropdownItem>{{intent.title}}</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="preview-container w-25 border-start min-h-100 ml-4">
+      <p class="text-center">Preview</p>
+      <div class="d-flex flex-wrap justify-content-center">
+        <ng-container *ngFor="let media of mediaNode.response[mediaType]; let i=index">
+          <div class="media-preview" *ngIf="media.link">
+            <img *ngIf="mediaType === 'image'" class="tiny" [src]="media.link" alt="No preview">
+            <video *ngIf="mediaType === 'video'" [src]="media.link" alt="No preview"></video>
+            <iframe *ngIf="mediaType === 'document'" [src]="createPdfPreviewUrl(media.link)" alt="No preview"></iframe>
+            <span class="tiny">{{media.caption}}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('close')">Close</button>
-    <button *ngIf="mediaEdit" type="button" class="btn btn-primary"
-      (click)="submitAttempt=true; buttonForm.valid && onSaveMedia()">Add {{mediaTypeMap[mediaType].name}}</button>
-    <button *ngIf="!mediaEdit" type="button" class="btn btn-primary"
-      (click)="submitAttempt=true; buttonForm.valid && onSaveNode()">Save</button>
+    <button type="button" class="btn btn-primary" (click)="submitAttempt=true; buttonForm.valid && onSaveNode()">Save</button>
   </div>
 </form>

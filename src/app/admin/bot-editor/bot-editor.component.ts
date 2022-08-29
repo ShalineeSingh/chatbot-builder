@@ -36,7 +36,7 @@ export class BotEditorComponent implements OnInit {
   unsavedChanges: boolean;
   apiList: IApi[];
   viewMode: boolean;
-  activeTab: string = 'botEditor';
+  activeTab: string = 'config';
   botName: string;
   constructor(
     private modalService: NgbModal,
@@ -56,9 +56,9 @@ export class BotEditorComponent implements OnInit {
       this.viewMode = params.get('view') ? true : false;
       this.botName = params.get('name');
     })
-    this.getNodeList();
-    this.getApiList();
-    this.getBotWorkflow();
+    // this.getNodeList();
+    // this.getApiList();
+    // this.getBotWorkflow();
   }
 
   ngAfterViewInit() {
@@ -92,7 +92,7 @@ export class BotEditorComponent implements OnInit {
   }
 
   public openNodeModal(type: NodeType) {
-    this.activeTab = null;
+    this.activeTab = 'botEditor';
     let component;
     let mediaType;
     switch (type) {
@@ -254,6 +254,9 @@ export class BotEditorComponent implements OnInit {
     }, ()=>this.saveButtonLoader = false);
   }
 
+  public saveConfigurations(){
+    // todo: implement this
+  }
   private getBotWorkflow() {
     this.loading = true;
     this.botEditorService.getBotWorkflow(this.tenantId, this.botId).subscribe(res => {

@@ -5,63 +5,71 @@
   </span>
 </div>
 <form #textForm="ngForm">
-  <div class="modal-body">
-    <div class="form-group mb-3" [class.error]="node_name?.invalid && submitAttempt">
-      <label class="form-label very-small">Node name</label>
-      <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
-        [(ngModel)]="textNode.node_name" required>
-      <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
-      <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
-        <div *ngIf="node_name.errors.required">
-          Node Name is required
-        </div>
-      </div>
-    </div>
-    <div class="editor mb-3">
-      <div class="form-group" [class.error]="quill_editor?.invalid && submitAttempt">
-        <label class="form-label very-small">Bot response (max 4096 characters)</label>
-        <quill-editor [(ngModel)]="textNode.response.text.body" placeholder="Enter Text" name="quill" ngDefaultControl
-          [modules]="quillConfig" #quill_editor="ngModel" [maxLength]="4096" required>
-        </quill-editor>
-        <div class="tiny mt-1">This will be shown to the user</div>
-        <div *ngIf="quill_editor?.invalid && submitAttempt" class="text-danger small">
-          <div *ngIf="quill_editor.errors.required">
-            Enter some text to be shown
-          </div>
-          <div *ngIf="quill_editor?.invalid && !quill_editor.errors.required">
-            Only 4096 characters allowed
+  <div class="modal-body d-flex">
+    <div class="form-container w-75 pr-4 ml-4">
+      <div class="form-group mb-3" [class.error]="node_name?.invalid && submitAttempt">
+        <label class="form-label very-small">Node name</label>
+        <input ngbAutofocus type="text" class="form-control w-50" name="name" aria-describedby="nameHelp" #node_name="ngModel"
+          [(ngModel)]="textNode.node_name" required>
+        <div id="nameHelp" class="tiny mt-1">This is for your reference</div>
+        <div *ngIf="node_name?.invalid && submitAttempt" class="text-danger small">
+          <div *ngIf="node_name.errors.required">
+            Node Name is required
           </div>
         </div>
       </div>
-    </div>
-    <div class="form-group">
-      <div class="w-50 d-inline-block">
-        <label class="form-label very-small">Previous node</label>
-        <node-select [currentNodeName]="textNode.node_name" [nodeId]="textNode.previous_node_id"
-          [nodeName]="textNode.previous_node_name" (onNextNodeSelect)="onNextNodeSelect($event)"
-          (isNextNodeValid)="isNextNodeValid($event)"></node-select>
+      <div class="editor mb-3">
+        <div class="form-group" [class.error]="quill_editor?.invalid && submitAttempt">
+          <label class="form-label very-small">Bot response (max 4096 characters)</label>
+          <quill-editor [(ngModel)]="textNode.response.text.body" placeholder="Enter Text" name="quill" ngDefaultControl
+            [modules]="quillConfig" #quill_editor="ngModel" [maxLength]="4096" required>
+          </quill-editor>
+          <div class="tiny mt-1">This will be shown to the user</div>
+          <div *ngIf="quill_editor?.invalid && submitAttempt" class="text-danger small">
+            <div *ngIf="quill_editor.errors.required">
+              Enter some text to be shown
+            </div>
+            <div *ngIf="quill_editor?.invalid && !quill_editor.errors.required">
+              Only 4096 characters allowed
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="w-50 d-inline-block ps-3">
-        <div class="form-group mb-3">
-          <label class="form-label very-small">Intent</label>
-          <input *ngIf="!previousNode || previousNode.type === 'text'" type="text" class="form-control" name="intent" #nodeIntent="ngModel" [(ngModel)]="textNode.intent" [disabled]="intentDisabled">
-          
-          <div *ngIf="previousNode && previousNode.type === 'interactive'">
-            <div class="input-group intent-dropdown">
-              <div class="dropdown header-type" ngbDropdown>
-                <div class="d-flex align-items-center h-100 pointer" aria-expanded="false" ngbDropdownToggle>
-                  <span class="d-inline mx-1">{{textNode.intent}}</span>
+      <div class="form-group">
+        <div class="w-50 d-inline-block">
+          <label class="form-label very-small">Previous node</label>
+          <node-select [currentNodeName]="textNode.node_name" [nodeId]="textNode.previous_node_id"
+            [nodeName]="textNode.previous_node_name" (onNextNodeSelect)="onNextNodeSelect($event)"
+            (isNextNodeValid)="isNextNodeValid($event)"></node-select>
+        </div>
+        <div class="w-50 d-inline-block ps-3">
+          <div class="form-group mb-3">
+            <label class="form-label very-small">Intent</label>
+            <input *ngIf="!previousNode || previousNode.type === 'text'" type="text" class="form-control" name="intent"
+              #nodeIntent="ngModel" [(ngModel)]="textNode.intent" [disabled]="intentDisabled">
+
+            <div *ngIf="previousNode && previousNode.type === 'interactive'">
+              <div class="input-group intent-dropdown">
+                <div class="dropdown header-type" ngbDropdown>
+                  <div class="d-flex align-items-center h-100 pointer" aria-expanded="false" ngbDropdownToggle>
+                    <span class="d-inline mx-1">{{textNode.intent}}</span>
+                  </div>
+                  <ul class="dropdown-menu text-small shadow" ngbDropdownMenu>
+                    <li *ngFor="let intent of availableIntents">
+                      <a class="dropdown-item" (click)="changeIntent(intent)" ngbDropdownItem>{{intent.title}}</a>
+                    </li>
+                  </ul>
                 </div>
-                <ul class="dropdown-menu text-small shadow" ngbDropdownMenu>
-                  <li *ngFor="let intent of availableIntents">
-                    <a class="dropdown-item" (click)="changeIntent(intent)" ngbDropdownItem>{{intent.title}}</a>
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
-
         </div>
+      </div>
+    </div>
+    <div class="preview-container w-25 border-start min-h-100 ml-4">
+      <p class="text-center">Preview</p>
+      <div class="node" *ngIf="textNode.response.text.body">
+        <div [innerHTML]="textNode.response.text.body"></div>
       </div>
     </div>
   </div>

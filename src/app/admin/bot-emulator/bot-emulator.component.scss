@@ -11,6 +11,7 @@ $footer-height: 69px;
     border-radius: 0;
     .modal-body {
       height: calc(100vh - 63px - 69px);
+      overflow: auto;
     }
     .conversation {
       ul {

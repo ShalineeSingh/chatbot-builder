@@ -34,8 +34,8 @@ export class BotEditorService {
   }
 
   public getBotWorkflow(tenantId: number, botId: number): Observable<any> {
-    return this.http.get('../assets/mock-data/botList.json')
-    // return this.http.get(`${this.apiPrefix}botdesigner/list/${tenantId}/${botId}`)
+    // return this.http.get('../assets/mock-data/botList.json')
+    return this.http.get(`${this.apiPrefix}botdesigner/list/${tenantId}/${botId}`)
   }
 
   public getApiList(tenantId: number): Observable<any> {

@@ -30,3 +30,14 @@
     padding: 0 20px;
   }
 }
+
+.preview-container {
+  background-color: #e9ecef;
+  padding: 10px;
+  .node{
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+}

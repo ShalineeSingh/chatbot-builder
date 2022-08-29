@@ -92,6 +92,7 @@ export class ApiCreateModalComponent {
   public checkResponseValue(index: number) {
     if (this.apiDetails.response[index].value && this.apiResponse) {
       const identifier = this.apiDetails.response[index].value.split('.');
+      console.log(identifier);
       if (identifier[0] !== 'response') {
         this.apiDetails.response[index].error = true;
       } else {

@@ -37,14 +37,14 @@ interface IMedia {
 }
 
 export interface IImageResponse {
-  image: IMedia;
+  image: IMedia[];
 }
 
 export interface IVideoResponse {
-  video: IMedia;
+  video: IMedia[];
 }
 export interface IDocumnentResponse {
-  document: IMedia;
+  document: IMedia[];
 }
 
 export interface IInteractiveResponse {

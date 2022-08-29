@@ -1,29 +1,8 @@
-import { Options } from '@angular-slider/ngx-slider';
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FileUploader } from 'ng2-file-upload';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-
-const URL = '/api/';
-
-export interface IMediaNode {
-  nextNode?: INextNode,
-  content: IMedia[],
-  name: string;
-  type: string;
-  id: number;
-}
-
-interface INextNode {
-  nextNodeId: number,
-  nextNodeName: string,
-  valid: boolean,
-}
-interface IMedia {
-  mediaId: number,
-  fileObject: string,
-  previewUrl: SafeUrl,
-}
+import { INode } from '../../node-select/node-list.service';
+import { QUILL_CONFIG } from 'src/app/common/utils';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'media-modal',
@@ -32,29 +11,17 @@ interface IMedia {
   encapsulation: ViewEncapsulation.None
 })
 export class MediaModalComponent {
-  @Input() data: IMediaNode;
+  @Input() mediaNode: INode;
+  @Input() botId: number;
+  @Input() tenantId: number;
   @Input() mediaType: 'image' | 'document' | 'video';
-  nodeName: string;
-  nextNode: INextNode = { nextNodeId: null, nextNodeName: null, valid: false };
-  mediaList: IMedia[] = [];
-  isRootNode: boolean;
-  expectsUserInput: boolean = false;
-  isShowTyping: boolean = false;
   submitAttempt: boolean;
-  sliderValue: number = 2;
-  sliderOptions: Options = {
-    showTicksValues: true,
-    ceil: 10,
-    floor: 1,
-    translate: (value: number): string => {
-      return value + 's';
-    }
-  };
-  currentFile: any;
-  mediaEdit: boolean;
-  currentBtnId: number = 1;
-
-  tempNode;
+  quillConfig = QUILL_CONFIG;
+  previousNodeValid: boolean;
+  previousNode: INode;
+  intentDisabled: boolean;
+  previousNodeEdited: boolean;
+  availableIntents;
   mediaTypeMap = {
     'image': {
       name: 'Image',
@@ -69,123 +36,80 @@ export class MediaModalComponent {
       accept: '.mp4'
     }
   }
-  uploader: FileUploader;
-  hasBaseDropZoneOver: boolean;
-  public previewPath: any;
 
   constructor(public activeModal: NgbActiveModal, private sanitizer: DomSanitizer) {
-    this.uploader = new FileUploader({
-      url: URL,
-      disableMultipart: true, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
-      formatDataFunctionIsAsync: true,
-      formatDataFunction: async (item) => {
-        return new Promise((resolve, reject) => {
-          resolve({
-            name: item._file.name,
-            length: item._file.size,
-            contentType: item._file.type,
-            date: new Date()
-          });
-        });
-      }
-    });
-    this.uploader.response.subscribe(res => console.log(res));
-    this.uploader.onAfterAddingFile = (fileItem) => {
-      this.currentFile = fileItem;
-      if (fileItem._file.type === 'application/pdf') this.previewPath = this.createPdfPreviewUrl(fileItem._file);
-      else  this.previewPath = this.createPreviewUrl(fileItem._file);
-    }
   }
 
   ngOnInit(): void {
-    if (this.data) {
-      this.nodeName = this.data.name;
-      this.nextNode = this.data.nextNode;
-      this.mediaList = this.data.content;
-    } else {
-      this.mediaEdit = true;
+    if (!this.mediaNode) {
+      this.mediaNode = {
+        type: this.mediaType,
+        bot_id: this.botId,
+        tenant_id: this.tenantId,
+        deleted: false,
+        node_name: '',
+        response: {
+          [this.mediaType]: [
+            {
+              link: null,
+              caption: ''
+            }
+          ]
+        },
+        total_response_node_count: 1,
+        sequence: 1,
+      }
     }
   }
-
-  createPreviewUrl(file): SafeUrl {
-    return this.sanitizer.bypassSecurityTrustUrl((window.URL.createObjectURL(file)));
+  public addNewRow(): void {
+    if (this.mediaNode.response[this.mediaType].findIndex(v => !v.link) === -1) {
+      this.mediaNode.response[this.mediaType].push({ rows: [{ link: null }] });
+    }
   }
-
-  createPdfPreviewUrl(file){
-    return this.sanitizer.bypassSecurityTrustResourceUrl((window.URL.createObjectURL(file)));
-  }
-  public fileOverBase(e: any): void {
-    this.hasBaseDropZoneOver = e;
-  }
-
-  public dropped(e: any): void {
-    console.log(e);
-  }
-
-  public removeMedia(mediaId?: number) {
-    if (mediaId) {
-      const index = this.mediaList.findIndex(v => v.mediaId === mediaId);
-      if (index > -1) this.mediaList.splice(index, 1);
-    } else this.previewPath = null;
-    this.currentBtnId = this.mediaList.length + 1;
+  createPdfPreviewUrl(url) {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   public onSaveNode(): void {
-    // TODO: add validity
-    // if (this.tempNextNodeId && !this.nextNodeValid) return;
-    this.data = {
-      name: this.nodeName,
-      content: this.mediaList,
-      type: this.mediaType,
-      nextNode: this.nextNode,    
-      id: this.data ? this.data.id : null,
+    if (this.previousNode) {
+      if (!this.previousNodeValid) return;
+      else {
+        this.mediaNode.previous_node_id = this.previousNode.node_id;
+        this.mediaNode.previous_node_name = this.previousNode.node_name;
+        if (this.previousNode.type === 'text') {
+          this.previousNode.total_response_node_count = this.previousNode.total_response_node_count + 1;
+          this.mediaNode.sequence = this.previousNode.total_response_node_count;
+          this.previousNode.state = this.previousNode.id ? 'EDITED' : 'CREATED';
+          console.log(this.previousNode);
+        }
+      }
     }
-
-    this.activeModal.close(this.data)
+    this.activeModal.close({ node: this.mediaNode, previousNode: this.previousNode, previousNodeEdited: this.previousNodeEdited });
   }
 
-  public onSaveMedia() {
-    this.mediaList[this.currentBtnId - 1] = {
-      mediaId: this.currentBtnId,
-      fileObject: this.currentFile._file,
-      previewUrl: this.createPreviewUrl(this.currentFile._file),
-    }
-    this.currentBtnId++;
-    this.mediaEdit = false;
-    // this.uploader.uploadAll();
-  }
-
-  public addNewFile() {
-    this.currentFile = '';
-    this.previewPath = null;
-    this.submitAttempt = false;
-    this.mediaEdit = true;
-  }
-
-  public editButton(btn: IMedia) {
-    this.currentBtnId = btn.mediaId;
-    this.currentFile = btn.fileObject;
-    this.mediaEdit = true;
-    this.submitAttempt = false;
-  }
-  public onNextNodeSelect(node): void {
-    this.nextNode = {
-      nextNodeName: node.name,
-      nextNodeId: node.id,
-      valid: true,
+  public onNextNodeSelect(node: INode): void {
+    this.previousNode = node;
+    this.previousNodeEdited = true;
+    if (node.type === 'text') {
+      // this.mediaNode.intent = node.response.text.body;
+      // this.intentDisabled = true;
+    } else if (node.type === 'interactive') {
+      this.mediaNode.intent = null;
+      if (node.response.type === 'list') {
+        this.availableIntents = [];
+        node.response.action.sections.forEach(section => {
+          this.availableIntents.push(...section.rows);
+        });
+      } else {
+        this.availableIntents = node.response.action.buttons;
+      }
     }
   }
-
+  public changeIntent(intent) {
+    this.mediaNode.intent = intent.title;
+  }
   public isNextNodeValid(isValid: boolean): void {
-    this.nextNode.valid = isValid;
+    this.previousNodeValid = isValid;
   }
 
-  setNodeNext(node: INextNode) {
-    node.nextNodeName = this.nextNode.nextNodeName;
-    node.nextNodeId = this.nextNode.nextNodeId;
-  }
-
-  setNodeValidity(node: INextNode) {
-    node.valid = this.nextNode.valid;
-  }
 }
