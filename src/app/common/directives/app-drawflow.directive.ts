@@ -17,8 +17,9 @@ export class DrawflowDirective implements OnInit {
   @Input() viewMode: boolean = false;
   @Output() onEditNode: EventEmitter<any> = new EventEmitter();
   @Output() onDeleteNode: EventEmitter<any> = new EventEmitter();
+  @Output() onCopyNode: EventEmitter<any> = new EventEmitter();
   private selectedNode: number;
-  private action: 'edit' | 'delete';
+  private action: 'edit' | 'delete' |'copy';
 
   constructor(private hostElRef: ElementRef) { }
 
@@ -46,6 +47,8 @@ export class DrawflowDirective implements OnInit {
               this.deleteNode();
             } else if (this.action === 'edit') {
               this.editNode();
+            } else if (this.action === 'copy') {
+              this.copyNode();
             }
           }, 0)
 
@@ -57,6 +60,8 @@ export class DrawflowDirective implements OnInit {
             this.action = 'delete';
           } else if (deleteElement.className.indexOf('btn-edit') > -1 || deleteElement.className.indexOf('bi-pencil') > -1) {
             this.action = 'edit';
+          } else if (deleteElement.className.indexOf('btn-copy') > -1 || deleteElement.className.indexOf('bi-clipboard') > -1) {
+            this.action = 'copy';
           } else this.action = null;
         });
       } else {
@@ -144,6 +149,10 @@ export class DrawflowDirective implements OnInit {
 
   public editNode() {
     this.onEditNode.emit(this.selectedNode);
+  }
+
+  public copyNode(){
+    this.onCopyNode.emit(this.selectedNode);
   }
 
   public updateNodeConnections(nodeId) {
