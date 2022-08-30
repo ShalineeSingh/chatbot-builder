@@ -1,4 +1,4 @@
-# dummy-project
+# chatbot-builder
 
 Use node version v10.22.1
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.0.

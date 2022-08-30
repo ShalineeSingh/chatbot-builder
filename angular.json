@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "dummy-project": {
+    "chatbot-builder": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -95,21 +95,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "dummy-project:build"
+            "browserTarget": "chatbot-builder:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "dummy-project:build:production"
+              "browserTarget": "chatbot-builder:build:production"
             },
             "qa": {
-              "browserTarget": "dummy-project:build:qa"
+              "browserTarget": "chatbot-builder:build:qa"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "dummy-project:build"
+            "browserTarget": "chatbot-builder:build"
           }
         },
         "test": {
@@ -146,19 +146,19 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "dummy-project:serve"
+            "devServerTarget": "chatbot-builder:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "dummy-project:serve:production"
+              "devServerTarget": "chatbot-builder:serve:production"
             },
             "qa": {
-              "devServerTarget": "dummy-project:serve:qa"
+              "devServerTarget": "chatbot-builder:serve:qa"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "dummy-project"
+  "defaultProject": "chatbot-builder"
 }

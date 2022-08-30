@@ -31,5 +31,5 @@ deploy_main:
   before_script:
     - pip install awscli 
   script:
-    - aws s3 sync ./dist s3://dummy-project-dev/ --acl=public-read --delete
+    - aws s3 sync ./dist s3://chatbot-builder-dev/ --acl=public-read --delete
   only: ['main']
